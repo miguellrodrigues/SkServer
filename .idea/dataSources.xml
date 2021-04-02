@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
+    <data-source source="LOCAL" name="MariaDB - s10353_skyfall@18.229.96.83" uuid="f8dd82e9-3156-4d3d-b907-39dec6f6e470">
+      <driver-ref>mariadb</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.mariadb.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mariadb://18.229.96.83:3306/s10353_skyfall</jdbc-url>
+    </data-source>
+  </component>
+</project>

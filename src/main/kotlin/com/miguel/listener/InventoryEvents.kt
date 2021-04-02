@@ -1,0 +1,103 @@
+package com.miguel.listener
+
+import com.miguel.game.manager.InventoryManager
+import com.miguel.game.market.MarketManager
+import com.miguel.values.Strings
+import org.bukkit.ChatColor
+import org.bukkit.Material
+import org.bukkit.entity.Player
+import org.bukkit.event.EventHandler
+import org.bukkit.event.Listener
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
+
+class InventoryEvents : Listener {
+
+    @EventHandler
+    fun onInventoryClick(event: InventoryClickEvent) {
+        val player = event.whoClicked
+
+        if (player !is Player)
+            return
+
+        val inventory = event.inventory
+
+        val currentItem = event.currentItem
+
+        val view = event.view
+
+        if (InventoryManager.has(inventory)) {
+            if (currentItem == null || currentItem.type == Material.AIR)
+                return
+
+            event.isCancelled = true
+
+            val title = ChatColor.stripColor(view.title)?.toLowerCase()!!
+
+            if (title.startsWith("anúncios página ")) {
+                var page = title.replace("anúncios página ", "").toInt()
+
+                when (currentItem.type) {
+                    Material.LIME_DYE -> {
+                        InventoryManager.openAdInventory(player, ++page)
+                    }
+
+                    Material.LIGHT_BLUE_DYE -> {
+                        InventoryManager.openAdInventory(player, --page)
+                    }
+
+                    Material.RED_DYE -> { }
+
+                    else -> {
+                        if (!currentItem.type.name.toLowerCase().contains("glass")) {
+                            val itemMeta = currentItem.itemMeta!!
+
+                            val id = ChatColor.stripColor(itemMeta.lore?.get(7))?.replace(" ID ", "")!!.toInt()
+
+                            val ad = MarketManager.getById(id)
+
+                            if (ad != null) {
+                                if (ad.advertiser == player.uniqueId) return
+
+                                MarketManager.purchase(player, ad)
+                            } else {
+                                player.sendMessage("§fEsse item acabou de ser vendido §e!")
+                            }
+                        }
+                    }
+                }
+
+            } else {
+                when (title) {
+                    "mercado" -> {
+                        when (currentItem.type) {
+                            Material.KNOWLEDGE_BOOK -> {
+                                if (MarketManager.getAllAds().isEmpty()) {
+                                    player.sendMessage("${Strings.MARKET_PREFIX}Nenhum anúncio encontrado")
+                                    player.closeInventory()
+                                } else {
+                                    InventoryManager.createInventory(player, InventoryManager.InventoryType.ADS)
+                                }
+                            }
+
+                            Material.PAPER -> {
+
+                            }
+
+                            else -> {}
+                        }
+
+                    }
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    fun onInventoryClose(event: InventoryCloseEvent) {
+        val inventory = event.inventory
+
+        if (InventoryManager.has(inventory))
+            InventoryManager.remove(inventory)
+    }
+}
