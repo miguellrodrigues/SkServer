@@ -9,6 +9,7 @@ import org.apache.commons.io.FileUtils
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import java.io.File
+import java.util.*
 import kotlin.collections.ArrayList
 
 object HomeManager {
@@ -98,7 +99,7 @@ object HomeManager {
         val playerHomes = getPlayerHomes(player)
 
         if (playerHomes.isNotEmpty()) {
-            val filter = playerHomes.filter { it.name.toLowerCase() == name.toLowerCase() }
+            val filter = playerHomes.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }
 
             if (filter.isNotEmpty()) {
                 return filter.first()
@@ -129,7 +130,7 @@ object HomeManager {
 
         val playerHomes = getPlayerHomes(player)
 
-        val filter = playerHomes.filter { it.name.toLowerCase() == name.toLowerCase() }
+        val filter = playerHomes.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }
 
         if (filter.isEmpty()) {
             val home = Home(

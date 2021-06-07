@@ -4,7 +4,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.server.ServerListPingEvent
 
-class ServerEvents: Listener {
+class ServerEvents : Listener {
 
     @EventHandler
     fun onServerListPing(event: ServerListPingEvent) {

@@ -24,7 +24,13 @@ class ItemCleaner(private val messageInterval: Int) : BaseRunnable() {
                 counter = 240
             } else {
                 if (counter % messageInterval == 0) {
-                    GameManager.sendMessage("${Strings.MESSAGE_PREFIX}O chão será limpo em ${GameManager.formatTime(counter)}")
+                    GameManager.sendMessage(
+                        "${Strings.MESSAGE_PREFIX}O chão será limpo em ${
+                            GameManager.formatTime(
+                                counter
+                            )
+                        }"
+                    )
                 }
 
                 counter--

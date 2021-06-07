@@ -21,7 +21,7 @@ object CommandManager {
         for (method in methods) {
             if (method.isAnnotationPresent(Command::class.java)) {
                 commands[method.getAnnotation(
-                  Command::class.java
+                    Command::class.java
                 )] = method
             }
         }
@@ -32,9 +32,9 @@ object CommandManager {
         for (method in methods) {
             if (method.isAnnotationPresent(Command::class.java)) {
                 commands.remove(
-                  method.getAnnotation(
-                    Command::class.java
-                  )
+                    method.getAnnotation(
+                        Command::class.java
+                    )
                 )
             }
         }

@@ -1,7 +1,6 @@
 package com.miguel.mysql
 
 import com.miguel.data.PlayerData
-import java.lang.Exception
 import java.sql.Connection
 import java.sql.SQLException
 import java.util.*
@@ -21,7 +20,7 @@ object MysqlManager {
 
             statement.execute()
             statement.close()
-        }catch (e: SQLException) {
+        } catch (e: SQLException) {
             throw Error(e.message)
         }
 
@@ -42,7 +41,7 @@ object MysqlManager {
 
             statement.close()
 
-        }catch (e: SQLException) {
+        } catch (e: SQLException) {
             throw Error(e.message)
         }
 
@@ -50,17 +49,18 @@ object MysqlManager {
     }
 
     fun createPlayer(uuid: UUID) {
-        if(playerExist(uuid))
+        if (playerExist(uuid))
             return
 
-        try{
+        try {
             val statement = connection.prepareStatement(
-                "INSERT INTO $table(uuid, money) VALUES ('$uuid', '0.0')")
+                "INSERT INTO $table(uuid, money) VALUES ('$uuid', '0.0')"
+            )
 
             statement.execute()
             statement.close()
 
-        }catch (e: SQLException) {
+        } catch (e: SQLException) {
             throw Error(e.message)
         }
     }
@@ -68,9 +68,10 @@ object MysqlManager {
     fun getValue(uuid: UUID, column: String): Any? {
         var value: Any? = null
 
-        try{
+        try {
             val statement = connection.prepareStatement(
-                "SELECT * FROM $table WHERE uuid=?")
+                "SELECT * FROM $table WHERE uuid=?"
+            )
 
             statement.setString(1, uuid.toString())
 
@@ -82,7 +83,7 @@ object MysqlManager {
             statement.close()
             resultSet.close()
 
-        }catch (e: SQLException) {
+        } catch (e: SQLException) {
             throw Error(e.message)
         }
 
@@ -90,13 +91,14 @@ object MysqlManager {
     }
 
     fun setValue(uuid: UUID, column: String, value: Any) {
-        try{
+        try {
             val statement = connection.prepareStatement(
-                "UPDATE $table SET $column = '$value' WHERE uuid='${uuid}'")
+                "UPDATE $table SET $column = '$value' WHERE uuid='${uuid}'"
+            )
 
             statement.executeUpdate()
             statement.close()
-        }catch (e: Exception) {
+        } catch (e: Exception) {
             throw Error(e.message)
         }
     }

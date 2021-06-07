@@ -5,7 +5,7 @@ import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
-import java.lang.NumberFormatException
+import java.util.*
 
 class Anuncio : BukkitCommand("anuncio") {
 
@@ -21,7 +21,7 @@ class Anuncio : BukkitCommand("anuncio") {
         } else {
             when (args.size) {
                 2 -> {
-                    if (args[0].toLowerCase() == "remover") {
+                    if (args[0].lowercase(Locale.getDefault()) == "remover") {
                         val name = args[1]
 
                         MarketManager.removeAd(sender, name)
@@ -31,14 +31,14 @@ class Anuncio : BukkitCommand("anuncio") {
                 }
 
                 3 -> {
-                    if (args[0].toLowerCase() == "criar") {
+                    if (args[0].lowercase(Locale.getDefault()) == "criar") {
                         val name = args[1]
 
                         val price: Float
 
-                        try{
+                        try {
                             price = args[2].toFloat()
-                        }catch (e: NumberFormatException) {
+                        } catch (e: NumberFormatException) {
                             sender.sendMessage("§cUtilize apenas números no preço !")
                             return true
                         }

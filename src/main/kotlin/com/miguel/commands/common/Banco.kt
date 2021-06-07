@@ -8,7 +8,7 @@ import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.lang.NumberFormatException
+import java.util.*
 
 class Banco : BukkitCommand("banco") {
 
@@ -28,7 +28,7 @@ class Banco : BukkitCommand("banco") {
                 1 -> {
                     val option = args[0]
 
-                    when (option.toLowerCase()) {
+                    when (option.lowercase(Locale.getDefault())) {
                         "saldo" -> {
                             sender.sendMessage("${Strings.MESSAGE_PREFIX} Seu saldo é de §e${data.money} §aUkranianinho`s")
                         }
@@ -46,7 +46,7 @@ class Banco : BukkitCommand("banco") {
                 2 -> {
                     val option = args[0]
 
-                    when (option.toLowerCase()) {
+                    when (option.lowercase(Locale.getDefault())) {
                         "sacar" -> {
                             val withdraw: Float
 

@@ -11,10 +11,11 @@ import com.miguel.values.Strings
 import org.apache.commons.io.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.io.File
+import java.util.*
 
 object MarketManager {
 
@@ -107,7 +108,7 @@ object MarketManager {
         val playerAds = getPlayerAds(player)
 
         if (playerAds.isNotEmpty()) {
-            val filter = playerAds.filter { it.name.toLowerCase() == name.toLowerCase() }
+            val filter = playerAds.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }
 
             if (filter.isNotEmpty()) {
                 return filter.first()
@@ -119,7 +120,7 @@ object MarketManager {
         return null
     }
 
-    fun getById(id: Int): MarketAd? {
+    fun getById(id: Int): MarketAd {
         return ads.first { it.id == id }
     }
 
@@ -136,7 +137,8 @@ object MarketManager {
 
             player.sendMessage("${Strings.MESSAGE_PREFIX} Compra realizada com sucesso !")
 
-            Bukkit.getPlayer(ad.advertiser)?.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
+            Bukkit.getPlayer(ad.advertiser)
+                ?.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
         } else {
             player.sendMessage("§cSaldo insuficiente !")
         }
@@ -157,7 +159,7 @@ object MarketManager {
     fun advertise(player: Player, name: String, price: Float) {
         val playerAds = getPlayerAds(player)
 
-        val filter = playerAds.filter { it.name.toLowerCase() == name.toLowerCase() }
+        val filter = playerAds.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }
 
         if (filter.isEmpty()) {
             val itemInMainHand = player.inventory.itemInMainHand

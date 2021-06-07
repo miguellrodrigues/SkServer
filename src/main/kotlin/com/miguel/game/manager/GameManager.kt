@@ -1,10 +1,10 @@
 package com.miguel.game.manager
 
-import net.minecraft.server.v1_16_R2.IChatBaseComponent
-import net.minecraft.server.v1_16_R2.PacketPlayOutPlayerListHeaderFooter
+import net.minecraft.server.v1_16_R3.IChatBaseComponent
+import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerListHeaderFooter
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_16_R2.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack

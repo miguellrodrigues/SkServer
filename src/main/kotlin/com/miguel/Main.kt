@@ -21,7 +21,7 @@ import com.miguel.listener.PlayerEvents
 import com.miguel.listener.ServerEvents
 import com.miguel.mysql.MysqlManager
 import com.miguel.packets.CustomPing
-import org.bukkit.craftbukkit.v1_16_R2.CraftServer
+import org.bukkit.craftbukkit.v1_16_R3.CraftServer
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
@@ -29,12 +29,10 @@ import org.bukkit.plugin.java.JavaPlugin
 class Main : JavaPlugin() {
 
     companion object {
-        lateinit var INSTANCE: Plugin
+        lateinit var INSTANCE: JavaPlugin
     }
 
     override fun onLoad() {
-        MysqlManager.init()
-
         dataFolder.mkdir()
 
         config.options().copyDefaults(true)
@@ -49,6 +47,8 @@ class Main : JavaPlugin() {
 
     override fun onEnable() {
         INSTANCE = this
+
+        MysqlManager.init()
 
         BankManager.loadCurrencies()
         HomeManager.init()

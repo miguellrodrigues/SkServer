@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory
 object InventoryManager {
 
     private val adBaseInventory = Bukkit.createInventory(null, 54, "§aAnúncios")
-    
+
     fun init() {
         adBaseInventory.setItem(0, GameManager.createItem("§fSem página anterior.", Material.RED_DYE))
         adBaseInventory.setItem(1, GameManager.createItem("§e.", Material.YELLOW_STAINED_GLASS_PANE))
@@ -40,7 +40,7 @@ object InventoryManager {
         adBaseInventory.setItem(52, GameManager.createItem("§e.", Material.RED_STAINED_GLASS_PANE))
         adBaseInventory.setItem(53, GameManager.createItem("§e.", Material.RED_STAINED_GLASS_PANE))
     }
-    
+
     private val inventories = ArrayList<Inventory>()
 
     private fun addInventory(inventory: Inventory) {
@@ -51,7 +51,7 @@ object InventoryManager {
         inventories.remove(inventory)
     }
 
-    fun has(inventory: Inventory) : Boolean {
+    fun has(inventory: Inventory): Boolean {
         return inventory in inventories
     }
 
@@ -66,17 +66,21 @@ object InventoryManager {
             InventoryType.MARKET -> {
                 val marketInventory = Bukkit.createInventory(player, 27, "§e§rMercado")
 
-                marketInventory.setItem(12, GameManager.createItem(
-                    "§aAnuncios",
-                    arrayOf(" ", "§fClique para ver os anuncios"),
-                    Material.KNOWLEDGE_BOOK
-                ))
+                marketInventory.setItem(
+                    12, GameManager.createItem(
+                        "§aAnuncios",
+                        arrayOf(" ", "§fClique para ver os anuncios"),
+                        Material.KNOWLEDGE_BOOK
+                    )
+                )
 
-                marketInventory.setItem(14, GameManager.createItem(
-                    "§bAnunciar",
-                    arrayOf(" ", "§fClique para fazer um anuncio"),
-                    Material.PAPER
-                ))
+                marketInventory.setItem(
+                    14, GameManager.createItem(
+                        "§bAnunciar",
+                        arrayOf(" ", "§fClique para fazer um anuncio"),
+                        Material.PAPER
+                    )
+                )
 
                 var x = 0
 
@@ -110,7 +114,8 @@ object InventoryManager {
         val inventory = Bukkit.createInventory(
             player,
             adBaseInventory.size,
-            "§aAnúncios §fPágina §e${page}")
+            "§aAnúncios §fPágina §e${page}"
+        )
 
         inventory.contents = adBaseInventory.contents
 

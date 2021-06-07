@@ -9,10 +9,10 @@ import java.sql.SQLException
 
 object MysqlConnector {
 
-    lateinit var connection: Connection
+    private lateinit var connection: Connection
 
     fun remoteConnection() {
-        try{
+        try {
             Class.forName("com.mysql.jdbc.Driver")
 
             val dataSource = MysqlDataSource()
@@ -26,28 +26,30 @@ object MysqlConnector {
 
             this.connection = dataSource.connection
             MysqlManager.connection = this.connection
-        }catch (e: Exception) {
+        } catch (e: Exception) {
+            print("error: cant't connect to remote mysql server")
             liteConnection()
         }
     }
 
     fun closeConnection() {
         try {
-            this.connection?.close()
-        }catch (e: SQLException) {
+            this.connection.close()
+        } catch (e: SQLException) {
             throw Error(e.message)
         }
     }
 
     private fun liteConnection() {
         val file = File(Main.INSTANCE.dataFolder, "sk.db")
-        if(!file.exists())
+        if (!file.exists())
             file.createNewFile()
 
         val url = "jdbc:sqlite:$file"
         try {
             Class.forName("org.sqlite.JDBC")
             this.connection = DriverManager.getConnection(url)
+            MysqlManager.connection = this.connection
         } catch (e: Exception) {
             throw Error(e.message)
         }

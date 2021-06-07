@@ -3,7 +3,6 @@ package com.miguel.data
 import com.miguel.mysql.MysqlConnector
 import com.miguel.mysql.MysqlManager
 import java.util.*
-import kotlin.collections.HashMap
 
 object PlayerData {
 

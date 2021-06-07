@@ -12,6 +12,7 @@ import org.bukkit.Sound
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
+import java.util.*
 
 class Home : BukkitCommand("home") {
 
@@ -80,7 +81,7 @@ class Home : BukkitCommand("home") {
                             )
                         )
 
-                        sender.sendMessage("§fTeleportado para a home §e${home.name.toUpperCase()}")
+                        sender.sendMessage("§fTeleportado para a home §e${home.name.uppercase(Locale.getDefault())}")
                         sender.playSound(sender.location, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F)
                     }
                 }

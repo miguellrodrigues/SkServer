@@ -32,9 +32,9 @@ enum class TagCommon(private var tagPrefix: String, var nameColor: String) {
                 hash[tagCommons[i]] = i + 1
             }
             return if (hash.containsKey(this)) {
-              "-${hash[this]!! + 1000}".toInt()
+                "-${hash[this]!! + 1000}".toInt()
             } else {
-               "-${hash.size + 1000}".toInt()
+                "-${hash.size + 1000}".toInt()
             }
         }
 
@@ -46,7 +46,7 @@ enum class TagCommon(private var tagPrefix: String, var nameColor: String) {
                 return playersTags[p.uniqueId]!!
             } else {
                 for (tagCommon in values()) {
-                    val perm = "tag." + tagCommon.name.toLowerCase()
+                    val perm = "tag." + tagCommon.name.lowercase(Locale.getDefault())
                     if (p.hasPermission(perm)) {
                         playersTags[p.uniqueId] = tagCommon
                         return playersTags[p.uniqueId]!!

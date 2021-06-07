@@ -10,9 +10,10 @@ import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
-import org.bukkit.ChatColor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import java.util.*
+import kotlin.collections.ArrayList
 
 class GameCommands {
 
@@ -30,7 +31,7 @@ class GameCommands {
             val tags: MutableList<TagCommon> = ArrayList()
 
             TagCommon.values().forEach { tagCommon ->
-                if (sender.hasPermission("${Permission.TAG.node}${tagCommon.name.toLowerCase()}")) {
+                if (sender.hasPermission("${Permission.TAG.node}${tagCommon.name.lowercase(Locale.getDefault())}")) {
                     tags.add(tagCommon)
                 }
             }
@@ -45,12 +46,12 @@ class GameCommands {
             tags.forEach { tagCommon ->
                 val component = TextComponent(
                     tagCommon.nameColor
-                            + tagCommon.name.replace("_", "").toUpperCase()
+                            + tagCommon.name.replace("_", "").uppercase(Locale.getDefault())
                 )
 
                 component.clickEvent = ClickEvent(
                     ClickEvent.Action.RUN_COMMAND,
-                    "/sk tag " + tagCommon.name.replace("_", "").toLowerCase()
+                    "/sk tag " + tagCommon.name.replace("_", "").lowercase(Locale.getDefault())
                 )
                 component.hoverEvent = HoverEvent(
                     HoverEvent.Action.SHOW_TEXT,
@@ -70,7 +71,7 @@ class GameCommands {
             val str = strings[0]
 
             TagCommon.values().forEach { tagCommon ->
-                if (tagCommon.name.replace("_".toRegex(), "").toLowerCase().startsWith(str)) {
+                if (tagCommon.name.replace("_".toRegex(), "").lowercase(Locale.getDefault()).startsWith(str)) {
                     toUse = tagCommon
                     return@forEach
                 }
@@ -81,11 +82,11 @@ class GameCommands {
                 return
             }
 
-            if (player.hasPermission("${Permission.TAG.node}${toUse.name.toLowerCase()}")) {
+            if (player.hasPermission("${Permission.TAG.node}${toUse.name.lowercase(Locale.getDefault())}")) {
                 player.sendMessage(" ")
                 player.sendMessage(
-                    "Agora você está usando a tag: §7'" + toUse.nameColor + toUse.name.toLowerCase()
-                        .replace("_".toRegex(), "").toUpperCase() + "§7'"
+                    "Agora você está usando a tag: §7'" + toUse.nameColor + toUse.name.lowercase(Locale.getDefault())
+                                        .replace("_".toRegex(), "").uppercase(Locale.getDefault()) + "§7'"
                 )
 
                 TagCommon.setTag(sender, toUse)
@@ -93,8 +94,8 @@ class GameCommands {
                 if (toUse === TagCommon.PLAYER) {
                     player.sendMessage(" ")
                     player.sendMessage(
-                        "Agora você está usando a tag: §7'" + toUse.nameColor + toUse.name.toLowerCase()
-                            .replace("_".toRegex(), "").toUpperCase() + "§7'"
+                        "Agora você está usando a tag: §7'" + toUse.nameColor + toUse.name.lowercase(Locale.getDefault())
+                                                .replace("_".toRegex(), "").uppercase(Locale.getDefault()) + "§7'"
                     )
                     TagCommon.setTag(player, toUse)
                 } else player.sendMessage("§cDesculpe, mas você não possui permissão para usar esta tag.")
@@ -112,7 +113,7 @@ class GameCommands {
         console = false
     )
     fun clearChatCommand(sender: CommandSender, strings: Array<String>) {
-        for(i in 0..100) {
+        for (i in 0..100) {
             GameManager.sendMessage(" ")
         }
 

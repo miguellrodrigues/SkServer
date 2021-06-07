@@ -10,7 +10,12 @@ interface IHomeDTO {
     val world: String
 }
 
-data class HomeLocation(override val x: Double, override val y: Double, override val z: Double, override val world: String) : IHomeDTO
+data class HomeLocation(
+    override val x: Double,
+    override val y: Double,
+    override val z: Double,
+    override val world: String
+) : IHomeDTO
 
 class Home(val name: String, val location: HomeLocation, val owner: UUID) {
 

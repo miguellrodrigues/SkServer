@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import java.util.*
 
 class InventoryEvents : Listener {
 
@@ -32,7 +33,7 @@ class InventoryEvents : Listener {
 
             event.isCancelled = true
 
-            val title = ChatColor.stripColor(view.title)?.toLowerCase()!!
+            val title = ChatColor.stripColor(view.title)?.lowercase(Locale.getDefault())!!
 
             if (title.startsWith("anúncios página ")) {
                 var page = title.replace("anúncios página ", "").toInt()
@@ -46,23 +47,20 @@ class InventoryEvents : Listener {
                         InventoryManager.openAdInventory(player, --page)
                     }
 
-                    Material.RED_DYE -> { }
+                    Material.RED_DYE -> {
+                    }
 
                     else -> {
-                        if (!currentItem.type.name.toLowerCase().contains("glass")) {
+                        if (!currentItem.type.name.lowercase(Locale.getDefault()).contains("glass")) {
                             val itemMeta = currentItem.itemMeta!!
 
                             val id = ChatColor.stripColor(itemMeta.lore?.get(7))?.replace(" ID ", "")!!.toInt()
 
                             val ad = MarketManager.getById(id)
 
-                            if (ad != null) {
-                                if (ad.advertiser == player.uniqueId) return
+                            if (ad.advertiser == player.uniqueId) return
 
-                                MarketManager.purchase(player, ad)
-                            } else {
-                                player.sendMessage("§fEsse item acabou de ser vendido §e!")
-                            }
+                            MarketManager.purchase(player, ad)
                         }
                     }
                 }
@@ -84,7 +82,8 @@ class InventoryEvents : Listener {
 
                             }
 
-                            else -> {}
+                            else -> {
+                            }
                         }
 
                     }

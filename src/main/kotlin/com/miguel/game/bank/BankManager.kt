@@ -7,7 +7,6 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
-import kotlin.collections.ArrayList
 
 object BankManager {
 
@@ -64,7 +63,11 @@ object BankManager {
             decompose.forEach { amount ->
                 val currencyValue = currencies.first { it.material == amount.material }.value
 
-                val item = GameManager.createItem("§aUkranianinho", arrayOf(" ", " §f- Valor §e${currencyValue} §fUkranianinho`s", " "), amount.material)
+                val item = GameManager.createItem(
+                    "§aUkranianinho",
+                    arrayOf(" ", " §f- Valor §e${currencyValue} §fUkranianinho`s", " "),
+                    amount.material
+                )
                 item.amount = amount.amount
 
                 if (player.inventory.firstEmpty() != -1) {

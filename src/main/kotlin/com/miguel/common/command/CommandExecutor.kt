@@ -1,7 +1,6 @@
 package com.miguel.common.command
 
 import com.miguel.common.command.Permission.Companion.has
-import com.miguel.manager.PlayerManager
 import org.apache.commons.lang.ArrayUtils
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
@@ -9,7 +8,6 @@ import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.collections.HashMap
 
 class CommandExecutor : BukkitCommand("sk") {
 
@@ -54,8 +52,8 @@ class CommandExecutor : BukkitCommand("sk") {
 
         if (commandArgs.size < command.min || commandArgs.size > command.max && command.max != -1) {
             sender.sendMessage(
-              CommandManager.error
-                .toString() + command.usage
+                CommandManager.error
+                    .toString() + command.usage
             )
 
             return true

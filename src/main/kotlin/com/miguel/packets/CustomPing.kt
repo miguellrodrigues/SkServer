@@ -4,13 +4,12 @@ import com.miguel.packets.protocol.NMSUtil
 import com.miguel.packets.protocol.TinyProtocol
 import com.mojang.authlib.GameProfile
 import io.netty.channel.Channel
-import net.minecraft.server.v1_16_R2.PacketStatusOutServerInfo
-import net.minecraft.server.v1_16_R2.ServerPing
+import net.minecraft.server.v1_16_R3.PacketStatusOutServerInfo
+import net.minecraft.server.v1_16_R3.ServerPing
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
-import kotlin.collections.ArrayList
 
 class CustomPing(plugin: JavaPlugin, lines: Array<String>) {
 
@@ -21,7 +20,7 @@ class CustomPing(plugin: JavaPlugin, lines: Array<String>) {
     init {
         lines.forEach { line ->
             profiles.add(
-              GameProfile(UUID.randomUUID(), line)
+                GameProfile(UUID.randomUUID(), line)
             )
         }
 
