@@ -23,7 +23,6 @@ import com.miguel.mysql.MysqlManager
 import com.miguel.packets.CustomPing
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer
 import org.bukkit.event.HandlerList
-import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {

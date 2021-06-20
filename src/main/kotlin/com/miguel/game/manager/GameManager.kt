@@ -1,5 +1,6 @@
 package com.miguel.game.manager
 
+import com.miguel.packets.NMSUtil
 import net.minecraft.server.v1_16_R3.IChatBaseComponent
 import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerListHeaderFooter
 import org.bukkit.Bukkit
@@ -20,12 +21,15 @@ object GameManager {
     }
 
     fun sendTab(player: Player, header: String, footer: String) {
+        val packetHeader = IChatBaseComponent.ChatSerializer.a("{\"text\": \"$header\"}")
+        val packetFooter = IChatBaseComponent.ChatSerializer.a("{\"text\": \"$footer\"}")
+
         val packet = PacketPlayOutPlayerListHeaderFooter()
 
-        packet.header = IChatBaseComponent.ChatSerializer.a("{\"text\": \"$header\"}")
-        packet.footer = IChatBaseComponent.ChatSerializer.a("{\"text\": \"$footer\"}")
+        NMSUtil.setValue(packet, "header", packetHeader!!)
+        NMSUtil.setValue(packet, "footer", packetFooter!!)
 
-        (player as CraftPlayer).handle.playerConnection.sendPacket(packet)
+        (player as CraftPlayer).handle.networkManager.sendPacket(packet)
     }
 
     fun formatTime(i: Int): String {

@@ -16,7 +16,7 @@ object PlayerData {
                 val data = Data()
 
                 data.uuid = it
-                data.money = MysqlManager.getValue(it, "money") as Float
+                data.money = MysqlManager.getValue(it, "money") as Double
 
                 dataMap[it] = data
             }
@@ -31,7 +31,7 @@ object PlayerData {
 
             data.uuid = uuid
 
-            data.money = 0.0F
+            data.money = 0.0
 
             dataMap[uuid] = data
         }
@@ -46,7 +46,7 @@ object PlayerData {
     }
 
     fun saveData() {
-        MysqlConnector.remoteConnection()
+        MysqlConnector.remoteConnection("18.229.96.83", "s18280_main_data", "u18280_LosUKo2NCI", "RdSOI8OMgJO8JJT^@rmH2vOo", 3306)
 
         dataMap.keys.forEach {
             val data = dataMap[it]!!
@@ -58,7 +58,7 @@ object PlayerData {
     class Data {
         lateinit var uuid: UUID
 
-        var money = 0.0F
+        var money = 0.0
 
         @Synchronized
         fun save() {

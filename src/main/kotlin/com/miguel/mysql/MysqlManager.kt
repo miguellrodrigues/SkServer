@@ -11,7 +11,7 @@ object MysqlManager {
     lateinit var connection: Connection
 
     fun init() {
-        MysqlConnector.remoteConnection()
+        MysqlConnector.remoteConnection("18.229.96.83", "s18280_main_data", "u18280_LosUKo2NCI", "RdSOI8OMgJO8JJT^@rmH2vOo", 3306)
 
         try {
             val statement = connection.prepareStatement(
