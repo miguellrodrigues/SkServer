@@ -21,6 +21,7 @@ import com.miguel.listener.PlayerEvents
 import com.miguel.listener.ServerEvents
 import com.miguel.mysql.MysqlManager
 import com.miguel.packets.CustomPing
+import com.miguel.repository.impl.Mysql
 import org.bukkit.craftbukkit.v1_16_R3.CraftServer
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
@@ -38,6 +39,16 @@ class Main : JavaPlugin() {
         config.options().copyHeader(true)
 
         saveDefaultConfig()
+
+        Mysql.remoteConnection(
+            "",
+            "",
+            "",
+            "",
+            3306
+        )
+
+        Mysql.createTables()
 
         InventoryManager.init()
     }

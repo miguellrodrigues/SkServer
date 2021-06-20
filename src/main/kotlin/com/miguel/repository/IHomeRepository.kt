@@ -1,7 +1,6 @@
 package com.miguel.repository
 
 import com.miguel.entities.SHome
-import java.util.*
 
 interface IHomeRepository {
 
@@ -10,6 +9,4 @@ interface IHomeRepository {
     fun save(home: SHome): Boolean
 
     fun exist(code: String): Boolean
-
-
 }

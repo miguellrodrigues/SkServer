@@ -1,9 +1,7 @@
 package com.miguel.repository.impl
 
 import com.mysql.cj.jdbc.MysqlDataSource
-import java.io.File
 import java.sql.Connection
-import java.sql.DriverManager
 
 object Mysql {
 
@@ -32,20 +30,48 @@ object Mysql {
     }
 
     fun createTables() {
-        createPlayersTable()
+        val queryList = listOf(
+            "CREATE TABLE IF NOT EXISTS saccounts (\n" +
+                    "  id INT NOT NULL AUTO_INCREMENT,\n" +
+                    "  balance DOUBLE,\n" +
+                    "  PRIMARY KEY (id)\n" +
+                    ");",
+
+            "CREATE TABLE IF NOT EXISTS splayers (\n" +
+                    "  id INT NOT NULL AUTO_INCREMENT,\n" +
+                    "  uuid VARCHAR(255),\n" +
+                    "  account_id INT,\n" +
+                    "  PRIMARY KEY (id),\n" +
+                    "  CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES saccounts (id)\n" +
+                    ");",
+
+            "CREATE TABLE IF NOT EXISTS slocations (\n" +
+                    "  id INT NOT NULL AUTO_INCREMENT,\n" +
+                    "  world VARCHAR(255),\n" +
+                    "  x DOUBLE,\n" +
+                    "  y DOUBLE,\n" +
+                    "  z DOUBLE,\n" +
+                    "  PRIMARY KEY (id)\n" +
+                    ");",
+
+            "CREATE TABLE IF NOT EXISTS shomes (\n" +
+                    "  id INT NOT NULL AUTO_INCREMENT,\n" +
+                    "  player_id INT,\n" +
+                    "  location_id INT,\n" +
+                    "  PRIMARY KEY (id),\n" +
+                    "  CONSTRAINT fk_player FOREIGN KEY (player_id) REFERENCES splayers (id),\n" +
+                    "  CONSTRAINT fk_location FOREIGN KEY (location_id) REFERENCES slocations (id)\n" +
+                    ");"
+        )
+
+        queryList.forEach { createTable(it) }
     }
 
-    private fun createPlayersTable() {
+    private fun createTable(query: String) {
         try {
             val statement = connection.prepareStatement(
-                "CREATE TABLE `splayers` (\n" +
-                        "\t`id` INT NOT NULL AUTO_INCREMENT,\n" +
-                        "\t`uuid` VARCHAR,\n" +
-                        "\t`account` INT,\n" +
-                        "\tPRIMARY KEY (`id`)\n" +
-                        ");"
+                query
             )
-
 
             statement.execute()
             statement.close()

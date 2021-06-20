@@ -15,8 +15,8 @@ class MysqlPlayerRepository : IPlayerRepository {
     override fun create(player: SPlayer): Boolean {
         try {
             val statement = connection.prepareStatement(
-                "INSERT INTO $database.$table(uuid, money, account) VALUES " +
-                        "('${player.uuid}', '${player.money}', '${player.account}')"
+                "INSERT INTO $database.$table(uuid, account) VALUES " +
+                        "('${player.uuid}', '${player.account}')"
             )
 
             statement.execute()
@@ -29,15 +29,7 @@ class MysqlPlayerRepository : IPlayerRepository {
     }
 
     override fun save(player: SPlayer): Boolean {
-        val uuid = player.uuid
-
-        if (exist(uuid)) {
-            setAccount(uuid, player.account)
-        } else {
-            return create(player)
-        }
-
-        return true
+        TODO()
     }
 
     override fun getAccount(uuid: UUID): Int {
