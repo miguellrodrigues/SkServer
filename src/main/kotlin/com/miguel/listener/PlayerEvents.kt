@@ -24,7 +24,6 @@ class PlayerEvents : Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
 
-
         player.location.chunk
 
         event.joinMessage(Component.empty())

@@ -34,10 +34,10 @@ class Anuncio : BukkitCommand("anuncio") {
                     if (args[0].lowercase(Locale.getDefault()) == "criar") {
                         val name = args[1]
 
-                        val price: Float
+                        val price: Double
 
                         try {
-                            price = args[2].toFloat()
+                            price = args[2].toDouble()
                         } catch (e: NumberFormatException) {
                             sender.sendMessage("§cUtilize apenas números no preço !")
                             return true

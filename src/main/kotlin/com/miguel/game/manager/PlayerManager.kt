@@ -30,14 +30,10 @@ object PlayerManager {
             data[player.uniqueId] = playerController.get(player.uniqueId)
 
             println(data[player.uniqueId].toString())
-        }.thenRun {
-            val balance = data[player.uniqueId]?.account?.balance!!
-
-            data[player.uniqueId]!!.account.balance = balance + 200.0
         }
     }
 
-    fun getAccount(uuid: UUID): SAccount {
+    private fun getAccount(uuid: UUID): SAccount {
         return data[uuid]!!.account
     }
 

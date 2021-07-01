@@ -55,7 +55,7 @@ class Banco : BukkitCommand("banco") {
                                 return true
                             }
 
-                            PlayerManager.decreaseBalance(sender.uniqueId, withdraw)
+                            BankManager.withDraw(sender, withdraw)
                         }
 
                         "depositar" -> {

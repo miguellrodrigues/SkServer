@@ -59,7 +59,7 @@ object BankManager {
         val balance = PlayerManager.getBalance(player.uniqueId)
 
         if (balance >= value) {
-            val decompose = decompose(balance, player.uniqueId)
+            val decompose = decompose(value, player.uniqueId)
 
             decompose.forEach { amount ->
                 val currencyValue = currencies.first { it.material == amount.material }.value
