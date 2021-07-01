@@ -3,6 +3,7 @@ package com.miguel.listener
 import com.miguel.common.TagCommon
 import com.miguel.data.PlayerData
 import com.miguel.game.manager.GameManager
+import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import com.miguel.values.Values
 import net.kyori.adventure.text.Component
@@ -25,6 +26,8 @@ class PlayerEvents : Listener {
     @EventHandler
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
+
+        PlayerManager.load(player)
 
         player.location.chunk
 

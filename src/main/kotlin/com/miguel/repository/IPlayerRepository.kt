@@ -5,7 +5,7 @@ import java.util.*
 
 interface IPlayerRepository {
 
-    fun create(player: SPlayer): Boolean
+    fun create(uuid: UUID, account_id: Int): Boolean
 
     fun save(player: SPlayer): Boolean
 

@@ -27,6 +27,18 @@ object PlayerManager {
     fun load(player: Player) {
         CompletableFuture.runAsync {
             data[player.uniqueId] = playerController.get(player.uniqueId)
+
+            println(data[player.uniqueId].toString())
+        }.thenRun {
+            val balance = data[player.uniqueId]?.account?.balance!!
+
+            data[player.uniqueId]!!.account.balance = balance + 200.0
+        }
+    }
+
+    fun save() {
+        data.forEach { (_, splayer) ->
+            playerController.save(splayer)
         }
     }
 }

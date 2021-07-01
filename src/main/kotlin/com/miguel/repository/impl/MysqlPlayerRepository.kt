@@ -13,11 +13,11 @@ class MysqlPlayerRepository : IPlayerRepository {
     private val database = "s18280_data"
     private val table = "splayers"
 
-    override fun create(player: SPlayer): Boolean {
+    override fun create(uuid: UUID, account_id: Int): Boolean {
         try {
             val statement = connection.prepareStatement(
-                "INSERT INTO $database.$table(uuid, account) VALUES " +
-                        "('${player.uuid}', '${player.account}')"
+                "INSERT INTO $database.$table(uuid, account_id) VALUES " +
+                        "('${uuid}', '${account_id}')"
             )
 
             statement.execute()
@@ -40,7 +40,7 @@ class MysqlPlayerRepository : IPlayerRepository {
 
         try {
             val statement = connection.prepareStatement(
-                "SELECT account FROM $database.$table WHERE uuid='$uuid'"
+                "SELECT account_id FROM $database.$table WHERE uuid='$uuid'"
             )
 
             val resultSet = statement.executeQuery()
@@ -60,7 +60,7 @@ class MysqlPlayerRepository : IPlayerRepository {
 
         try {
             val statement =
-                connection.prepareStatement("UPDATE $database.$table SET account = '$account' WHERE uuid='$uuid'")
+                connection.prepareStatement("UPDATE $database.$table SET account_id = '$account' WHERE uuid='$uuid'")
 
             statement.executeUpdate()
             statement.close()

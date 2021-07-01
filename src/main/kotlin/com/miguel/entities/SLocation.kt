@@ -41,4 +41,8 @@ data class SLocation(
             z
         )
     }
+
+    override fun toString(): String {
+        return "SLocation(id=$id, world='$world', x=$x, y=$y, z=$z)"
+    }
 }

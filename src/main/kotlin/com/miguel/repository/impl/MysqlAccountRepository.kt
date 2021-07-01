@@ -3,6 +3,7 @@ package com.miguel.repository.impl
 import com.miguel.entities.SAccount
 import com.miguel.repository.IAccountRepository
 import java.sql.SQLException
+import java.util.*
 
 class MysqlAccountRepository : IAccountRepository {
 
@@ -14,8 +15,8 @@ class MysqlAccountRepository : IAccountRepository {
     override fun create(account: SAccount): Boolean {
         try {
             val statement = connection.prepareStatement(
-                "INSERT INTO $database.$table(balance) VALUES " +
-                        "('${account.balance}')"
+                "INSERT INTO $database.$table(player_id, balance) VALUES " +
+                        "('${account.player_id}', '${account.balance}')"
             )
 
             statement.execute()
@@ -39,9 +40,8 @@ class MysqlAccountRepository : IAccountRepository {
         var success = false
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='?'")
+            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
-            statement.setInt(1, id)
             val resultSet = statement.executeQuery()
 
             if (resultSet.next())
@@ -59,7 +59,32 @@ class MysqlAccountRepository : IAccountRepository {
     override fun getById(id: Int): SAccount? {
         if (!exist(id)) return null
 
-        return SAccount(id, getBalance(id))
+        return SAccount(id, getPlayerId(id), getBalance(id))
+    }
+
+    override fun getByPlayerId(player_id: UUID): SAccount {
+        lateinit var account: SAccount
+
+        try {
+            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE player_id='$player_id'")
+
+            val resultSet = statement.executeQuery()
+
+            if (resultSet.next()) {
+                account = SAccount(
+                    resultSet.getInt("id"),
+                    player_id,
+                    resultSet.getDouble("balance")
+                )
+            }
+
+            resultSet.close()
+            statement.close()
+        } catch (e: SQLException) {
+            throw Error(e.message)
+        }
+
+        return account
     }
 
     override fun getBalance(id: Int): Double {
@@ -68,9 +93,8 @@ class MysqlAccountRepository : IAccountRepository {
         var balance = .0
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='?'")
+            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
-            statement.setInt(1, id)
             val resultSet = statement.executeQuery()
 
             if (resultSet.next())
@@ -83,6 +107,26 @@ class MysqlAccountRepository : IAccountRepository {
         }
 
         return balance
+    }
+
+    override fun getPlayerId(id: Int): UUID {
+        lateinit var uuid: UUID
+
+        try {
+            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+
+            val resultSet = statement.executeQuery()
+
+            if (resultSet.next())
+                uuid = UUID.fromString(resultSet.getString("player_id"))
+
+            resultSet.close()
+            statement.close()
+        } catch (e: SQLException) {
+            throw Error(e.message)
+        }
+
+        return uuid
     }
 
     override fun setBalance(id: Int, balance: Double): Boolean {

@@ -12,11 +12,25 @@ class SPlayerController(
 ) {
 
     fun create(player: SPlayer): Boolean {
-        return playerRepository.create(player)
+        accountController.create(player.account)
+
+        val account = accountController.getByPlayerId(player.uuid)
+
+        return playerRepository.create(player.uuid, account.id)
+    }
+
+    fun save(player: SPlayer) {
+        if (playerRepository.exist(player.uuid)) {
+            accountController.save(player.account)
+        } else {
+            create(player)
+        }
     }
 
     fun get(uuid: UUID): SPlayer {
         return if (playerRepository.exist(uuid)) {
+            println("Loading Existing -> $uuid")
+
             SPlayer(
                 id = playerRepository.getId(uuid),
                 uuid = uuid,
@@ -26,7 +40,7 @@ class SPlayerController(
         } else {
             SPlayer(
                 uuid = uuid,
-                account = SAccount(0, .0),
+                account = SAccount(0, uuid, .0),
                 homes = emptyList()
             )
         }

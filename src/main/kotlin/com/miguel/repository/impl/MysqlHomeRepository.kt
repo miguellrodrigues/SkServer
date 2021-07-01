@@ -89,9 +89,8 @@ class MysqlHomeRepository : IHomeRepository {
         val homes = ArrayList<SHomeData>()
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE player_id='?'")
+            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE player_id='$player_id'")
 
-            statement.setString(1, player_id.toString())
             val resultSet = statement.executeQuery()
 
             while (resultSet.next()) {

@@ -34,6 +34,7 @@ object Mysql {
         val queryList = listOf(
             "CREATE TABLE IF NOT EXISTS saccounts (\n" +
                     "  id INT NOT NULL AUTO_INCREMENT,\n" +
+                    "  player_id VARCHAR(255),\n" +
                     "  balance DOUBLE,\n" +
                     "  PRIMARY KEY (id)\n" +
                     ");",
@@ -58,9 +59,9 @@ object Mysql {
             "CREATE TABLE IF NOT EXISTS shomes (\n" +
                     "  id INT NOT NULL AUTO_INCREMENT,\n" +
                     "  name VARCHAR(255),\n" +
+                    "  player_id VARCHAR(255),\n" +
                     "  location_id INT,\n" +
                     "  PRIMARY KEY (id),\n" +
-                    "  CONSTRAINT fk_player FOREIGN KEY (player_id) REFERENCES splayers (uuid),\n" +
                     "  CONSTRAINT fk_location FOREIGN KEY (location_id) REFERENCES slocations (id)\n" +
                     ");"
         )

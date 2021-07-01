@@ -7,4 +7,8 @@ data class SPlayer(
     val uuid: UUID,
     val account: SAccount,
     val homes: List<SHome>
-)
+) {
+    override fun toString(): String {
+        return "SPlayer(id=$id, uuid=$uuid, account=$account, homes=$homes)"
+    }
+}

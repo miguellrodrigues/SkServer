@@ -13,6 +13,7 @@ import com.miguel.data.PlayerData
 import com.miguel.game.bank.BankManager
 import com.miguel.game.home.HomeManager
 import com.miguel.game.manager.InventoryManager
+import com.miguel.game.manager.PlayerManager
 import com.miguel.game.manager.TagManager
 import com.miguel.game.market.MarketManager
 import com.miguel.game.runnables.AutoMessage
@@ -97,6 +98,7 @@ class Main : JavaPlugin() {
         HomeManager.delete()
 
         PlayerData.saveData()
+        PlayerManager.save()
 
         saveConfig()
     }
