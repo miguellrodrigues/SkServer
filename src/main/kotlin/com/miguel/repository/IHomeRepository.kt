@@ -6,7 +6,7 @@ import java.util.*
 
 interface IHomeRepository {
 
-    fun create(home: SHomeData): Boolean
+    fun create(home: SHome): Boolean
 
     fun save(home: SHome): Boolean
 
@@ -15,4 +15,8 @@ interface IHomeRepository {
     fun getId(name: String): Int
 
     fun getPlayerHomes(player_id: UUID): List<SHomeData>
+
+    fun setPlayerId(id: Int, player_id: UUID): Boolean
+
+    fun setLocationId(id: Int, location_id: Int): Boolean
 }

@@ -1,8 +1,6 @@
 package com.miguel.controller
 
 import com.miguel.entities.SHome
-import com.miguel.entities.SPlayer
-import com.miguel.entities.data.SHomeData
 import com.miguel.repository.impl.MysqlHomeRepository
 import java.util.*
 import kotlin.collections.ArrayList
@@ -12,8 +10,12 @@ class SHomeController(
     private val locationController: SLocationsController
 ) {
 
-    fun create(home: SHomeData): Boolean {
+    fun create(home: SHome): Boolean {
         return homeRepository.create(home)
+    }
+
+    fun save(home: SHome): Boolean {
+        return homeRepository.save(home)
     }
 
     fun getPlayerHomes(uuid: UUID): List<SHome> {
@@ -24,7 +26,9 @@ class SHomeController(
         playerHomes.forEach {
             locationController.get(it.location_id)?.let { it1 ->
                 SHome(
+                    it.id,
                     it.name,
+                    it.player_id,
                     it1
                 )
             }?.let { it2 ->

@@ -1,7 +1,6 @@
 package com.miguel.repository.impl
 
 import com.miguel.entities.SPlayer
-import com.miguel.entities.data.SPlayerData
 import com.miguel.repository.IPlayerRepository
 import java.sql.SQLException
 import java.util.*
@@ -14,7 +13,7 @@ class MysqlPlayerRepository : IPlayerRepository {
     private val database = "s18280_data"
     private val table = "splayers"
 
-    override fun create(player: SPlayerData): Boolean {
+    override fun create(player: SPlayer): Boolean {
         try {
             val statement = connection.prepareStatement(
                 "INSERT INTO $database.$table(uuid, account) VALUES " +

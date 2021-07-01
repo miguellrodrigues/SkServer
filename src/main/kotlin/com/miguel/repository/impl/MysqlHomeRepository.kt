@@ -5,7 +5,6 @@ import com.miguel.entities.data.SHomeData
 import com.miguel.repository.IHomeRepository
 import java.sql.SQLException
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.properties.Delegates
 
 class MysqlHomeRepository : IHomeRepository {
@@ -15,11 +14,11 @@ class MysqlHomeRepository : IHomeRepository {
     private val database = "s18280_data"
     private val table = "shomes"
 
-    override fun create(home: SHomeData): Boolean {
+    override fun create(home: SHome): Boolean {
         try {
             val statement = connection.prepareStatement(
                 "INSERT INTO $database.$table(player_id, location_id) VALUES " +
-                        "('${home.player_id}', '${home.location_id}')"
+                        "('${home.owner}', '${home.location.id}')"
             )
 
             statement.execute()
@@ -32,7 +31,16 @@ class MysqlHomeRepository : IHomeRepository {
     }
 
     override fun save(home: SHome): Boolean {
-        TODO("Not yet implemented")
+        if (exist(home.id)) {
+            setPlayerId(home.id, home.owner)
+            setLocationId(home.id, home.location.id)
+        } else {
+            return create(
+                home
+            )
+        }
+
+        return true
     }
 
     override fun exist(id: Int): Boolean {
@@ -104,5 +112,33 @@ class MysqlHomeRepository : IHomeRepository {
         }
 
         return homes
+    }
+
+    override fun setPlayerId(id: Int, player_id: UUID): Boolean {
+        try {
+            val statement =
+                connection.prepareStatement("UPDATE $database.$table SET player_id = '$player_id' WHERE id='$id'")
+
+            statement.executeUpdate()
+            statement.close()
+
+            return true
+        } catch (e: SQLException) {
+            throw Error(e.message)
+        }
+    }
+
+    override fun setLocationId(id: Int, location_id: Int): Boolean {
+        try {
+            val statement =
+                connection.prepareStatement("UPDATE $database.$table SET location_id = '$location_id' WHERE id='$id'")
+
+            statement.executeUpdate()
+            statement.close()
+
+            return true
+        } catch (e: SQLException) {
+            throw Error(e.message)
+        }
     }
 }

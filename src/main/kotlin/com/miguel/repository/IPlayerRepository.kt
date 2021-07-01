@@ -1,12 +1,11 @@
 package com.miguel.repository
 
 import com.miguel.entities.SPlayer
-import com.miguel.entities.data.SPlayerData
 import java.util.*
 
 interface IPlayerRepository {
 
-    fun create(player: SPlayerData): Boolean
+    fun create(player: SPlayer): Boolean
 
     fun save(player: SPlayer): Boolean
 

@@ -1,5 +1,6 @@
 package com.miguel.controller
 
+import com.miguel.entities.SAccount
 import com.miguel.entities.SPlayer
 import com.miguel.entities.data.SPlayerData
 import com.miguel.repository.impl.MysqlPlayerRepository
@@ -15,12 +16,18 @@ class SPlayerController(
         return playerRepository.create(player)
     }
 
-    fun get(uuid: UUID): SPlayer? {
-        return accountController.get(playerRepository.getAccount(uuid))?.let {
+    fun get(uuid: UUID): SPlayer {
+        return if (playerRepository.exist(uuid)) {
             SPlayer(
                 uuid,
-                it,
+                accountController.get(playerRepository.getAccount(uuid))!!,
                 homeController.getPlayerHomes(uuid)
+            )
+        } else {
+            SPlayer(
+                uuid,
+                SAccount(0, .0),
+                emptyList()
             )
         }
     }
