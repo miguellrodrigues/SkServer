@@ -1,7 +1,7 @@
 package com.miguel.game.bank
 
-import com.miguel.data.PlayerData
 import com.miguel.game.manager.GameManager
+import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -13,12 +13,12 @@ object BankManager {
     private val currencies = ArrayList<Currency>()
 
     fun loadCurrencies() {
-        currencies.add(Currency(Material.EMERALD, 250.0F))
-        currencies.add(Currency(Material.DIAMOND, 100.0F))
-        currencies.add(Currency(Material.GOLD_INGOT, 10.0F))
-        currencies.add(Currency(Material.GOLD_NUGGET, 1.0F))
-        currencies.add(Currency(Material.IRON_INGOT, .5F))
-        currencies.add(Currency(Material.IRON_NUGGET, .1F))
+        currencies.add(Currency(Material.EMERALD, 250.0))
+        currencies.add(Currency(Material.DIAMOND, 100.0))
+        currencies.add(Currency(Material.GOLD_INGOT, 10.0))
+        currencies.add(Currency(Material.GOLD_NUGGET, 1.0))
+        currencies.add(Currency(Material.IRON_INGOT, .5))
+        currencies.add(Currency(Material.IRON_NUGGET, .1))
 
         currencies.sortBy { it.value }
         currencies.reverse()
@@ -30,21 +30,22 @@ object BankManager {
     }
 
     fun deposit(player: Player, items: Array<ItemStack>) {
-        val data = PlayerData.getData(player.uniqueId) ?: return
+        var money = .0
 
         items.forEach { item ->
             val value = currencies.first { it.material == item.type }.value * item.amount
 
-            data.money += value
+            money += value
         }
+
+        PlayerManager.setBalance(player.uniqueId, money)
     }
 
     fun deposit(player: Player, item: ItemStack) {
         if (currencyExist(item.type)) {
             val value = currencies.first { it.material == item.type }.value * item.amount
 
-            val data = PlayerData.getData(player.uniqueId) ?: return
-            data.money += value
+            PlayerManager.increaseBalance(player.uniqueId, value)
 
             player.sendMessage("${Strings.MESSAGE_PREFIX} Você depositou §e${value} §aUkranianinhos")
 
@@ -54,11 +55,11 @@ object BankManager {
         }
     }
 
-    fun withDraw(player: Player, value: Float) {
-        val data = PlayerData.getData(player.uniqueId) ?: return
+    fun withDraw(player: Player, value: Double) {
+        val balance = PlayerManager.getBalance(player.uniqueId)
 
-        if (data.money >= value) {
-            val decompose = decompose(value, player.uniqueId)
+        if (balance >= value) {
+            val decompose = decompose(balance, player.uniqueId)
 
             decompose.forEach { amount ->
                 val currencyValue = currencies.first { it.material == amount.material }.value
@@ -89,28 +90,23 @@ object BankManager {
         }
     }
 
-    fun deposit(uuid: UUID, value: Float) {
-        val data = PlayerData.getData(uuid) ?: return
-        data.money += value
-    }
+    fun withDraw(uuid: UUID, value: Double): Boolean {
+        val balance = PlayerManager.getBalance(uuid)
 
-    fun withDraw(uuid: UUID, value: Float): Boolean {
-        val data = PlayerData.getData(uuid) ?: return false
-
-        if (data.money >= value) {
-            data.money -= value
+        if (balance >= value) {
+            PlayerManager.decreaseBalance(uuid, value)
             return true
         }
 
         return false
     }
 
-    private fun decompose(value: Float, uuid: UUID): Array<Amount> {
+    private fun decompose(value: Double, uuid: UUID): Array<Amount> {
         var v = value
 
         val quantities = ArrayList<Amount>()
 
-        var wd = 0.0F
+        var wd = 0.0
 
         currencies.forEachIndexed { index, currency ->
             quantities.add(
