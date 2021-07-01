@@ -1,7 +1,7 @@
 package com.miguel.commands.common
 
-import com.miguel.data.PlayerData
 import com.miguel.game.bank.BankManager
+import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
@@ -21,8 +21,6 @@ class Banco : BukkitCommand("banco") {
         if (args.isEmpty()) {
             sender.sendMessage("§c/banco [saldo | sacar | depositar] [valor]")
         } else {
-            val data = PlayerData.getData(sender.uniqueId) ?: return true
-
             val inventory = sender.inventory
             when (args.size) {
                 1 -> {
@@ -30,7 +28,7 @@ class Banco : BukkitCommand("banco") {
 
                     when (option.lowercase(Locale.getDefault())) {
                         "saldo" -> {
-                            sender.sendMessage("${Strings.MESSAGE_PREFIX} Seu saldo é de §e${data.money} §aUkranianinho`s")
+                            sender.sendMessage("${Strings.MESSAGE_PREFIX} Seu saldo é de §e${PlayerManager.getBalance(sender.uniqueId)} §aUkranianinho`s")
                         }
 
                         "depositar" -> {
@@ -48,16 +46,16 @@ class Banco : BukkitCommand("banco") {
 
                     when (option.lowercase(Locale.getDefault())) {
                         "sacar" -> {
-                            val withdraw: Float
+                            val withdraw: Double
 
                             try {
-                                withdraw = args[1].toFloat()
+                                withdraw = args[1].toDouble()
                             } catch (e: NumberFormatException) {
                                 sender.sendMessage("§cUtilize apenas números no valor de saque !")
                                 return true
                             }
 
-                            BankManager.withDraw(sender, withdraw)
+                            PlayerManager.decreaseBalance(sender.uniqueId, withdraw)
                         }
 
                         "depositar" -> {

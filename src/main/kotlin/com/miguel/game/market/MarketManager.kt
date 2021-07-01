@@ -7,6 +7,7 @@ import com.google.gson.JsonParser
 import com.miguel.Main
 import com.miguel.game.bank.BankManager
 import com.miguel.game.manager.GameManager
+import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -132,7 +133,7 @@ object MarketManager {
 
             player.inventory.addItem(item)
 
-            BankManager.deposit(ad.advertiser, ad.price)
+            PlayerManager.increaseBalance(ad.advertiser, ad.price)
 
             ads.remove(ad)
 
@@ -157,7 +158,7 @@ object MarketManager {
         }
     }
 
-    fun advertise(player: Player, name: String, price: Float) {
+    fun advertise(player: Player, name: String, price: Double) {
         val playerAds = getPlayerAds(player)
 
         val filter = playerAds.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }

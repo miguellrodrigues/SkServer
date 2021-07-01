@@ -1,5 +1,6 @@
 package com.miguel.game.market
 
+import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -12,7 +13,7 @@ interface IMarketAd {
     val advertiserName: String
 
     val name: String
-    val price: Float
+    val price: Double
     val amount: Int
 
     val material: String
@@ -23,7 +24,7 @@ data class MarketAd(
     override val advertiser: UUID,
     override val advertiserName: String,
     override val name: String,
-    override val price: Float,
+    override val price: Double,
     override val amount: Int,
     override val material: String
 ) : IMarketAd {
@@ -47,8 +48,9 @@ data class MarketAd(
 
         val itemMeta = stack.itemMeta!!
 
-        itemMeta.setDisplayName("§a${name}")
-        itemMeta.lore = arrayListOf(
+        itemMeta.displayName(Component.text("§a${name}"))
+
+        val desc = arrayListOf(
             " ",
             " §fAnunciante ↣ §e${advertiserName}",
             " §fPreço ↣ §e${price} §aUkranianinho`s",
@@ -58,6 +60,8 @@ data class MarketAd(
             " ",
             " §fID §e${id}"
         )
+
+        itemMeta.lore(desc.map { Component.text(it) })
 
         itemMeta.itemFlags.addAll(ItemFlag.values())
         stack.itemMeta = itemMeta

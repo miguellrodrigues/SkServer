@@ -9,7 +9,6 @@ import com.miguel.commands.common.Home
 import com.miguel.commands.common.Mercado
 import com.miguel.common.command.CommandExecutor
 import com.miguel.common.command.CommandManager
-import com.miguel.data.PlayerData
 import com.miguel.game.bank.BankManager
 import com.miguel.game.home.HomeManager
 import com.miguel.game.manager.InventoryManager
@@ -97,7 +96,6 @@ class Main : JavaPlugin() {
         MarketManager.delete()
         HomeManager.delete()
 
-        PlayerData.saveData()
         PlayerManager.save()
 
         saveConfig()
