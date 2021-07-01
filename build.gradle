@@ -9,6 +9,8 @@ version '1.0-SNAPSHOT'
 repositories {
     mavenCentral()
     mavenLocal()
+
+    maven { url "https://repo.dmulloy2.net/repository/public/" }
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -17,7 +19,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 
-    compileOnly("papermc:paper_patched:1.16.5")
+    compileOnly("papermc.io:paper_patched:1.17")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.6.0")
 }
 
 test {

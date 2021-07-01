@@ -5,6 +5,7 @@ import com.miguel.data.PlayerData
 import com.miguel.game.manager.GameManager
 import com.miguel.values.Strings
 import com.miguel.values.Values
+import net.kyori.adventure.text.Component
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.AsyncPlayerChatEvent
@@ -27,7 +28,7 @@ class PlayerEvents : Listener {
 
         player.location.chunk
 
-        event.joinMessage = ""
+        event.joinMessage(Component.empty())
 
         GameManager.sendTab(
             player,
@@ -35,12 +36,12 @@ class PlayerEvents : Listener {
             "\n§7Discord: §fhttps://discord.gg/J33egdFkNx\n§7Tenha um bom jogo!"
         )
 
-        player.sendTitle(Strings.PREFIX, "Seja bem vindo, §f${player.name}")
+        player.sendTitle(Strings.PREFIX, "Seja bem vindo, §f${player.name}", 20, 100, 20)
     }
 
     @EventHandler
     fun onPlayerQuit(event: PlayerQuitEvent) {
-        event.quitMessage = ""
+        event.quitMessage(Component.empty())
     }
 
     @EventHandler

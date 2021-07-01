@@ -1,11 +1,12 @@
 package com.miguel.game.manager
 
-import com.miguel.packets.NMSUtil
-import net.minecraft.server.v1_16_R3.IChatBaseComponent
-import net.minecraft.server.v1_16_R3.PacketPlayOutPlayerListHeaderFooter
+import com.comphenix.protocol.PacketType
+import com.comphenix.protocol.events.PacketContainer
+import com.comphenix.protocol.wrappers.WrappedChatComponent
+import com.miguel.Main
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
@@ -21,15 +22,12 @@ object GameManager {
     }
 
     fun sendTab(player: Player, header: String, footer: String) {
-        val packetHeader = IChatBaseComponent.ChatSerializer.a("{\"text\": \"$header\"}")
-        val packetFooter = IChatBaseComponent.ChatSerializer.a("{\"text\": \"$footer\"}")
+        val packet = PacketContainer(PacketType.Play.Server.PLAYER_LIST_HEADER_FOOTER)
 
-        val packet = PacketPlayOutPlayerListHeaderFooter()
+        packet.chatComponents.write(0, WrappedChatComponent.fromJson("{\"text\": \"$header\"}"))
+        packet.chatComponents.write(1, WrappedChatComponent.fromJson("{\"text\": \"$footer\"}"))
 
-        NMSUtil.setValue(packet, "header", packetHeader!!)
-        NMSUtil.setValue(packet, "footer", packetFooter!!)
-
-        (player as CraftPlayer).handle.networkManager.sendPacket(packet)
+        Main.PROTOCOL_MANAGER.sendServerPacket(player, packet)
     }
 
     fun formatTime(i: Int): String {
@@ -45,11 +43,11 @@ object GameManager {
         val stack = ItemStack(type)
 
         val itemMeta = stack.itemMeta!!
-        itemMeta.setDisplayName(name)
+        itemMeta.displayName(Component.text(name))
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
         if (description.isNotEmpty())
-            itemMeta.lore = description.toMutableList()
+            itemMeta.lore(description.map { Component.text(it) })
 
         stack.itemMeta = itemMeta
 

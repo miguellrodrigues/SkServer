@@ -79,7 +79,8 @@ class InventoryEvents : Listener {
                             }
 
                             Material.PAPER -> {
-
+                                player.sendMessage("${Strings.MARKET_PREFIX} digite /anunio para anunciar")
+                                player.closeInventory()
                             }
 
                             else -> {

@@ -11,11 +11,12 @@ import com.miguel.values.Strings
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils
-import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer
+import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.io.File
 import java.util.*
+import kotlin.NoSuchElementException
 
 object MarketManager {
 

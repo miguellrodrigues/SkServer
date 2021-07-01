@@ -9,7 +9,7 @@ class MysqlPlayerRepository : IPlayerRepository {
 
     private val connection = Mysql.connection
 
-    private val database = "s18280_main_data"
+    private val database = "s18280_data"
     private val table = "splayers"
 
     override fun create(player: SPlayer): Boolean {
