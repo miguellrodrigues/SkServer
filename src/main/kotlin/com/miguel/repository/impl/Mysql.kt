@@ -57,10 +57,10 @@ object Mysql {
 
             "CREATE TABLE IF NOT EXISTS shomes (\n" +
                     "  id INT NOT NULL AUTO_INCREMENT,\n" +
-                    "  player_id INT,\n" +
+                    "  name VARCHAR(255),\n" +
                     "  location_id INT,\n" +
                     "  PRIMARY KEY (id),\n" +
-                    "  CONSTRAINT fk_player FOREIGN KEY (player_id) REFERENCES splayers (id),\n" +
+                    "  CONSTRAINT fk_player FOREIGN KEY (player_id) REFERENCES splayers (uuid),\n" +
                     "  CONSTRAINT fk_location FOREIGN KEY (location_id) REFERENCES slocations (id)\n" +
                     ");"
         )

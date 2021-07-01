@@ -1,9 +1,11 @@
 package com.miguel.repository.impl
 
 import com.miguel.entities.SPlayer
+import com.miguel.entities.data.SPlayerData
 import com.miguel.repository.IPlayerRepository
 import java.sql.SQLException
 import java.util.*
+import kotlin.properties.Delegates
 
 class MysqlPlayerRepository : IPlayerRepository {
 
@@ -12,7 +14,7 @@ class MysqlPlayerRepository : IPlayerRepository {
     private val database = "s18280_data"
     private val table = "splayers"
 
-    override fun create(player: SPlayer): Boolean {
+    override fun create(player: SPlayerData): Boolean {
         try {
             val statement = connection.prepareStatement(
                 "INSERT INTO $database.$table(uuid, account) VALUES " +
@@ -58,9 +60,8 @@ class MysqlPlayerRepository : IPlayerRepository {
         if (!exist(uuid)) return false
 
         try {
-            val id = uuid.toString()
             val statement =
-                connection.prepareStatement("UPDATE $database.$table SET account = '$account' WHERE uuid='$id'")
+                connection.prepareStatement("UPDATE $database.$table SET account = '$account' WHERE uuid='$uuid'")
 
             statement.executeUpdate()
             statement.close()
@@ -69,6 +70,26 @@ class MysqlPlayerRepository : IPlayerRepository {
         } catch (e: SQLException) {
             throw Error(e.message)
         }
+    }
+
+    override fun getId(uuid: UUID): Int {
+        var id by Delegates.notNull<Int>()
+
+        try {
+            val statement = connection.prepareStatement(
+                "SELECT id FROM $database.$table WHERE uuid='$uuid'"
+            )
+
+            val resultSet = statement.executeQuery()
+            if (resultSet.next()) {
+                id = resultSet.getInt("id")
+            }
+
+        } catch (e: Exception) {
+            throw Error(e.message)
+        }
+
+        return id
     }
 
     override fun exist(uuid: UUID): Boolean {

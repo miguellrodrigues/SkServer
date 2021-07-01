@@ -2,9 +2,8 @@ package com.miguel.entities
 
 import java.util.*
 
-class SPlayer(
+data class SPlayer(
     val uuid: UUID,
-    var account: SAccount,
-    var homes: List<SHome>,
-) {
-}
+    val account: SAccount,
+    val homes: List<SHome>
+)
