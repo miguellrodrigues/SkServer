@@ -13,12 +13,14 @@ object BankManager {
     private val currencies = ArrayList<Currency>()
 
     fun loadCurrencies() {
-        currencies.add(Currency(Material.EMERALD, 250.0))
-        currencies.add(Currency(Material.DIAMOND, 100.0))
-        currencies.add(Currency(Material.GOLD_INGOT, 10.0))
-        currencies.add(Currency(Material.GOLD_NUGGET, 1.0))
-        currencies.add(Currency(Material.IRON_INGOT, .5))
+        currencies.add(Currency(Material.NETHERITE_INGOT, 100.0))
+        currencies.add(Currency(Material.EMERALD, 10.0))
+        currencies.add(Currency(Material.DIAMOND, 5.0))
+        currencies.add(Currency(Material.GOLD_INGOT, 1.0))
+        currencies.add(Currency(Material.GOLD_NUGGET, .5))
         currencies.add(Currency(Material.IRON_NUGGET, .1))
+        currencies.add(Currency(Material.AMETHYST_SHARD, .05))
+        currencies.add(Currency(Material.COPPER_INGOT, .01))
 
         currencies.sortBy { it.value }
         currencies.reverse()
