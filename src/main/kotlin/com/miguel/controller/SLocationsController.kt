@@ -11,7 +11,7 @@ class SLocationsController(
         return locationRepository.create(location, home_name)
     }
 
-    fun delete(location: SLocation) {
+    fun delete(location: SLocation): Boolean {
         return locationRepository.delete(location.id)
     }
 
