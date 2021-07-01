@@ -1,13 +1,12 @@
 package com.miguel.commands.common
 
 import com.miguel.game.home.HomeManager
+import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import net.md_5.bungee.api.chat.ClickEvent
 import net.md_5.bungee.api.chat.HoverEvent
 import net.md_5.bungee.api.chat.TextComponent
 import net.md_5.bungee.api.chat.hover.content.Text
-import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
@@ -27,7 +26,7 @@ class Home : BukkitCommand("home") {
             sender.sendMessage("${Strings.PREFIX} Use §c/home [list] [set | go | delete] [nome]")
         } else if (args.size == 1) {
             if (args[0] == "list") {
-                val playerHomes = HomeManager.getPlayerHomes(sender)
+                val playerHomes = PlayerManager.getHomes(sender.uniqueId)
 
                 if (playerHomes.isEmpty()) {
                     sender.sendMessage("§cVocê ainda não setou nenhuma home !")
@@ -73,12 +72,7 @@ class Home : BukkitCommand("home") {
                         sender.sendMessage("Home não encontrada !")
                     } else {
                         sender.teleport(
-                            Location(
-                                Bukkit.getWorld(home.location.world),
-                                home.location.x,
-                                home.location.y,
-                                home.location.z
-                            )
+                            home.location.toBukkitLocation()
                         )
 
                         sender.sendMessage("§fTeleportado para a home §e${home.name.uppercase(Locale.getDefault())}")

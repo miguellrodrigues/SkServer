@@ -1,6 +1,7 @@
 package com.miguel.controller
 
 import com.miguel.entities.SAccount
+import com.miguel.entities.SHome
 import com.miguel.entities.SPlayer
 import com.miguel.repository.impl.MysqlPlayerRepository
 import java.util.*
@@ -22,6 +23,15 @@ class SPlayerController(
     fun save(player: SPlayer) {
         if (playerRepository.exist(player.uuid)) {
             accountController.save(player.account)
+
+            player.homes.forEach {
+                if (it.delete) {
+                    homeController.delete(it)
+                } else {
+                    homeController.save(it)
+                }
+            }
+
         } else {
             create(player)
         }
@@ -41,7 +51,7 @@ class SPlayerController(
             SPlayer(
                 uuid = uuid,
                 account = SAccount(0, uuid, .0),
-                homes = emptyList()
+                homes = arrayListOf()
             )
         }
     }

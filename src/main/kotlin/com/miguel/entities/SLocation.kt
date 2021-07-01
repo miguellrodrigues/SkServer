@@ -4,7 +4,8 @@ import org.bukkit.Bukkit
 import org.bukkit.Location
 
 data class SLocation(
-    val id: Int,
+    val id: Int = 0,
+    val home_name: String = "",
     val world: String,
     val x: Double,
     val y: Double,

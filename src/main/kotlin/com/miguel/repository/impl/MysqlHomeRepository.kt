@@ -14,11 +14,11 @@ class MysqlHomeRepository : IHomeRepository {
     private val database = "s18280_data"
     private val table = "shomes"
 
-    override fun create(home: SHome): Boolean {
+    override fun create(home: SHome, location_id: Int): Boolean {
         try {
             val statement = connection.prepareStatement(
-                "INSERT INTO $database.$table(player_id, location_id) VALUES " +
-                        "('${home.owner}', '${home.location.id}')"
+                "INSERT INTO $database.$table(name, player_id, location_id) VALUES " +
+                        "('${home.name}', '${home.owner}', $location_id);"
             )
 
             statement.execute()
@@ -31,25 +31,15 @@ class MysqlHomeRepository : IHomeRepository {
     }
 
     override fun save(home: SHome): Boolean {
-        if (exist(home.id)) {
-            setPlayerId(home.id, home.owner)
-            setLocationId(home.id, home.location.id)
-        } else {
-            return create(
-                home
-            )
-        }
-
-        return true
+        return setPlayerId(home.id, home.owner) && setLocationId(home.id, home.location.id)
     }
 
     override fun exist(id: Int): Boolean {
         var success = false
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='?'")
+            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
-            statement.setInt(1, id)
             val resultSet = statement.executeQuery()
 
             if (resultSet.next())
@@ -133,6 +123,21 @@ class MysqlHomeRepository : IHomeRepository {
                 connection.prepareStatement("UPDATE $database.$table SET location_id = '$location_id' WHERE id='$id'")
 
             statement.executeUpdate()
+            statement.close()
+
+            return true
+        } catch (e: SQLException) {
+            throw Error(e.message)
+        }
+    }
+
+    override fun delete(id: Int): Boolean {
+        if (!exist(id)) return false
+
+        try {
+            val statement = connection.prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
+
+            statement.execute()
             statement.close()
 
             return true

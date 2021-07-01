@@ -56,7 +56,6 @@ class Main : JavaPlugin() {
         INSTANCE = this
 
         BankManager.loadCurrencies()
-        HomeManager.init()
         MarketManager.init()
 
         server.pluginManager.registerEvents(PlayerEvents(), this)
@@ -94,7 +93,6 @@ class Main : JavaPlugin() {
         HandlerList.unregisterAll(this)
 
         MarketManager.delete()
-        HomeManager.delete()
 
         PlayerManager.save()
 

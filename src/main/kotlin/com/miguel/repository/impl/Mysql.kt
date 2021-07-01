@@ -36,34 +36,29 @@ object Mysql {
                     "  id INT NOT NULL AUTO_INCREMENT,\n" +
                     "  player_id VARCHAR(255),\n" +
                     "  balance DOUBLE,\n" +
-                    "  PRIMARY KEY (id)\n" +
-                    ");",
+                    "  PRIMARY KEY (id));",
 
             "CREATE TABLE IF NOT EXISTS splayers (\n" +
                     "  id INT NOT NULL AUTO_INCREMENT,\n" +
                     "  uuid VARCHAR(255),\n" +
                     "  account_id INT,\n" +
-                    "  PRIMARY KEY (id),\n" +
-                    "  CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES saccounts (id)\n" +
-                    ");",
+                    "  PRIMARY KEY (id));",
 
             "CREATE TABLE IF NOT EXISTS slocations (\n" +
                     "  id INT NOT NULL AUTO_INCREMENT,\n" +
+                    "  home_name VARCHAR(255),\n" +
                     "  world VARCHAR(255),\n" +
                     "  x DOUBLE,\n" +
                     "  y DOUBLE,\n" +
                     "  z DOUBLE,\n" +
-                    "  PRIMARY KEY (id)\n" +
-                    ");",
+                    "  PRIMARY KEY (id));",
 
             "CREATE TABLE IF NOT EXISTS shomes (\n" +
                     "  id INT NOT NULL AUTO_INCREMENT,\n" +
                     "  name VARCHAR(255),\n" +
                     "  player_id VARCHAR(255),\n" +
                     "  location_id INT,\n" +
-                    "  PRIMARY KEY (id),\n" +
-                    "  CONSTRAINT fk_location FOREIGN KEY (location_id) REFERENCES slocations (id)\n" +
-                    ");"
+                    "  PRIMARY KEY (id));"
         )
 
         queryList.forEach { createTable(it) }

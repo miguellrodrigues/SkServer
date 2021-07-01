@@ -11,14 +11,29 @@ class SHomeController(
 ) {
 
     fun create(home: SHome): Boolean {
-        return homeRepository.create(home)
+        locationController.create(home.location, home.name)
+
+        val location = locationController.getByHomeName(home.name)
+
+        return homeRepository.create(home, location.id)
+    }
+
+    fun delete(home: SHome) {
+        val location = locationController.getByHomeName(home.name)
+
+        homeRepository.delete(home.id)
+        locationController.delete(location)
     }
 
     fun save(home: SHome): Boolean {
-        return homeRepository.save(home)
+        if (!homeRepository.exist(home.id)) {
+            return create(home)
+        }
+
+        return true
     }
 
-    fun getPlayerHomes(uuid: UUID): List<SHome> {
+    fun getPlayerHomes(uuid: UUID): ArrayList<SHome> {
         val playerHomes = homeRepository.getPlayerHomes(uuid)
 
         val homes = ArrayList<SHome>()
@@ -38,6 +53,6 @@ class SHomeController(
             }
         }
 
-        return homes.toList()
+        return homes
     }
 }
