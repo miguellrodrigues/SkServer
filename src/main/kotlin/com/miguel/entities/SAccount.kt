@@ -1,9 +1,6 @@
 package com.miguel.entities
 
-import java.util.*
-
-class SAccount(
-    val owner: UUID,
+data class SAccount(
+    val id: Int,
     var balance: Double
-) {
-}
+)

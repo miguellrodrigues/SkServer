@@ -29,7 +29,7 @@ class MysqlPlayerRepository : IPlayerRepository {
     }
 
     override fun save(player: SPlayer): Boolean {
-        TODO()
+        return setAccount(player.uuid, player.account.id)
     }
 
     override fun getAccount(uuid: UUID): Int {

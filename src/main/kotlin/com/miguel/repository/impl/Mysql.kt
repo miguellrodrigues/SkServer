@@ -20,6 +20,7 @@ object Mysql {
             dataSource.user = username
             dataSource.password = password
             dataSource.serverTimezone = "UTC"
+            dataSource.autoReconnect = true
 
             connection = dataSource.connection
 
