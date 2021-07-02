@@ -10,7 +10,6 @@ import com.miguel.commands.common.Mercado
 import com.miguel.common.command.CommandExecutor
 import com.miguel.common.command.CommandManager
 import com.miguel.game.bank.BankManager
-import com.miguel.game.home.HomeManager
 import com.miguel.game.manager.InventoryManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.game.manager.TagManager
@@ -23,10 +22,8 @@ import com.miguel.listener.ServerEvents
 import com.miguel.packets.CustomPing
 import com.miguel.repository.impl.Mysql
 import org.bukkit.Bukkit
-import org.bukkit.entity.EntityType
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
-import org.bukkit.scheduler.BukkitRunnable
 
 class Main : JavaPlugin() {
 

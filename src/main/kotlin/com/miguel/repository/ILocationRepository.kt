@@ -10,7 +10,5 @@ interface ILocationRepository {
 
     fun getById(id: Int): SLocation?
 
-    fun getByHomeName(name: String): SLocation
-
     fun delete(id: Int): Boolean
 }

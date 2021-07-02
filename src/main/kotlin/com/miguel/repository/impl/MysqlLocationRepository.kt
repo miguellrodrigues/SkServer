@@ -90,34 +90,6 @@ class MysqlLocationRepository : ILocationRepository {
         return sLocation
     }
 
-    override fun getByHomeName(name: String): SLocation {
-        lateinit var sLocation: SLocation
-
-        try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE home_name='$name'")
-
-            val resultSet = statement.executeQuery()
-
-            if (resultSet.next()) {
-                sLocation = SLocation(
-                    resultSet.getInt("id"),
-                    name,
-                    resultSet.getString("world"),
-                    resultSet.getDouble("x"),
-                    resultSet.getDouble("y"),
-                    resultSet.getDouble("z")
-                )
-            }
-
-            resultSet.close()
-            statement.close()
-        } catch (e: SQLException) {
-            throw Error(e.message)
-        }
-
-        return sLocation
-    }
-
     override fun delete(id: Int): Boolean {
         if (!exist(id)) return false
 

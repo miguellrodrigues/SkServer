@@ -13,7 +13,6 @@ import net.md_5.bungee.api.chat.hover.content.Text
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.*
-import kotlin.collections.ArrayList
 
 class GameCommands {
 
@@ -86,7 +85,7 @@ class GameCommands {
                 player.sendMessage(" ")
                 player.sendMessage(
                     "Agora você está usando a tag: §7'" + toUse.nameColor + toUse.name.lowercase(Locale.getDefault())
-                                        .replace("_".toRegex(), "").uppercase(Locale.getDefault()) + "§7'"
+                        .replace("_".toRegex(), "").uppercase(Locale.getDefault()) + "§7'"
                 )
 
                 TagCommon.setTag(sender, toUse)
@@ -95,7 +94,7 @@ class GameCommands {
                     player.sendMessage(" ")
                     player.sendMessage(
                         "Agora você está usando a tag: §7'" + toUse.nameColor + toUse.name.lowercase(Locale.getDefault())
-                                                .replace("_".toRegex(), "").uppercase(Locale.getDefault()) + "§7'"
+                            .replace("_".toRegex(), "").uppercase(Locale.getDefault()) + "§7'"
                     )
                     TagCommon.setTag(player, toUse)
                 } else player.sendMessage("§cDesculpe, mas você não possui permissão para usar esta tag.")

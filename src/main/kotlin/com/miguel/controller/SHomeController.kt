@@ -2,7 +2,6 @@ package com.miguel.controller
 
 import com.miguel.entities.SHome
 import com.miguel.repository.impl.MysqlHomeRepository
-import kotlin.collections.ArrayList
 
 class SHomeController(
     private val homeRepository: MysqlHomeRepository,

@@ -18,8 +18,4 @@ class SLocationsController(
     fun get(id: Int): SLocation? {
         return locationRepository.getById(id)
     }
-
-    fun getByHomeName(name: String): SLocation {
-        return locationRepository.getByHomeName(name)
-    }
 }

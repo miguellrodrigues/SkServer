@@ -28,7 +28,13 @@ class Banco : BukkitCommand("banco") {
 
                     when (option.lowercase(Locale.getDefault())) {
                         "saldo" -> {
-                            sender.sendMessage("${Strings.MESSAGE_PREFIX} Seu saldo é de §e${PlayerManager.getBalance(sender.uniqueId)} §aUkranianinho`s")
+                            sender.sendMessage(
+                                "${Strings.MESSAGE_PREFIX} Seu saldo é de §e${
+                                    PlayerManager.getBalance(
+                                        sender.uniqueId
+                                    )
+                                } §aUkranianinho`s"
+                            )
                         }
 
                         "depositar" -> {

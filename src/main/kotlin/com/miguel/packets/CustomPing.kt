@@ -6,8 +6,6 @@ import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.wrappers.WrappedGameProfile
 import com.miguel.Main
-import com.mojang.authlib.GameProfile
-import net.minecraft.network.protocol.status.ServerPing
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*

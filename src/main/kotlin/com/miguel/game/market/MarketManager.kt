@@ -17,7 +17,6 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.io.File
 import java.util.*
-import kotlin.NoSuchElementException
 
 object MarketManager {
 
@@ -110,7 +109,8 @@ object MarketManager {
         val playerAds = getPlayerAds(player)
 
         if (playerAds.isNotEmpty()) {
-            val filter = playerAds.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }
+            val filter =
+                playerAds.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }
 
             if (filter.isNotEmpty()) {
                 return filter.first()

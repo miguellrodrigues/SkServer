@@ -1,7 +1,6 @@
 package com.miguel.entities
 
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 data class SPlayer(
