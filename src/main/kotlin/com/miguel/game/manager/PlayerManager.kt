@@ -27,9 +27,11 @@ object PlayerManager {
     val data = HashMap<UUID, SPlayer>()
 
     fun load(player: Player) {
-        data[player.uniqueId] = playerController.get(player.uniqueId)
-
-        println(data[player.uniqueId].toString())
+        CompletableFuture.runAsync {
+            if (player.uniqueId !in data) {
+                data[player.uniqueId] = playerController.get(player.uniqueId)
+            }
+        }
     }
 
     private fun getAccount(uuid: UUID): SAccount? {
@@ -44,12 +46,12 @@ object PlayerManager {
         data[uuid]?.account?.balance = balance
     }
 
-    fun increaseBalance(uuid: UUID, amount: Double) {
+    fun changeBalance(uuid: UUID, amount: Double) {
         setBalance(uuid, getBalance(uuid) + amount)
     }
 
-    fun decreaseBalance(uuid: UUID, amount: Double) {
-        setBalance(uuid, getBalance(uuid) - amount)
+    fun changeBalance(account_id: Int, amount: Double) {
+        playerController.accountController.changeBalance(account_id, amount)
     }
 
     fun getHomes(uuid: UUID): List<SHome> {
@@ -79,5 +81,9 @@ object PlayerManager {
         data.forEach { (_, splayer) ->
             playerController.save(splayer)
         }
+    }
+
+    fun getAccountId(player: Player): Int {
+        return data[player.uniqueId]!!.account.id
     }
 }

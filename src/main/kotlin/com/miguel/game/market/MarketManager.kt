@@ -7,6 +7,7 @@ import com.miguel.game.manager.GameManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.repository.impl.MysqlAdRepository
 import com.miguel.values.Strings
+import net.minecraft.server.network.PlayerConnection
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer
@@ -82,14 +83,21 @@ object MarketManager {
 
             player.inventory.addItem(item)
 
-            PlayerManager.increaseBalance(ad.player_id, ad.price)
-
             ads.remove(ad)
 
             player.sendMessage("${Strings.MESSAGE_PREFIX} Compra realizada com sucesso !")
 
-            Bukkit.getPlayer(ad.player_id)
-                ?.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
+            if (Bukkit.getPlayer(ad.advertiserName) != null) {
+                val advertiser = Bukkit.getPlayer(ad.advertiserName)!!
+
+                PlayerManager.changeBalance(advertiser.uniqueId, ad.price)
+
+                advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
+            } else {
+                PlayerManager.changeBalance(ad.account_id, ad.price)
+            }
+
+            player.closeInventory()
         } else {
             player.sendMessage("§cSaldo insuficiente !")
         }
@@ -122,7 +130,7 @@ object MarketManager {
                 price = price,
                 amount = itemInMainHand.amount,
                 material = itemInMainHand.type.name,
-                player_id = player.uniqueId
+                account_id = PlayerManager.getAccountId(player)
             )
 
             player.inventory.remove(itemInMainHand)

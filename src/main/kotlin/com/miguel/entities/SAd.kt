@@ -4,7 +4,6 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import java.util.*
 
 data class SAd(
     val id: Int = 0,
@@ -13,7 +12,7 @@ data class SAd(
     val price: Double,
     val amount: Int,
     val material: String,
-    val player_id: UUID,
+    val account_id: Int,
     var delete: Boolean = false
 ) {
 

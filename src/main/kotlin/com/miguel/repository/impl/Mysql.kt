@@ -21,6 +21,7 @@ object Mysql {
             dataSource.password = password
             dataSource.serverTimezone = "UTC"
             dataSource.autoReconnect = true
+            dataSource.maxReconnects = 9999
 
             connection = dataSource.connection
 
@@ -83,11 +84,11 @@ object Mysql {
                     " `price`          double NOT NULL ,\n" +
                     " `amount`         int NOT NULL ,\n" +
                     " `material`       varchar(45) NOT NULL ,\n" +
-                    " `player_uuid`    varchar(45) NOT NULL ,\n" +
+                    " `account_id`     int NOT NULL ,\n" +
                     "\n" +
                     "PRIMARY KEY (`id`),\n" +
-                    "KEY `fkIdx_42` (`player_uuid`),\n" +
-                    "CONSTRAINT `FK_41` FOREIGN KEY `fkIdx_42` (`player_uuid`) REFERENCES `sk_player` (`uuid`)\n" +
+                    "KEY `fkIdx_42` (`account_id`),\n" +
+                    "CONSTRAINT `FK_41` FOREIGN KEY `fkIdx_42` (`account_id`) REFERENCES `sk_account` (`id`)\n" +
                     ");"
         )
 

@@ -7,7 +7,7 @@ import java.util.*
 
 class SPlayerController(
     private val playerRepository: MysqlPlayerRepository,
-    private val accountController: SAccountController,
+    val accountController: SAccountController,
     private val homeController: SHomeController
 ) {
 
