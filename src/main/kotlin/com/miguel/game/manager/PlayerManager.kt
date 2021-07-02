@@ -15,7 +15,6 @@ import com.miguel.repository.impl.MysqlPlayerRepository
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.CompletableFuture
-import kotlin.collections.HashMap
 
 object PlayerManager {
 
@@ -28,23 +27,21 @@ object PlayerManager {
     val data = HashMap<UUID, SPlayer>()
 
     fun load(player: Player) {
-        data[player.uniqueId] = playerController.get(player.uniqueId)
+        CompletableFuture.runAsync {
+            if (!data.containsKey(player.uniqueId)) {
+                data[player.uniqueId] = playerController.get(player.uniqueId)
 
-        println(data[player.uniqueId].toString())
-
-    /*CompletableFuture.runAsync {
-            data[player.uniqueId] = playerController.get(player.uniqueId)
-
-            println(data[player.uniqueId].toString())
-        }*/
+                println(data[player.uniqueId].toString())
+            }
+        }
     }
 
-    private fun getAccount(uuid: UUID): SAccount {
-        return data[uuid]!!.account
+    private fun getAccount(uuid: UUID): SAccount? {
+        return data[uuid]?.account
     }
 
     fun getBalance(uuid: UUID): Double {
-        return getAccount(uuid).balance
+        return getAccount(uuid)?.balance ?: .0
     }
 
     fun setBalance(uuid: UUID, balance: Double) {
@@ -68,11 +65,13 @@ object PlayerManager {
     }
 
     fun createHome(uuid: UUID, location: SLocation, name: String) {
-        addHome(uuid, SHome(
-            player_id = data[uuid]!!.id,
-            name = name,
-            location = location
-        ))
+        addHome(
+            uuid, SHome(
+                player_id = data[uuid]!!.id,
+                name = name,
+                location = location
+            )
+        )
     }
 
     fun removeHome(uuid: UUID, home: SHome) {
