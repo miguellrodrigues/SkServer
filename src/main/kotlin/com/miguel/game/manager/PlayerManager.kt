@@ -27,13 +27,9 @@ object PlayerManager {
     val data = HashMap<UUID, SPlayer>()
 
     fun load(player: Player) {
-        CompletableFuture.runAsync {
-            if (!data.containsKey(player.uniqueId)) {
-                data[player.uniqueId] = playerController.get(player.uniqueId)
+        data[player.uniqueId] = playerController.get(player.uniqueId)
 
-                println(data[player.uniqueId].toString())
-            }
-        }
+        println(data[player.uniqueId].toString())
     }
 
     private fun getAccount(uuid: UUID): SAccount? {
@@ -67,7 +63,7 @@ object PlayerManager {
     fun createHome(uuid: UUID, location: SLocation, name: String) {
         addHome(
             uuid, SHome(
-                player_id = data[uuid]!!.id,
+                player_id = uuid,
                 name = name,
                 location = location
             )

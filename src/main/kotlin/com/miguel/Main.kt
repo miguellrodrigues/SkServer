@@ -89,9 +89,8 @@ class Main : JavaPlugin() {
     override fun onDisable() {
         HandlerList.unregisterAll(this)
 
-        MarketManager.delete()
-
         PlayerManager.save()
+        MarketManager.save()
 
         saveConfig()
     }

@@ -2,6 +2,8 @@ package com.miguel.controller
 
 import com.miguel.entities.SHome
 import com.miguel.repository.impl.MysqlHomeRepository
+import java.util.*
+import kotlin.collections.ArrayList
 
 class SHomeController(
     private val homeRepository: MysqlHomeRepository,
@@ -27,8 +29,8 @@ class SHomeController(
         return 1
     }
 
-    fun getPlayerHomes(id: Int): ArrayList<SHome> {
-        val playerHomes = homeRepository.getPlayerHomes(id)
+    fun getPlayerHomes(player_id: UUID): ArrayList<SHome> {
+        val playerHomes = homeRepository.getPlayerHomes(player_id)
 
         val homes = ArrayList<SHome>()
 

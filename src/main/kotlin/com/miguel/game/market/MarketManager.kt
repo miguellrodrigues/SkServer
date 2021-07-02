@@ -1,116 +1,65 @@
 package com.miguel.game.market
 
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonElement
-import com.google.gson.JsonParser
-import com.miguel.Main
+import com.miguel.controller.SAdController
+import com.miguel.entities.SAd
 import com.miguel.game.bank.BankManager
 import com.miguel.game.manager.GameManager
 import com.miguel.game.manager.PlayerManager
+import com.miguel.repository.impl.MysqlAdRepository
 import com.miguel.values.Strings
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils
 import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.io.File
 import java.util.*
 
 object MarketManager {
 
-    private val adFile = File(Main.INSTANCE.dataFolder, "ads.json")
+    private val ads = ArrayList<SAd>()
 
-    private val gson = Gson()
-
-    private val ads = ArrayList<MarketAd>()
+    private val sadController = SAdController(MysqlAdRepository())
 
     fun init() {
-        if (!adFile.exists()) {
-            adFile.createNewFile()
-
-            write(JsonArray())
-        }
-
-        loadAllAds()
+        ads.addAll(sadController.getAll())
     }
 
-    private fun loadAllAds() {
-        val adArray = JsonParser().parse(FileUtils.readFileToString(adFile, "UTF-8")).asJsonArray
-
-        adArray.forEach {
-            ads.add(gson.fromJson(it, MarketAd::class.java))
-        }
-    }
-
-    fun delete() {
-        val adArray = JsonParser().parse(FileUtils.readFileToString(adFile, "UTF-8")).asJsonArray
-
-        val copy = JsonArray()
-
-        adArray.forEach {
-            copy.add(it.asJsonObject)
-        }
-
-        copy.forEach {
-            val ad = gson.fromJson(it, MarketAd::class.java)
-
-            if (!ads.contains(ad))
-                adArray.remove(it)
-        }
-
-        write(adArray)
-    }
-
-    private fun adExist(ad: MarketAd): Boolean {
-        val adArray = JsonParser().parse(FileUtils.readFileToString(adFile, "UTF-8")).asJsonArray
-
-        adArray.forEach {
-            val adObject = gson.fromJson(it, MarketAd::class.java)
-
-            return adObject == ad
-        }
-
-        return false
-    }
-
-    private fun createAd(ad: MarketAd) {
-        Thread {
-            val adArray = JsonParser().parse(FileUtils.readFileToString(adFile, "UTF-8")).asJsonArray
-
-            if (!adExist(ad)) {
-                val adObject = JsonParser().parse(gson.toJson(ad, MarketAd::class.java)).asJsonObject
-
-                adArray.add(adObject)
-
-                write(adArray)
+    fun save() {
+        ads.forEach {
+            if (it.delete) {
+                sadController.delete(it)
+            } else {
+                sadController.save(it)
             }
-        }.start()
+        }
     }
 
-    fun getAllAds(): List<MarketAd> {
-        return ads
+    fun getAllAds(): List<SAd> {
+        return ads.filter { !it.delete }
     }
 
-    private fun getPlayerAds(player: Player): List<MarketAd> {
-        val playerAds = ArrayList<MarketAd>()
+    private fun getPlayerAds(player: Player): List<SAd> {
+        val playerAds = ArrayList<SAd>()
 
         if (ads.isNotEmpty()) {
             playerAds.addAll(
-                ads.filter { it.advertiser == player.uniqueId }
+                ads.filter {
+                    it.advertiserName.lowercase() == player.name.lowercase()
+                }
             )
         }
 
         return playerAds
     }
 
-    private fun getAd(player: Player, name: String): MarketAd? {
+    private fun getAd(player: Player, name: String): SAd? {
         val playerAds = getPlayerAds(player)
 
         if (playerAds.isNotEmpty()) {
             val filter =
-                playerAds.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }
+                playerAds.filter {
+                    it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault())
+                }
 
             if (filter.isNotEmpty()) {
                 return filter.first()
@@ -122,24 +71,24 @@ object MarketManager {
         return null
     }
 
-    fun getById(id: Int): MarketAd {
+    fun getById(id: Int): SAd {
         return ads.first { it.id == id }
     }
 
-    fun purchase(player: Player, ad: MarketAd) {
+    fun purchase(player: Player, ad: SAd) {
         if (BankManager.withDraw(player.uniqueId, ad.price)) {
             val item = ItemStack(Material.getMaterial(ad.material)!!)
             item.amount = ad.amount
 
             player.inventory.addItem(item)
 
-            PlayerManager.increaseBalance(ad.advertiser, ad.price)
+            PlayerManager.increaseBalance(ad.player_id, ad.price)
 
             ads.remove(ad)
 
             player.sendMessage("${Strings.MESSAGE_PREFIX} Compra realizada com sucesso !")
 
-            Bukkit.getPlayer(ad.advertiser)
+            Bukkit.getPlayer(ad.player_id)
                 ?.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
         } else {
             player.sendMessage("§cSaldo insuficiente !")
@@ -152,7 +101,7 @@ object MarketManager {
         if (ad == null) {
             player.sendMessage("§cAnúncio não encontrado !")
         } else {
-            ads.remove(ad)
+            ads[ads.indexOf(ad)].delete = true
 
             player.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
         }
@@ -166,21 +115,19 @@ object MarketManager {
         if (filter.isEmpty()) {
             val itemInMainHand = player.inventory.itemInMainHand
 
-            val ad = MarketAd(
-                if (ads.isEmpty()) 1 else ads.last().id + 1,
-                player.uniqueId,
-                (player as CraftPlayer).name,
-                name,
-                price,
-                itemInMainHand.amount,
-                itemInMainHand.type.name
+            val ad = SAd(
+                id = if (ads.isEmpty()) 1 else ads.last().id + 1,
+                advertiserName = (player as CraftPlayer).name,
+                name = name,
+                price = price,
+                amount = itemInMainHand.amount,
+                material = itemInMainHand.type.name,
+                player_id = player.uniqueId
             )
 
             player.inventory.remove(itemInMainHand)
 
             ads.add(ad)
-
-            createAd(ad)
 
             GameManager.sendMessage("${Strings.MARKET_PREFIX} O jogador §f${player.name} fez um anúncio")
             GameManager.sendMessage("${Strings.MARKET_PREFIX} Digite /mercado para mais informações")
@@ -188,13 +135,5 @@ object MarketManager {
         } else {
             player.sendMessage("§cVocê já possui um anúncio com esse nome !")
         }
-    }
-
-    private fun write(element: JsonElement) {
-        FileUtils.writeStringToFile(
-            adFile,
-            gson.toJson(element),
-            "UTF-8"
-        )
     }
 }

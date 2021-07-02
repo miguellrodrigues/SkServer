@@ -12,31 +12,20 @@ class MysqlPlayerRepository : IPlayerRepository {
     private val connection = Mysql.connection
 
     private val database = "s18280_data"
-    private val table = "splayers"
+    private val table = "sk_player"
 
-    override fun create(uuid: UUID, account_id: Int): Int {
-        var id by Delegates.notNull<Int>()
-
+    override fun create(uuid: UUID, account_id: Int) {
         try {
             val statement = connection.prepareStatement(
                 "INSERT INTO $database.$table(uuid, account_id) VALUES " +
-                        "('${uuid}', '${account_id}')", Statement.RETURN_GENERATED_KEYS
+                        "('${uuid}', '${account_id}')"
             )
 
             statement.execute()
-            val rs = statement.generatedKeys
-
-            if (rs.next()) {
-                id = rs.getInt(1)
-            }
-
-            rs.close()
             statement.close()
         } catch (e: SQLException) {
             throw Error(e.message)
         }
-
-        return id
     }
 
     override fun save(player: SPlayer): Boolean {
@@ -79,26 +68,6 @@ class MysqlPlayerRepository : IPlayerRepository {
         } catch (e: SQLException) {
             throw Error(e.message)
         }
-    }
-
-    override fun getId(uuid: UUID): Int {
-        var id by Delegates.notNull<Int>()
-
-        try {
-            val statement = connection.prepareStatement(
-                "SELECT id FROM $database.$table WHERE uuid='$uuid'"
-            )
-
-            val resultSet = statement.executeQuery()
-            if (resultSet.next()) {
-                id = resultSet.getInt("id")
-            }
-
-        } catch (e: Exception) {
-            throw Error(e.message)
-        }
-
-        return id
     }
 
     override fun exist(uuid: UUID): Boolean {

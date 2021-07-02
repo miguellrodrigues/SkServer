@@ -2,6 +2,7 @@ package com.miguel.repository
 
 import com.miguel.entities.SHome
 import com.miguel.entities.data.SHomeData
+import java.util.*
 
 interface IHomeRepository {
 
@@ -13,9 +14,9 @@ interface IHomeRepository {
 
     fun getId(name: String): Int
 
-    fun getPlayerHomes(player_id: Int): List<SHomeData>
+    fun getPlayerHomes(player_id: UUID): List<SHomeData>
 
-    fun setPlayerId(id: Int, player_id: Int): Boolean
+    fun setPlayerId(id: Int, player_id: UUID): Boolean
 
     fun setLocationId(id: Int, location_id: Int): Boolean
 

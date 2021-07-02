@@ -5,6 +5,7 @@ import com.miguel.entities.data.SHomeData
 import com.miguel.repository.IHomeRepository
 import java.sql.SQLException
 import java.sql.Statement
+import java.util.*
 import kotlin.properties.Delegates
 
 class MysqlHomeRepository : IHomeRepository {
@@ -12,14 +13,14 @@ class MysqlHomeRepository : IHomeRepository {
     private val connection = Mysql.connection
 
     private val database = "s18280_data"
-    private val table = "shomes"
+    private val table = "sk_home"
 
     override fun create(home: SHome, location_id: Int): Int {
         var id by Delegates.notNull<Int>()
 
         try {
             val statement = connection.prepareStatement(
-                "INSERT INTO $database.$table(name, location_id, player_id) VALUES " +
+                "INSERT INTO $database.$table(name, location_id, player_uuid) VALUES " +
                         "('${home.name}', '${location_id}', '${home.player_id}');",
                 Statement.RETURN_GENERATED_KEYS
             )
@@ -85,11 +86,11 @@ class MysqlHomeRepository : IHomeRepository {
         return id
     }
 
-    override fun getPlayerHomes(player_id: Int): List<SHomeData> {
+    override fun getPlayerHomes(player_id: UUID): List<SHomeData> {
         val homes = ArrayList<SHomeData>()
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE player_id='$player_id'")
+            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE player_uuid='$player_id'")
 
             val resultSet = statement.executeQuery()
 
@@ -98,8 +99,8 @@ class MysqlHomeRepository : IHomeRepository {
                     SHomeData(
                         resultSet.getInt("id"),
                         resultSet.getString("name"),
-                        player_id,
-                        resultSet.getInt("location_id")
+                        resultSet.getInt("location_id"),
+                        player_id
                     )
                 )
             }
@@ -113,7 +114,7 @@ class MysqlHomeRepository : IHomeRepository {
         return homes
     }
 
-    override fun setPlayerId(id: Int, player_id: Int): Boolean {
+    override fun setPlayerId(id: Int, player_id: UUID): Boolean {
         try {
             val statement =
                 connection.prepareStatement("UPDATE $database.$table SET player_id = '$player_id' WHERE id='$id'")

@@ -12,7 +12,7 @@ class MysqlAccountRepository : IAccountRepository {
     private val connection = Mysql.connection
 
     private val database = "s18280_data"
-    private val table = "saccounts"
+    private val table = "sk_account"
 
     override fun create(account: SAccount): Int {
         var id by Delegates.notNull<Int>()

@@ -58,7 +58,7 @@ class InventoryEvents : Listener {
 
                             val ad = MarketManager.getById(id)
 
-                            if (ad.advertiser == player.uniqueId) return
+                            if (ad.player_id == player.uniqueId) return
 
                             MarketManager.purchase(player, ad)
                         }

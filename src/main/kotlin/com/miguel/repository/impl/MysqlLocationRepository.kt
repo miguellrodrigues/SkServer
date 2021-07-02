@@ -11,7 +11,7 @@ class MysqlLocationRepository : ILocationRepository {
     private val connection = Mysql.connection
 
     private val database = "s18280_data"
-    private val table = "slocations"
+    private val table = "sk_location"
 
     override fun create(location: SLocation, home_name: String): Int {
         if (exist(location.id)) return location.id
