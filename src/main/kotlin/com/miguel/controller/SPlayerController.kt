@@ -35,16 +35,12 @@ class SPlayerController(
 
     fun get(uuid: UUID): SPlayer {
         return if (playerRepository.exist(uuid)) {
-            println("Loadgin existing")
-
             SPlayer(
                 uuid = uuid,
                 account = accountController.get(playerRepository.getAccount(uuid))!!,
                 homes = homeController.getPlayerHomes(uuid)
             )
         } else {
-            println("Inserting new")
-
             SPlayer(
                 uuid = uuid,
                 account = SAccount(0, .0),

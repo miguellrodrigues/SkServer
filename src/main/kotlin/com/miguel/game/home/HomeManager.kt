@@ -34,7 +34,7 @@ object HomeManager {
         } else {
             PlayerManager.removeHome(player.uniqueId, home)
 
-            player.sendMessage("§fHome §e${name} §cfremovida com sucesso !")
+            player.sendMessage("§fHome §e${name} §cremovida §fcom sucesso !")
         }
 
         return ""
