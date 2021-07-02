@@ -3,7 +3,9 @@ package com.miguel.repository.impl
 import com.miguel.entities.SAccount
 import com.miguel.repository.IAccountRepository
 import java.sql.SQLException
+import java.sql.Statement
 import java.util.*
+import kotlin.properties.Delegates
 
 class MysqlAccountRepository : IAccountRepository {
 
@@ -12,20 +14,29 @@ class MysqlAccountRepository : IAccountRepository {
     private val database = "s18280_data"
     private val table = "saccounts"
 
-    override fun create(account: SAccount): Boolean {
+    override fun create(account: SAccount): Int {
+        var id by Delegates.notNull<Int>()
+
         try {
             val statement = connection.prepareStatement(
-                "INSERT INTO $database.$table(player_id, balance) VALUES " +
-                        "('${account.player_id}', '${account.balance}')"
+                "INSERT INTO $database.$table(balance) VALUES " +
+                        "('${account.balance}')", Statement.RETURN_GENERATED_KEYS
             )
 
             statement.execute()
-            statement.close()
+            val rs = statement.generatedKeys
 
-            return true
+            if (rs.next()) {
+                id = rs.getInt(1)
+            }
+
+            rs.close()
+            statement.close()
         } catch (e: SQLException) {
             throw Error(e.message)
         }
+
+        return id
     }
 
     override fun save(account: SAccount): Boolean {
@@ -33,6 +44,7 @@ class MysqlAccountRepository : IAccountRepository {
             setBalance(account.id, account.balance)
         } else {
             create(account)
+            true
         }
     }
 
@@ -59,32 +71,7 @@ class MysqlAccountRepository : IAccountRepository {
     override fun getById(id: Int): SAccount? {
         if (!exist(id)) return null
 
-        return SAccount(id, getPlayerId(id), getBalance(id))
-    }
-
-    override fun getByPlayerId(player_id: UUID): SAccount {
-        lateinit var account: SAccount
-
-        try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE player_id='$player_id'")
-
-            val resultSet = statement.executeQuery()
-
-            if (resultSet.next()) {
-                account = SAccount(
-                    resultSet.getInt("id"),
-                    player_id,
-                    resultSet.getDouble("balance")
-                )
-            }
-
-            resultSet.close()
-            statement.close()
-        } catch (e: SQLException) {
-            throw Error(e.message)
-        }
-
-        return account
+        return SAccount(id, getBalance(id))
     }
 
     override fun getBalance(id: Int): Double {

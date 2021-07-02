@@ -4,7 +4,7 @@ import com.miguel.entities.SLocation
 
 interface ILocationRepository {
 
-    fun create(location: SLocation, home_name: String): Boolean
+    fun create(location: SLocation, home_name: String): Int
 
     fun exist(id: Int): Boolean
 

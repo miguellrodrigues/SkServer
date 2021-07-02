@@ -3,6 +3,8 @@ package com.miguel.repository.impl
 import com.miguel.entities.SLocation
 import com.miguel.repository.ILocationRepository
 import java.sql.SQLException
+import java.sql.Statement
+import kotlin.properties.Delegates
 
 class MysqlLocationRepository : ILocationRepository {
 
@@ -11,21 +13,32 @@ class MysqlLocationRepository : ILocationRepository {
     private val database = "s18280_data"
     private val table = "slocations"
 
-    override fun create(location: SLocation, home_name: String): Boolean {
-        if (exist(location.id)) return true
+    override fun create(location: SLocation, home_name: String): Int {
+        if (exist(location.id)) return location.id
+
+        var id by Delegates.notNull<Int>()
 
         try {
             val statement = connection.prepareStatement(
-                "INSERT INTO $database.$table(home_name, world, x, y, z) VALUES ('$home_name', '${location.world}', ${location.x}, ${location.y}, ${location.z});"
+                "INSERT INTO $database.$table(world, x, y, z) VALUES ('${location.world}', ${location.x}, ${location.y}, ${location.z});",
+                Statement.RETURN_GENERATED_KEYS
             )
 
             statement.execute()
+            val rs = statement.generatedKeys
+
+            if (rs.next()) {
+                id = rs.getInt(1)
+            }
+
+            rs.close()
             statement.close()
 
-            return true
         } catch (e: SQLException) {
             throw Error(e.message)
         }
+
+        return id
     }
 
     override fun exist(id: Int): Boolean {

@@ -48,18 +48,12 @@ object HomeManager {
         val filter = playerHomes.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }
 
         if (filter.isEmpty()) {
-            val home = SHome(
-                name = name,
-                owner = player.uniqueId,
-                location = SLocation(
-                    world = player.world.name,
-                    x = round(player.location.x * 1000.0) / 1000.0,
-                    y = round(player.location.y * 1000.0) / 1000.0,
-                    z = round(player.location.z * 1000.0) / 1000.0
-                )
-            )
-
-            PlayerManager.addHome(player.uniqueId, home)
+            PlayerManager.createHome(player.uniqueId, SLocation(
+                world = player.world.name,
+                x = round(player.location.x * 1000.0) / 1000.0,
+                y = round(player.location.y * 1000.0) / 1000.0,
+                z = round(player.location.z * 1000.0) / 1000.0
+            ), name)
 
             message = "Home setada com sucesso !"
 

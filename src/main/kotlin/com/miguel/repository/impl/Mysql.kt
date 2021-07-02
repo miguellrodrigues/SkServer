@@ -32,33 +32,49 @@ object Mysql {
 
     fun createTables() {
         val queryList = listOf(
-            "CREATE TABLE IF NOT EXISTS saccounts (\n" +
-                    "  id INT NOT NULL AUTO_INCREMENT,\n" +
-                    "  player_id VARCHAR(255),\n" +
-                    "  balance DOUBLE,\n" +
-                    "  PRIMARY KEY (id));",
+            "CREATE TABLE IF NOT EXISTS `saccounts`\n" +
+                    "(\n" +
+                    " `id`      int NOT NULL AUTO_INCREMENT,\n" +
+                    " `balance` double NOT NULL ,\n" +
+                    "\n" +
+                    "PRIMARY KEY (`id`)\n" +
+                    ");",
 
-            "CREATE TABLE IF NOT EXISTS splayers (\n" +
-                    "  id INT NOT NULL AUTO_INCREMENT,\n" +
-                    "  uuid VARCHAR(255),\n" +
-                    "  account_id INT,\n" +
-                    "  PRIMARY KEY (id));",
+            "CREATE TABLE IF NOT EXISTS `splayers`\n" +
+                    "(\n" +
+                    " `id`         int NOT NULL AUTO_INCREMENT,\n" +
+                    " `uuid`       varchar(45) NOT NULL ,\n" +
+                    " `account_id` int NOT NULL ,\n" +
+                    "\n" +
+                    "PRIMARY KEY (`id`),\n" +
+                    "KEY `fkIdx_14` (`account_id`),\n" +
+                    "CONSTRAINT `FK_13` FOREIGN KEY `fkIdx_14` (`account_id`) REFERENCES `saccounts` (`id`)\n" +
+                    ");",
 
-            "CREATE TABLE IF NOT EXISTS slocations (\n" +
-                    "  id INT NOT NULL AUTO_INCREMENT,\n" +
-                    "  home_name VARCHAR(255),\n" +
-                    "  world VARCHAR(255),\n" +
-                    "  x DOUBLE,\n" +
-                    "  y DOUBLE,\n" +
-                    "  z DOUBLE,\n" +
-                    "  PRIMARY KEY (id));",
+            "CREATE TABLE IF NOT EXISTS `slocations`\n" +
+                    "(\n" +
+                    " `id`    int NOT NULL AUTO_INCREMENT,\n" +
+                    " `world` varchar(45) NOT NULL ,\n" +
+                    " `x`     double NOT NULL ,\n" +
+                    " `y`     double NOT NULL ,\n" +
+                    " `z`     double NOT NULL ,\n" +
+                    "\n" +
+                    "PRIMARY KEY (`id`)\n" +
+                    ");",
 
-            "CREATE TABLE IF NOT EXISTS shomes (\n" +
-                    "  id INT NOT NULL AUTO_INCREMENT,\n" +
-                    "  name VARCHAR(255),\n" +
-                    "  player_id VARCHAR(255),\n" +
-                    "  location_id INT,\n" +
-                    "  PRIMARY KEY (id));"
+            "CREATE TABLE IF NOT EXISTS `shomes`\n" +
+                    "(\n" +
+                    " `id`          int NOT NULL AUTO_INCREMENT,\n" +
+                    " `name`        varchar(45) NOT NULL ,\n" +
+                    " `location_id` int NOT NULL ,\n" +
+                    " `player_id`   int NOT NULL ,\n" +
+                    "\n" +
+                    "PRIMARY KEY (`id`),\n" +
+                    "KEY `fkIdx_28` (`location_id`),\n" +
+                    "CONSTRAINT `FK_27` FOREIGN KEY `fkIdx_28` (`location_id`) REFERENCES `slocations` (`id`),\n" +
+                    "KEY `fkIdx_31` (`player_id`),\n" +
+                    "CONSTRAINT `FK_30` FOREIGN KEY `fkIdx_31` (`player_id`) REFERENCES `splayers` (`id`)\n" +
+                    ");"
         )
 
         queryList.forEach { createTable(it) }

@@ -5,7 +5,7 @@ import java.util.*
 
 interface IAccountRepository {
 
-    fun create(account: SAccount): Boolean
+    fun create(account: SAccount): Int
 
     fun save(account: SAccount): Boolean
 
@@ -18,6 +18,4 @@ interface IAccountRepository {
     fun setBalance(id: Int, balance: Double): Boolean
 
     fun getPlayerId(id: Int): UUID
-
-    fun getByPlayerId(player_id: UUID): SAccount
 }

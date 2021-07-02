@@ -7,7 +7,7 @@ class SLocationsController(
     private val locationRepository: MysqlLocationRepository
 ) {
 
-    fun create(location: SLocation, home_name: String): Boolean {
+    fun create(location: SLocation, home_name: String): Int {
         return locationRepository.create(location, home_name)
     }
 

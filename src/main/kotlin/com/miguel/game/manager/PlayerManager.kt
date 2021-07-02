@@ -6,6 +6,7 @@ import com.miguel.controller.SLocationsController
 import com.miguel.controller.SPlayerController
 import com.miguel.entities.SAccount
 import com.miguel.entities.SHome
+import com.miguel.entities.SLocation
 import com.miguel.entities.SPlayer
 import com.miguel.repository.impl.MysqlAccountRepository
 import com.miguel.repository.impl.MysqlHomeRepository
@@ -62,8 +63,16 @@ object PlayerManager {
         return data[uuid]!!.homes.filter { !it.delete }
     }
 
-    fun addHome(uuid: UUID, home: SHome) {
+    private fun addHome(uuid: UUID, home: SHome) {
         data[uuid]!!.homes.add(home)
+    }
+
+    fun createHome(uuid: UUID, location: SLocation, name: String) {
+        addHome(uuid, SHome(
+            player_id = data[uuid]!!.id,
+            name = name,
+            location = location
+        ))
     }
 
     fun removeHome(uuid: UUID, home: SHome) {

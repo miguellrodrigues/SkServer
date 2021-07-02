@@ -2,13 +2,12 @@ package com.miguel.controller
 
 import com.miguel.entities.SAccount
 import com.miguel.repository.impl.MysqlAccountRepository
-import java.util.*
 
 class SAccountController(
     private val accountRepository: MysqlAccountRepository
 ) {
 
-    fun create(account: SAccount): Boolean {
+    fun create(account: SAccount): Int {
         return accountRepository.create(account)
     }
 
@@ -18,9 +17,5 @@ class SAccountController(
 
     fun get(id: Int): SAccount? {
         return accountRepository.getById(id)
-    }
-
-    fun getByPlayerId(player_id: UUID): SAccount {
-        return accountRepository.getByPlayerId(player_id)
     }
 }
