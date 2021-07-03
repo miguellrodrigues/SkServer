@@ -78,7 +78,7 @@ class MysqlAdRepository : IAdRepository {
                         resultSet.getDouble("price"),
                         resultSet.getInt("amount"),
                         resultSet.getString("material"),
-                        resultSet.getInt("player_uuid")
+                        resultSet.getInt("account_id")
                     )
                 )
             }
