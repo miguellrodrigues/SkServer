@@ -7,14 +7,12 @@ import java.util.*
 
 class MysqlAdRepository : IAdRepository {
 
-    private val connection = Mysql.connection
-
     private val database = "s18280_data"
     private val table = "sk_advertisement"
 
     override fun create(ad: SAd) {
         try {
-            val statement = connection.prepareStatement(
+            val statement = Mysql.getMysqlConnection().prepareStatement(
                 "INSERT INTO $database.$table(id, advertiserName, name, price, amount, material, account_id) VALUES " +
                         "('${ad.id}', '${ad.advertiserName}', '${ad.name}', '${ad.price}', '${ad.amount}', '${ad.material}', '${ad.account_id}');"
             )
@@ -30,7 +28,7 @@ class MysqlAdRepository : IAdRepository {
         if (!exist(id)) return false
 
         try {
-            val statement = connection.prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
 
             statement.execute()
             statement.close()
@@ -45,7 +43,7 @@ class MysqlAdRepository : IAdRepository {
         var success = false
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -65,7 +63,7 @@ class MysqlAdRepository : IAdRepository {
         val ads = ArrayList<SAd>()
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table")
 
             val resultSet = statement.executeQuery()
 

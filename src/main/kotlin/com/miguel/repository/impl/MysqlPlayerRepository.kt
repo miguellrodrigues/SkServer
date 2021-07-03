@@ -3,20 +3,16 @@ package com.miguel.repository.impl
 import com.miguel.entities.SPlayer
 import com.miguel.repository.IPlayerRepository
 import java.sql.SQLException
-import java.sql.Statement
 import java.util.*
-import kotlin.properties.Delegates
 
 class MysqlPlayerRepository : IPlayerRepository {
-
-    private val connection = Mysql.connection
 
     private val database = "s18280_data"
     private val table = "sk_player"
 
     override fun create(uuid: UUID, account_id: Int) {
         try {
-            val statement = connection.prepareStatement(
+            val statement = Mysql.getMysqlConnection().prepareStatement(
                 "INSERT INTO $database.$table(uuid, account_id) VALUES " +
                         "('${uuid}', '${account_id}')"
             )
@@ -38,7 +34,7 @@ class MysqlPlayerRepository : IPlayerRepository {
         var account = 0
 
         try {
-            val statement = connection.prepareStatement(
+            val statement = Mysql.getMysqlConnection().prepareStatement(
                 "SELECT account_id FROM $database.$table WHERE uuid='$uuid'"
             )
 
@@ -59,7 +55,7 @@ class MysqlPlayerRepository : IPlayerRepository {
 
         try {
             val statement =
-                connection.prepareStatement("UPDATE $database.$table SET account_id = '$account' WHERE uuid='$uuid'")
+                Mysql.getMysqlConnection().prepareStatement("UPDATE $database.$table SET account_id = '$account' WHERE uuid='$uuid'")
 
             statement.executeUpdate()
             statement.close()
@@ -74,7 +70,7 @@ class MysqlPlayerRepository : IPlayerRepository {
         var exist = false
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE uuid='$uuid'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE uuid='$uuid'")
 
             val resultSet = statement.executeQuery()
 
@@ -94,7 +90,7 @@ class MysqlPlayerRepository : IPlayerRepository {
         val list: MutableList<UUID> = ArrayList()
 
         try {
-            val statement = connection.prepareStatement(
+            val statement = Mysql.getMysqlConnection().prepareStatement(
                 "SELECT uuid FROM $database.$table"
             )
 

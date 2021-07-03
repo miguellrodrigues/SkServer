@@ -2,10 +2,13 @@ package com.miguel.repository.impl
 
 import java.sql.Connection
 import java.sql.DriverManager
+import java.util.*
 
 object Mysql {
 
-    lateinit var connection: Connection
+    private lateinit var connection: Connection
+
+    private lateinit var prop: Properties
 
     fun remoteConnection(url: String, user: String, password: String) {
         println("Trying remote mysql connection...")
@@ -14,6 +17,12 @@ object Mysql {
             Class.forName("com.mysql.cj.jdbc.Driver")
 
             connection = DriverManager.getConnection(url, user, password)
+
+            prop = Properties()
+
+            prop.setProperty("url", url)
+            prop.setProperty("user", user)
+            prop.setProperty("password", password)
 
             println("Remote Mysql Connected!")
         } catch (e: Exception) {
@@ -83,6 +92,13 @@ object Mysql {
         )
 
         queryList.forEach { createTable(it) }
+    }
+
+    fun getMysqlConnection(): Connection {
+        if (this.connection.isClosed || !connection.isValid(16))
+            remoteConnection(prop.getProperty("url"), prop.getProperty("user"), prop.getProperty("password"))
+
+        return this.connection
     }
 
     private fun createTable(query: String) {

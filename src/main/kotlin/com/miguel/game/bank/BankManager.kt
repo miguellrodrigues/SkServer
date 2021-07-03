@@ -108,7 +108,7 @@ object BankManager {
 
         val quantities = ArrayList<Amount>()
 
-        var wd = 0.0
+        var wd = .000
 
         currencies.forEachIndexed { index, currency ->
             quantities.add(

@@ -10,8 +10,6 @@ import kotlin.properties.Delegates
 
 class MysqlHomeRepository : IHomeRepository {
 
-    private val connection = Mysql.connection
-
     private val database = "s18280_data"
     private val table = "sk_home"
 
@@ -19,7 +17,7 @@ class MysqlHomeRepository : IHomeRepository {
         var id by Delegates.notNull<Int>()
 
         try {
-            val statement = connection.prepareStatement(
+            val statement = Mysql.getMysqlConnection().prepareStatement(
                 "INSERT INTO $database.$table(name, location_id, player_uuid) VALUES " +
                         "('${home.name}', '${location_id}', '${home.player_id}');",
                 Statement.RETURN_GENERATED_KEYS
@@ -49,7 +47,7 @@ class MysqlHomeRepository : IHomeRepository {
         var success = false
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -69,7 +67,7 @@ class MysqlHomeRepository : IHomeRepository {
         var id by Delegates.notNull<Int>()
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE name='?'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE name='?'")
 
             statement.setString(1, name)
             val resultSet = statement.executeQuery()
@@ -90,7 +88,7 @@ class MysqlHomeRepository : IHomeRepository {
         val homes = ArrayList<SHomeData>()
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE player_uuid='$player_id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE player_uuid='$player_id'")
 
             val resultSet = statement.executeQuery()
 
@@ -117,7 +115,7 @@ class MysqlHomeRepository : IHomeRepository {
     override fun setPlayerId(id: Int, player_id: UUID): Boolean {
         try {
             val statement =
-                connection.prepareStatement("UPDATE $database.$table SET player_id = '$player_id' WHERE id='$id'")
+                Mysql.getMysqlConnection().prepareStatement("UPDATE $database.$table SET player_id = '$player_id' WHERE id='$id'")
 
             statement.executeUpdate()
             statement.close()
@@ -131,7 +129,7 @@ class MysqlHomeRepository : IHomeRepository {
     override fun setLocationId(id: Int, location_id: Int): Boolean {
         try {
             val statement =
-                connection.prepareStatement("UPDATE $database.$table SET location_id = '$location_id' WHERE id='$id'")
+                Mysql.getMysqlConnection().prepareStatement("UPDATE $database.$table SET location_id = '$location_id' WHERE id='$id'")
 
             statement.executeUpdate()
             statement.close()
@@ -146,7 +144,7 @@ class MysqlHomeRepository : IHomeRepository {
         if (!exist(id)) return false
 
         try {
-            val statement = connection.prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
 
             statement.execute()
             statement.close()

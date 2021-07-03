@@ -9,8 +9,6 @@ import kotlin.properties.Delegates
 
 class MysqlAccountRepository : IAccountRepository {
 
-    private val connection = Mysql.connection
-
     private val database = "s18280_data"
     private val table = "sk_account"
 
@@ -18,7 +16,7 @@ class MysqlAccountRepository : IAccountRepository {
         var id by Delegates.notNull<Int>()
 
         try {
-            val statement = connection.prepareStatement(
+            val statement = Mysql.getMysqlConnection().prepareStatement(
                 "INSERT INTO $database.$table(balance) VALUES " +
                         "('${account.balance}')", Statement.RETURN_GENERATED_KEYS
             )
@@ -52,7 +50,7 @@ class MysqlAccountRepository : IAccountRepository {
         var success = false
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -80,7 +78,7 @@ class MysqlAccountRepository : IAccountRepository {
         var balance = .0
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -100,7 +98,7 @@ class MysqlAccountRepository : IAccountRepository {
         lateinit var uuid: UUID
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -119,7 +117,7 @@ class MysqlAccountRepository : IAccountRepository {
     override fun setBalance(id: Int, balance: Double): Boolean {
         try {
             val statement =
-                connection.prepareStatement("UPDATE $database.$table SET balance = '$balance' WHERE id='$id'")
+                Mysql.getMysqlConnection().prepareStatement("UPDATE $database.$table SET balance = '$balance' WHERE id='$id'")
 
             statement.executeUpdate()
             statement.close()

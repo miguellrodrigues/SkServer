@@ -8,8 +8,6 @@ import kotlin.properties.Delegates
 
 class MysqlLocationRepository : ILocationRepository {
 
-    private val connection = Mysql.connection
-
     private val database = "s18280_data"
     private val table = "sk_location"
 
@@ -19,7 +17,7 @@ class MysqlLocationRepository : ILocationRepository {
         var id by Delegates.notNull<Int>()
 
         try {
-            val statement = connection.prepareStatement(
+            val statement = Mysql.getMysqlConnection().prepareStatement(
                 "INSERT INTO $database.$table(world, x, y, z) VALUES ('${location.world}', ${location.x}, ${location.y}, ${location.z});",
                 Statement.RETURN_GENERATED_KEYS
             )
@@ -45,7 +43,7 @@ class MysqlLocationRepository : ILocationRepository {
         var success = false
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -67,7 +65,7 @@ class MysqlLocationRepository : ILocationRepository {
         lateinit var sLocation: SLocation
 
         try {
-            val statement = connection.prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -94,7 +92,7 @@ class MysqlLocationRepository : ILocationRepository {
         if (!exist(id)) return false
 
         try {
-            val statement = connection.prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
 
             statement.execute()
             statement.close()
