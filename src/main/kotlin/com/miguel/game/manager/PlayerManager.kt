@@ -83,6 +83,10 @@ object PlayerManager {
         }
     }
 
+    fun setAccountID(uuid: UUID, accountID: Int) {
+        data[uuid]!!.account.id = accountID
+    }
+
     fun getAccountId(player: Player): Int {
         return data[player.uniqueId]!!.account.id
     }

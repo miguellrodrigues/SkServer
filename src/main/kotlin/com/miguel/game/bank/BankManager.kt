@@ -47,7 +47,7 @@ object BankManager {
         if (currencyExist(item.type)) {
             val value = currencies.first { it.material == item.type }.value * item.amount
 
-            PlayerManager.increaseBalance(player.uniqueId, value)
+            PlayerManager.changeBalance(player.uniqueId, value)
 
             player.sendMessage("${Strings.MESSAGE_PREFIX} Você depositou §e${value} §aUkranianinhos")
 
@@ -96,7 +96,7 @@ object BankManager {
         val balance = PlayerManager.getBalance(uuid)
 
         if (balance >= value) {
-            PlayerManager.decreaseBalance(uuid, value)
+            PlayerManager.changeBalance(uuid, -value)
             return true
         }
 

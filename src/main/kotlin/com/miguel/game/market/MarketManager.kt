@@ -83,7 +83,7 @@ object MarketManager {
 
             player.inventory.addItem(item)
 
-            ads.remove(ad)
+            ads[ads.indexOf(ad)].delete = true
 
             player.sendMessage("${Strings.MESSAGE_PREFIX} Compra realizada com sucesso !")
 

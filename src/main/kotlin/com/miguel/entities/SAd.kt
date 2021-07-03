@@ -41,4 +41,8 @@ data class SAd(
 
         return stack
     }
+
+    override fun toString(): String {
+        return "SAd(id=$id, advertiserName='$advertiserName', name='$name', price=$price, amount=$amount, material='$material', account_id=$account_id, delete=$delete)"
+    }
 }

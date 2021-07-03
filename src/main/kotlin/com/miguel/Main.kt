@@ -41,7 +41,12 @@ class Main : JavaPlugin() {
 
         saveDefaultConfig()
 
-        Mysql.remoteConnection("18.229.96.83", "s18280_data", "u18280_fnbewSuHnB", "z+6Q.PF.5cxcYl9dfkqwa!=H", 3306)
+        Mysql.remoteConnection(
+            config.getString("mysql.url")!!,
+            config.getString("mysql.user")!!,
+            config.getString("mysql.password")!!
+        )
+
         Mysql.createTables()
 
         InventoryManager.init()

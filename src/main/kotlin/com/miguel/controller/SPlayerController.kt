@@ -2,6 +2,7 @@ package com.miguel.controller
 
 import com.miguel.entities.SAccount
 import com.miguel.entities.SPlayer
+import com.miguel.game.manager.PlayerManager
 import com.miguel.repository.impl.MysqlPlayerRepository
 import java.util.*
 
@@ -13,6 +14,8 @@ class SPlayerController(
 
     fun create(player: SPlayer) {
         val accountID = accountController.create(player.account)
+
+        PlayerManager.setAccountID(player.uuid, accountID)
 
         playerRepository.create(player.uuid, accountID)
     }

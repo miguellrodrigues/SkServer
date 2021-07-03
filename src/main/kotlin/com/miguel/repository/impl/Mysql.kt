@@ -1,29 +1,19 @@
 package com.miguel.repository.impl
 
-import com.mysql.cj.jdbc.MysqlDataSource
 import java.sql.Connection
+import java.sql.DriverManager
 
 object Mysql {
 
     lateinit var connection: Connection
 
-    fun remoteConnection(host: String?, database: String?, username: String?, password: String?, port: Int) {
+    fun remoteConnection(url: String, user: String, password: String) {
         println("Trying remote mysql connection...")
 
         try {
             Class.forName("com.mysql.cj.jdbc.Driver")
 
-            val dataSource = MysqlDataSource()
-            dataSource.serverName = host
-            dataSource.port = port
-            dataSource.databaseName = database
-            dataSource.user = username
-            dataSource.password = password
-            dataSource.serverTimezone = "UTC"
-            dataSource.autoReconnect = true
-            dataSource.maxReconnects = 9999
-
-            connection = dataSource.connection
+            connection = DriverManager.getConnection(url, user, password)
 
             println("Remote Mysql Connected!")
         } catch (e: Exception) {
@@ -87,8 +77,8 @@ object Mysql {
                     " `account_id`     int NOT NULL ,\n" +
                     "\n" +
                     "PRIMARY KEY (`id`),\n" +
-                    "KEY `fkIdx_42` (`account_id`),\n" +
-                    "CONSTRAINT `FK_41` FOREIGN KEY `fkIdx_42` (`account_id`) REFERENCES `sk_account` (`id`)\n" +
+                    "KEY `fkIdx_49` (`account_id`),\n" +
+                    "CONSTRAINT `FK_48` FOREIGN KEY `fkIdx_49` (`account_id`) REFERENCES `sk_account` (`id`)\n" +
                     ");"
         )
 
