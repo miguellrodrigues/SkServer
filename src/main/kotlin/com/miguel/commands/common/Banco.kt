@@ -106,28 +106,11 @@ class Banco : BukkitCommand("banco") {
                                 }
 
                                 "*" -> {
-                                    var deposit = .0
-
-                                    inventory.contents
+                                    val deposit = BankManager.deposit(sender, inventory.contents
                                         .filterNotNull()
-                                        .forEach { inventoryItem ->
-                                            if (BankManager.currencyExist(inventoryItem.type)) {
-                                                val filtered = inventory.contents
-                                                    .filterNotNull()
-                                                    .filter { it.type == itemInMainHand.type }
+                                        .filter { BankManager.currencyExist(it.type) }.toTypedArray()
+                                    )
 
-                                                if (filtered.isNotEmpty()) {
-                                                    filtered.forEach {
-                                                        inventory.setItem(
-                                                            inventory.indexOf(it),
-                                                            ItemStack(Material.AIR)
-                                                        )
-                                                    }
-
-                                                    deposit += BankManager.deposit(sender, filtered.toTypedArray())
-                                                }
-                                            }
-                                        }
                                     if (deposit != .0) {
                                         sender.sendMessage("${Strings.PREFIX} §fVocê depositou §e$deposit §aUkranianinho's")
                                     }
