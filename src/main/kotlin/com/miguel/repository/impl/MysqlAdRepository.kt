@@ -3,7 +3,6 @@ package com.miguel.repository.impl
 import com.miguel.entities.SAd
 import com.miguel.repository.IAdRepository
 import java.sql.SQLException
-import java.util.*
 
 class MysqlAdRepository : IAdRepository {
 

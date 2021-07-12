@@ -117,7 +117,8 @@ class MysqlAccountRepository : IAccountRepository {
     override fun setBalance(id: Int, balance: Double): Boolean {
         try {
             val statement =
-                Mysql.getMysqlConnection().prepareStatement("UPDATE $database.$table SET balance = '$balance' WHERE id='$id'")
+                Mysql.getMysqlConnection()
+                    .prepareStatement("UPDATE $database.$table SET balance = '$balance' WHERE id='$id'")
 
             statement.executeUpdate()
             statement.close()

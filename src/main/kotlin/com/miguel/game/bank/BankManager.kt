@@ -92,6 +92,35 @@ object BankManager {
         }
     }
 
+    fun print(player: Player, value: Double) {
+        val decompose = decompose(value, player.uniqueId)
+
+        decompose.forEach { amount ->
+            val currencyValue = currencies.first { it.material == amount.material }.value
+
+            val item = GameManager.createItem(
+                "§aUkranianinho",
+                arrayOf(" ", " §f- Valor §e${currencyValue} §fUkranianinho`s", " "),
+                amount.material
+            )
+            item.amount = amount.amount
+
+            if (player.inventory.firstEmpty() != -1) {
+                player.inventory.addItem(
+                    item
+                )
+            } else {
+                if (player.enderChest.firstEmpty() != -1) {
+                    player.enderChest.addItem(item)
+                } else {
+                    player.world.dropItem(player.location, item)
+                }
+            }
+        }
+
+        player.sendMessage("§aImpressão realizada com sucesso !")
+    }
+
     fun withDraw(uuid: UUID, value: Double): Boolean {
         val balance = PlayerManager.getBalance(uuid)
 

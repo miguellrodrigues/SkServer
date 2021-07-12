@@ -5,7 +5,6 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.wrappers.WrappedGameProfile
-import com.comphenix.protocol.wrappers.WrappedServerPing
 import com.miguel.Main
 import com.miguel.values.Strings
 import org.bukkit.Bukkit

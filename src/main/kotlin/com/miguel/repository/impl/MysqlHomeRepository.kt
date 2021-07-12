@@ -88,7 +88,8 @@ class MysqlHomeRepository : IHomeRepository {
         val homes = ArrayList<SHomeData>()
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE player_uuid='$player_id'")
+            val statement = Mysql.getMysqlConnection()
+                .prepareStatement("SELECT * FROM $database.$table WHERE player_uuid='$player_id'")
 
             val resultSet = statement.executeQuery()
 
@@ -115,7 +116,8 @@ class MysqlHomeRepository : IHomeRepository {
     override fun setPlayerId(id: Int, player_id: UUID): Boolean {
         try {
             val statement =
-                Mysql.getMysqlConnection().prepareStatement("UPDATE $database.$table SET player_id = '$player_id' WHERE id='$id'")
+                Mysql.getMysqlConnection()
+                    .prepareStatement("UPDATE $database.$table SET player_id = '$player_id' WHERE id='$id'")
 
             statement.executeUpdate()
             statement.close()
@@ -129,7 +131,8 @@ class MysqlHomeRepository : IHomeRepository {
     override fun setLocationId(id: Int, location_id: Int): Boolean {
         try {
             val statement =
-                Mysql.getMysqlConnection().prepareStatement("UPDATE $database.$table SET location_id = '$location_id' WHERE id='$id'")
+                Mysql.getMysqlConnection()
+                    .prepareStatement("UPDATE $database.$table SET location_id = '$location_id' WHERE id='$id'")
 
             statement.executeUpdate()
             statement.close()

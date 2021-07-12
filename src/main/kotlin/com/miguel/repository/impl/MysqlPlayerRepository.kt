@@ -55,7 +55,8 @@ class MysqlPlayerRepository : IPlayerRepository {
 
         try {
             val statement =
-                Mysql.getMysqlConnection().prepareStatement("UPDATE $database.$table SET account_id = '$account' WHERE uuid='$uuid'")
+                Mysql.getMysqlConnection()
+                    .prepareStatement("UPDATE $database.$table SET account_id = '$account' WHERE uuid='$uuid'")
 
             statement.executeUpdate()
             statement.close()
@@ -70,7 +71,8 @@ class MysqlPlayerRepository : IPlayerRepository {
         var exist = false
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE uuid='$uuid'")
+            val statement =
+                Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE uuid='$uuid'")
 
             val resultSet = statement.executeQuery()
 

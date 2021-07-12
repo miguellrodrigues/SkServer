@@ -3,10 +3,7 @@ package com.miguel
 import com.comphenix.protocol.ProtocolLibrary
 import com.comphenix.protocol.ProtocolManager
 import com.miguel.commands.GameCommands
-import com.miguel.commands.common.Anuncio
-import com.miguel.commands.common.Banco
-import com.miguel.commands.common.Home
-import com.miguel.commands.common.Mercado
+import com.miguel.commands.common.*
 import com.miguel.common.command.CommandExecutor
 import com.miguel.common.command.CommandManager
 import com.miguel.game.bank.BankManager
@@ -14,7 +11,6 @@ import com.miguel.game.manager.InventoryManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.game.manager.TagManager
 import com.miguel.game.market.MarketManager
-import com.miguel.game.runnables.AutoMessage
 import com.miguel.listener.EntityEvents
 import com.miguel.listener.InventoryEvents
 import com.miguel.listener.PlayerEvents
@@ -73,6 +69,8 @@ class Main : JavaPlugin() {
         commandMap.register("mercado", Mercado())
         commandMap.register("anuncio", Anuncio())
         commandMap.register("banco", Banco())
+        commandMap.register("invsee", Invsee())
+        commandMap.register("sumo", Sumo())
 
         CommandManager.register(GameCommands::class.java)
 

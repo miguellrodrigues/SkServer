@@ -4,18 +4,13 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.google.gson.Gson
-import com.google.gson.JsonParser
 import com.miguel.Main
 import net.kyori.adventure.text.Component
-import org.apache.commons.lang.StringEscapeUtils
 import org.bukkit.Bukkit
 import org.bukkit.Material
-import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import org.bukkit.inventory.meta.ItemMeta
-import org.bukkit.material.MaterialData
 import java.util.*
 
 object GameManager {

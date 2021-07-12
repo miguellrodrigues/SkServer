@@ -1,8 +1,10 @@
 package com.miguel.commands.common
 
+import com.miguel.common.command.Permission
 import com.miguel.game.bank.BankManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
+import net.kyori.adventure.text.Component
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
@@ -22,6 +24,7 @@ class Banco : BukkitCommand("banco") {
             sender.sendMessage("§c/banco [saldo | sacar | depositar] [valor]")
         } else {
             val inventory = sender.inventory
+
             when (args.size) {
                 1 -> {
                     val option = args[0]
@@ -38,7 +41,11 @@ class Banco : BukkitCommand("banco") {
                         }
 
                         "depositar" -> {
-                            BankManager.deposit(sender, inventory.itemInMainHand)
+                            val item = inventory.itemInMainHand
+
+                            if (item.itemMeta.displayName()?.contains(Component.text("§aUkranianinho")) == true) {
+                                BankManager.deposit(sender, inventory.itemInMainHand)
+                            }
                         }
 
                         else -> {
@@ -62,6 +69,21 @@ class Banco : BukkitCommand("banco") {
                             }
 
                             BankManager.withDraw(sender, withdraw)
+                        }
+
+                        "imprimir" -> {
+                            if (sender.hasPermission(Permission.BANK_OWN.node)) {
+                                val value: Double
+
+                                try {
+                                    value = args[1].toDouble()
+                                } catch (e: NumberFormatException) {
+                                    sender.sendMessage("§cUtilize apenas números no valor de impressão !")
+                                    return true
+                                }
+
+                                BankManager.print(sender, value)
+                            }
                         }
 
                         "depositar" -> {

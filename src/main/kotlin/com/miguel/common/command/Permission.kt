@@ -8,11 +8,14 @@ enum class Permission(val node: String) {
     TAG("tag."),
     CLEAR_CHAT("clearchat"),
     CHAT("chat"),
-    DAMAGE("damage");
+    DAMAGE("damage"),
+    BANK_OWN("bank.own"),
+    INVSEE("invsee"),
+    SUMO("sumo");
 
     companion object {
         private fun getPermission(permission: Permission): String {
-            return "sk.command." + permission.node
+            return "sk." + permission.node
         }
 
         fun has(permission: Permission, target: CommandSender): Boolean {
