@@ -27,7 +27,7 @@ class Sumo : BukkitCommand("sumo") {
                     val target = Bukkit.getPlayer(args[0])
 
                     if (target != null) {
-                        sender.performCommand(args[1])
+                        sender.chat(args[1])
                     }
                 }
 

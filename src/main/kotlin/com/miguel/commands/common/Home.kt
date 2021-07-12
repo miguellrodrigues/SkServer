@@ -3,10 +3,10 @@ package com.miguel.commands.common
 import com.miguel.game.home.HomeManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
-import net.md_5.bungee.api.chat.ClickEvent
-import net.md_5.bungee.api.chat.HoverEvent
-import net.md_5.bungee.api.chat.TextComponent
-import net.md_5.bungee.api.chat.hover.content.Text
+import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.ClickEvent
 import org.bukkit.Sound
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
@@ -36,21 +36,25 @@ class Home : BukkitCommand("home") {
                     sender.sendMessage(" ")
 
                     playerHomes.forEach {
-                        val component = TextComponent(
-                            "§e- §fNome §b» §f§r${it.name}"
-                        )
+                        val component = Component.text("§e- §fNome §b» §f§r${it.name}")
 
-                        component.clickEvent = ClickEvent(
+                        component.clickEvent(ClickEvent.clickEvent(
                             ClickEvent.Action.RUN_COMMAND,
                             "/home go ${it.name}"
+                        ))
+
+                        component.hoverEvent(
+                            net.kyori.adventure.text.event.HoverEvent.hoverEvent(
+                                net.kyori.adventure.text.event.HoverEvent.Action.SHOW_TEXT,
+                                Component.text("§eClique para ir a esta home!")
+                            )
                         )
 
-                        component.hoverEvent = HoverEvent(
-                            HoverEvent.Action.SHOW_TEXT,
-                            Text("§eClique para ir a esta home!")
+                        sender.sendMessage(
+                            Identity.nil(),
+                            component,
+                            MessageType.CHAT
                         )
-
-                        sender.spigot().sendMessage(component)
 
                         sender.sendMessage("§e- §fX '§e${it.location.x.toInt()}§f' §e| §fZ '§e${it.location.z.toInt()}§f'")
                         sender.sendMessage(" ")

@@ -63,7 +63,7 @@ object CommandManager {
 
     fun execute(command: Command, vararg args: Any?) {
         try {
-            commands[command]!!.invoke(commands[command]!!.declaringClass.newInstance(), *args)
+            commands[command]!!.invoke(commands[command]!!.declaringClass.getDeclaredConstructor().newInstance(), *args)
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -6,6 +6,7 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.google.gson.Gson
 import com.miguel.Main
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.event.HoverEvent
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -52,6 +53,19 @@ object GameManager {
 
         if (description.isNotEmpty())
             itemMeta.lore(description.map { Component.text(it) })
+
+        stack.itemMeta = itemMeta
+
+        return stack
+    }
+
+    fun createItem(name: Component, description: Array<Component>, type: Material): ItemStack {
+        val stack = ItemStack(type)
+
+        val itemMeta = stack.itemMeta!!
+        itemMeta.displayName(name)
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+        itemMeta.lore(description.toList())
 
         stack.itemMeta = itemMeta
 

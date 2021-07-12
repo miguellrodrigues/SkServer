@@ -1,6 +1,7 @@
 package com.miguel.game.manager
 
 import com.miguel.common.TagCommon
+import net.kyori.adventure.text.Component
 
 class TagManager : Runnable {
 
@@ -19,12 +20,12 @@ class TagManager : Runnable {
                     if (team == null)
                         team = sb.registerNewTeam(tagPriority)
 
-                    if (!team.hasPlayer(it))
-                        team.addPlayer(it)
+                    if (!team.hasEntry(it.name))
+                        team.addEntry(it.name)
 
-                    val formattedName = "${tag.formattedName}§7"
+                    val formattedName = Component.text("${tag.formattedName}§7")
 
-                    if (team.prefix != formattedName) team.prefix = formattedName
+                    if (team.prefix() != formattedName) team.prefix(formattedName)
                 }
 
                 if (sb != player.scoreboard) {

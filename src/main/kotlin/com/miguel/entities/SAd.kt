@@ -2,6 +2,7 @@ package com.miguel.entities
 
 import com.miguel.game.manager.GameManager
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
@@ -25,7 +26,7 @@ data class SAd(
 
         val itemMeta = stack.itemMeta!!
 
-        itemMeta.displayName(Component.text("§a${name}"))
+        itemMeta.displayName(Component.text("name").color(TextColor.color(0, 255, 0)))
 
         val desc = arrayListOf(
             " ",

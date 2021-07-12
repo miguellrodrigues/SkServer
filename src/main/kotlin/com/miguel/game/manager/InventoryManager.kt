@@ -1,6 +1,7 @@
 package com.miguel.game.manager
 
 import com.miguel.game.market.MarketManager
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -8,7 +9,7 @@ import org.bukkit.inventory.Inventory
 
 object InventoryManager {
 
-    private val adBaseInventory = Bukkit.createInventory(null, 54, "§aAnúncios")
+    private val adBaseInventory = Bukkit.createInventory(null, 54, Component.text("§aAnúncios"))
 
     fun init() {
         adBaseInventory.setItem(0, GameManager.createItem("§fSem página anterior.", Material.RED_DYE))
@@ -64,7 +65,7 @@ object InventoryManager {
         when (type) {
 
             InventoryType.MARKET -> {
-                val marketInventory = Bukkit.createInventory(player, 27, "§e§rMercado")
+                val marketInventory = Bukkit.createInventory(player, 27, Component.text("§e§rMercado"))
 
                 marketInventory.setItem(
                     12, GameManager.createItem(
@@ -114,7 +115,7 @@ object InventoryManager {
         val inventory = Bukkit.createInventory(
             player,
             adBaseInventory.size,
-            "§aAnúncios §fPágina §e${page}"
+            Component.text("§aAnúncios §fPágina §e${page}")
         )
 
         inventory.contents = adBaseInventory.contents

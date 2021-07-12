@@ -3,7 +3,7 @@ package com.miguel.listener
 import com.miguel.game.manager.InventoryManager
 import com.miguel.game.market.MarketManager
 import com.miguel.values.Strings
-import org.bukkit.ChatColor
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -33,7 +33,7 @@ class InventoryEvents : Listener {
 
             event.isCancelled = true
 
-            val title = ChatColor.stripColor(view.title)?.lowercase(Locale.getDefault())!!
+            val title = PlainTextComponentSerializer.plainText().serialize(view.title()).lowercase(Locale.getDefault())
 
             if (title.startsWith("anúncios página ")) {
                 var page = title.replace("anúncios página ", "").toInt()
@@ -54,7 +54,7 @@ class InventoryEvents : Listener {
                         if (!currentItem.type.name.lowercase(Locale.getDefault()).contains("glass")) {
                             val itemMeta = currentItem.itemMeta!!
 
-                            val id = ChatColor.stripColor(itemMeta.lore?.get(7))?.replace(" ID ", "")!!.toInt()
+                            val id = PlainTextComponentSerializer.plainText().serialize(itemMeta.lore()!![7]).toInt()
 
                             val ad = MarketManager.getById(id)
 
