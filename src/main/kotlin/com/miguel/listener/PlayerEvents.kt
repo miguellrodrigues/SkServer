@@ -6,7 +6,6 @@ import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import com.miguel.values.Values
 import io.papermc.paper.chat.ChatRenderer
-import io.papermc.paper.chat.ChatRenderer.ViewerUnaware
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player

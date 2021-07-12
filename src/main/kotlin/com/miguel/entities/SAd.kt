@@ -2,7 +2,7 @@ package com.miguel.entities
 
 import com.miguel.game.manager.GameManager
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
@@ -11,7 +11,7 @@ data class SAd(
     val advertiserName: String,
     val name: String,
     val price: Double,
-    val item: String,
+    val item: ByteArray,
     val account_id: Int,
     var delete: Boolean = false
 ) {
@@ -26,7 +26,7 @@ data class SAd(
 
         val itemMeta = stack.itemMeta!!
 
-        itemMeta.displayName(Component.text("name").color(TextColor.color(0, 255, 0)))
+        itemMeta.displayName(Component.text(name, NamedTextColor.WHITE))
 
         val desc = arrayListOf(
             " ",
@@ -50,5 +50,33 @@ data class SAd(
 
     override fun toString(): String {
         return "SAd(id=$id, advertiserName='$advertiserName', name='$name', item=$item, price=$price, account_id=$account_id, delete=$delete)"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+
+        other as SAd
+
+        if (id != other.id) return false
+        if (advertiserName != other.advertiserName) return false
+        if (name != other.name) return false
+        if (price != other.price) return false
+        if (!item.contentEquals(other.item)) return false
+        if (account_id != other.account_id) return false
+        if (delete != other.delete) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = id
+        result = 31 * result + advertiserName.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + price.hashCode()
+        result = 31 * result + item.contentHashCode()
+        result = 31 * result + account_id
+        result = 31 * result + delete.hashCode()
+        return result
     }
 }

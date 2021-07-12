@@ -3,17 +3,23 @@ package com.miguel.repository.impl
 import com.miguel.entities.SAd
 import com.miguel.repository.IAdRepository
 import java.sql.SQLException
+import java.util.*
 
 class MysqlAdRepository : IAdRepository {
 
     private val database = "s18280_data"
     private val table = "sk_advertisement"
 
+    private val b64encoder = Base64.getEncoder()
+    private val b64decoder = Base64.getDecoder()
+
     override fun create(ad: SAd) {
         try {
+            val item = b64encoder.encode(ad.item)
+
             val statement = Mysql.getMysqlConnection().prepareStatement(
                 "INSERT INTO $database.$table(id, advertiserName, name, price, item, account_id) VALUES " +
-                        "('${ad.id}', '${ad.advertiserName}', '${ad.name}', '${ad.price}', '${ad.item}', '${ad.account_id}');"
+                        "('${ad.id}', '${ad.advertiserName}', '${ad.name}', '${ad.price}', '$item', '${ad.account_id}');"
             )
 
             statement.execute()
@@ -73,7 +79,7 @@ class MysqlAdRepository : IAdRepository {
                         resultSet.getString("advertiserName"),
                         resultSet.getString("name"),
                         resultSet.getDouble("price"),
-                        resultSet.getString("item"),
+                        b64decoder.decode(resultSet.getString("item")),
                         resultSet.getInt("account_id")
                     )
                 )

@@ -10,6 +10,7 @@ import com.miguel.values.Strings
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.*
+import kotlin.properties.Delegates
 
 object MarketManager {
 
@@ -17,8 +18,12 @@ object MarketManager {
 
     private val sadController = SAdController(MysqlAdRepository())
 
+    private var lastId by Delegates.notNull<Int>()
+
     fun init() {
         ads.addAll(sadController.getAll())
+
+        lastId = if (ads.isEmpty()) 0 else ads.last().id
     }
 
     fun save() {
@@ -119,7 +124,7 @@ object MarketManager {
             val itemInMainHand = player.inventory.itemInMainHand
 
             val ad = SAd(
-                id = if (ads.isEmpty()) 1 else ads.last().id + 1,
+                id = ++lastId,
                 advertiserName = player.name,
                 name = name,
                 price = price,

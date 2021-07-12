@@ -2,6 +2,8 @@ package com.miguel.game.manager
 
 import com.miguel.game.market.MarketManager
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
+import net.kyori.adventure.text.format.TextColor
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -9,7 +11,8 @@ import org.bukkit.inventory.Inventory
 
 object InventoryManager {
 
-    private val adBaseInventory = Bukkit.createInventory(null, 54, Component.text("§aAnúncios"))
+    private val adBaseInventory =
+        Bukkit.createInventory(null, 54, Component.text("Anúncios").color(TextColor.color(0, 255, 0)))
 
     fun init() {
         adBaseInventory.setItem(0, GameManager.createItem("§fSem página anterior.", Material.RED_DYE))
@@ -65,7 +68,8 @@ object InventoryManager {
         when (type) {
 
             InventoryType.MARKET -> {
-                val marketInventory = Bukkit.createInventory(player, 27, Component.text("§e§rMercado"))
+                val marketInventory =
+                    Bukkit.createInventory(player, 27, Component.text("Mercado", NamedTextColor.YELLOW))
 
                 marketInventory.setItem(
                     12, GameManager.createItem(
@@ -115,7 +119,9 @@ object InventoryManager {
         val inventory = Bukkit.createInventory(
             player,
             adBaseInventory.size,
-            Component.text("§aAnúncios §fPágina §e${page}")
+            Component.text("Anúncios ", NamedTextColor.GREEN)
+                .append(Component.text("Página ", NamedTextColor.WHITE))
+                .append(Component.text("$page", NamedTextColor.YELLOW))
         )
 
         inventory.contents = adBaseInventory.contents

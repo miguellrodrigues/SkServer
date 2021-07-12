@@ -3,20 +3,15 @@ package com.miguel.game.manager
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.WrappedChatComponent
-import com.google.gson.Gson
 import com.miguel.Main
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.event.HoverEvent
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
-import java.util.*
 
 object GameManager {
-
-    private val gson = Gson()
 
     fun getPlayers(): List<Player> {
         return Bukkit.getOnlinePlayers().toList()
@@ -84,13 +79,11 @@ object GameManager {
         return stack
     }
 
-    fun serializeItem(item: ItemStack): String {
-        val serializeAsBytes = item.serializeAsBytes()
-
-        return String(Base64.getEncoder().encode(serializeAsBytes))
+    fun serializeItem(item: ItemStack): ByteArray {
+        return item.serializeAsBytes()
     }
 
-    fun deserializeItem(src: String): ItemStack {
-        return ItemStack.deserializeBytes(Base64.getDecoder().decode(src))
+    fun deserializeItem(src: ByteArray): ItemStack {
+        return ItemStack.deserializeBytes(src)
     }
 }

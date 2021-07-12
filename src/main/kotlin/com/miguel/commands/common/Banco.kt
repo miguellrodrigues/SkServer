@@ -115,7 +115,10 @@ class Banco : BukkitCommand("banco") {
 
                                                     if (filtered.isNotEmpty()) {
                                                         filtered.forEach {
-                                                            inventory.setItem(inventory.indexOf(it), ItemStack(Material.AIR))
+                                                            inventory.setItem(
+                                                                inventory.indexOf(it),
+                                                                ItemStack(Material.AIR)
+                                                            )
                                                         }
                                                         deposit += BankManager.deposit(sender, filtered.toTypedArray())
                                                     }

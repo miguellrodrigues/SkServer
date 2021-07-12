@@ -52,11 +52,15 @@ class InventoryEvents : Listener {
 
                     else -> {
                         if (!currentItem.type.name.lowercase(Locale.getDefault()).contains("glass")) {
-                            val itemMeta = currentItem.itemMeta!!
+                            val itemMeta = currentItem.itemMeta
 
-                            val id = PlainTextComponentSerializer.plainText().serialize(itemMeta.lore()!![7]).toInt()
+                            val id =
+                                itemMeta.lore()?.get(7)?.let {
+                                    PlainTextComponentSerializer.plainText().serialize(it).replace(" §fID §e", "")
+                                        .toInt()
+                                }
 
-                            val ad = MarketManager.getById(id)
+                            val ad = MarketManager.getById(id!!)
 
                             if (ad.advertiserName.lowercase() == player.name.lowercase()) return
 
@@ -64,29 +68,27 @@ class InventoryEvents : Listener {
                         }
                     }
                 }
+            }
 
-            } else {
-                when (title) {
-                    "mercado" -> {
-                        when (currentItem.type) {
-                            Material.KNOWLEDGE_BOOK -> {
-                                if (MarketManager.getAllAds().isEmpty()) {
-                                    player.sendMessage("${Strings.MARKET_PREFIX}Nenhum anúncio encontrado")
-                                    player.closeInventory()
-                                } else {
-                                    InventoryManager.createInventory(player, InventoryManager.InventoryType.ADS)
-                                }
-                            }
-
-                            Material.PAPER -> {
-                                player.sendMessage("${Strings.MARKET_PREFIX} digite /anunio para anunciar")
+            when (title) {
+                "mercado" -> {
+                    when (currentItem.type) {
+                        Material.KNOWLEDGE_BOOK -> {
+                            if (MarketManager.getAllAds().isEmpty()) {
+                                player.sendMessage("${Strings.MARKET_PREFIX}Nenhum anúncio encontrado")
                                 player.closeInventory()
-                            }
-
-                            else -> {
+                            } else {
+                                InventoryManager.createInventory(player, InventoryManager.InventoryType.ADS)
                             }
                         }
 
+                        Material.PAPER -> {
+                            player.sendMessage("${Strings.MARKET_PREFIX} digite /anunio para anunciar")
+                            player.closeInventory()
+                        }
+
+                        else -> {
+                        }
                     }
                 }
             }

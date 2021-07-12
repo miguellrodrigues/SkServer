@@ -38,10 +38,12 @@ class Home : BukkitCommand("home") {
                     playerHomes.forEach {
                         val component = Component.text("§e- §fNome §b» §f§r${it.name}")
 
-                        component.clickEvent(ClickEvent.clickEvent(
-                            ClickEvent.Action.RUN_COMMAND,
-                            "/home go ${it.name}"
-                        ))
+                        component.clickEvent(
+                            ClickEvent.clickEvent(
+                                ClickEvent.Action.RUN_COMMAND,
+                                "/home go ${it.name}"
+                            )
+                        )
 
                         component.hoverEvent(
                             net.kyori.adventure.text.event.HoverEvent.hoverEvent(
