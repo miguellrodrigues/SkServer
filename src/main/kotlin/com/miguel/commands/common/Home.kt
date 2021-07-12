@@ -7,6 +7,7 @@ import net.kyori.adventure.audience.MessageType
 import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.event.ClickEvent
+import net.kyori.adventure.text.event.HoverEvent
 import org.bukkit.Sound
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
@@ -37,20 +38,17 @@ class Home : BukkitCommand("home") {
 
                     playerHomes.forEach {
                         val component = Component.text("§e- §fNome §b» §f§r${it.name}")
-
-                        component.clickEvent(
-                            ClickEvent.clickEvent(
-                                ClickEvent.Action.RUN_COMMAND,
-                                "/home go ${it.name}"
+                            .hoverEvent(
+                                HoverEvent.hoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT,
+                                    Component.text("§fClique para ir a esta home!")
+                                )
+                            ).clickEvent(
+                                ClickEvent.clickEvent(
+                                    ClickEvent.Action.RUN_COMMAND,
+                                    "/home go ${it.name}"
+                                )
                             )
-                        )
-
-                        component.hoverEvent(
-                            net.kyori.adventure.text.event.HoverEvent.hoverEvent(
-                                net.kyori.adventure.text.event.HoverEvent.Action.SHOW_TEXT,
-                                Component.text("§eClique para ir a esta home!")
-                            )
-                        )
 
                         sender.sendMessage(
                             Identity.nil(),

@@ -46,7 +46,7 @@ object MarketManager {
         if (ads.isNotEmpty()) {
             playerAds.addAll(
                 ads.filter {
-                    it.advertiserName.lowercase() == player.name.lowercase()
+                    it.advertiserName.lowercase() == player.name.lowercase() && !it.delete
                 }
             )
         }
