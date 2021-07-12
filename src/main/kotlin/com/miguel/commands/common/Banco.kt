@@ -84,9 +84,9 @@ class Banco : BukkitCommand("banco") {
                         "depositar" -> {
                             val itemInMainHand = inventory.itemInMainHand
 
-                            if (BankManager.currencyExist(itemInMainHand.type)) {
-                                when (args[1]) {
-                                    "." -> {
+                            when (args[1]) {
+                                "." -> {
+                                    if (BankManager.currencyExist(itemInMainHand.type)) {
                                         val filtered = inventory.contents
                                             .filterNotNull()
                                             .filter { it.type == itemInMainHand.type }
@@ -100,37 +100,38 @@ class Banco : BukkitCommand("banco") {
 
                                             sender.sendMessage("${Strings.PREFIX} §fVocê depositou §e$deposit §aUkranianinho's")
                                         }
-                                    }
-
-                                    "*" -> {
-                                        var deposit = .0
-
-                                        inventory.contents
-                                            .filterNotNull()
-                                            .forEach { inventoryItem ->
-                                                if (BankManager.currencyExist(inventoryItem.type)) {
-                                                    val filtered = inventory.contents
-                                                        .filterNotNull()
-                                                        .filter { it.type == itemInMainHand.type }
-
-                                                    if (filtered.isNotEmpty()) {
-                                                        filtered.forEach {
-                                                            inventory.setItem(
-                                                                inventory.indexOf(it),
-                                                                ItemStack(Material.AIR)
-                                                            )
-                                                        }
-                                                        deposit += BankManager.deposit(sender, filtered.toTypedArray())
-                                                    }
-                                                }
-                                            }
-                                        if (deposit != .0) {
-                                            sender.sendMessage("${Strings.PREFIX} §fVocê depositou §e$deposit §aUkranianinho's")
-                                        }
+                                    } else {
+                                        sender.sendMessage("§cMoeda inválida !")
                                     }
                                 }
-                            } else {
-                                sender.sendMessage("§cMoeda inválida !")
+
+                                "*" -> {
+                                    var deposit = .0
+
+                                    inventory.contents
+                                        .filterNotNull()
+                                        .forEach { inventoryItem ->
+                                            if (BankManager.currencyExist(inventoryItem.type)) {
+                                                val filtered = inventory.contents
+                                                    .filterNotNull()
+                                                    .filter { it.type == itemInMainHand.type }
+
+                                                if (filtered.isNotEmpty()) {
+                                                    filtered.forEach {
+                                                        inventory.setItem(
+                                                            inventory.indexOf(it),
+                                                            ItemStack(Material.AIR)
+                                                        )
+                                                    }
+
+                                                    deposit += BankManager.deposit(sender, filtered.toTypedArray())
+                                                }
+                                            }
+                                        }
+                                    if (deposit != .0) {
+                                        sender.sendMessage("${Strings.PREFIX} §fVocê depositou §e$deposit §aUkranianinho's")
+                                    }
+                                }
                             }
                         }
 
