@@ -1,7 +1,7 @@
 package com.miguel.entities
 
+import com.miguel.game.manager.GameManager
 import net.kyori.adventure.text.Component
-import org.bukkit.Material
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 
@@ -10,14 +10,18 @@ data class SAd(
     val advertiserName: String,
     val name: String,
     val price: Double,
-    val amount: Int,
-    val material: String,
+    val item: String,
     val account_id: Int,
     var delete: Boolean = false
 ) {
 
     fun icon(): ItemStack {
-        val stack = ItemStack(Material.getMaterial(material)!!)
+        val adStack = GameManager.deserializeItem(item)
+
+        val stack = ItemStack(adStack.type)
+        adStack.enchantments.forEach { (t, u) ->
+            stack.addEnchantment(t, u)
+        }
 
         val itemMeta = stack.itemMeta!!
 
@@ -27,7 +31,7 @@ data class SAd(
             " ",
             " §fAnunciante ↣ §e${advertiserName}",
             " §fPreço ↣ §e${price} §aUkranianinho`s",
-            " §fQuantidade ↣ §e${amount}",
+            " §fQuantidade ↣ §e${adStack.amount}",
             " ",
             " §aClique para comprar §f!",
             " ",
@@ -36,13 +40,14 @@ data class SAd(
 
         itemMeta.lore(desc.map { Component.text(it) })
 
-        itemMeta.itemFlags.addAll(ItemFlag.values())
+        itemMeta.itemFlags.clear()
+        itemMeta.itemFlags.addAll(listOf(ItemFlag.HIDE_ATTRIBUTES))
         stack.itemMeta = itemMeta
 
         return stack
     }
 
     override fun toString(): String {
-        return "SAd(id=$id, advertiserName='$advertiserName', name='$name', price=$price, amount=$amount, material='$material', account_id=$account_id, delete=$delete)"
+        return "SAd(id=$id, advertiserName='$advertiserName', name='$name', item=$item, price=$price, account_id=$account_id, delete=$delete)"
     }
 }

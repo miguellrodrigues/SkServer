@@ -13,8 +13,8 @@ class MysqlAdRepository : IAdRepository {
     override fun create(ad: SAd) {
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "INSERT INTO $database.$table(id, advertiserName, name, price, amount, material, account_id) VALUES " +
-                        "('${ad.id}', '${ad.advertiserName}', '${ad.name}', '${ad.price}', '${ad.amount}', '${ad.material}', '${ad.account_id}');"
+                "INSERT INTO $database.$table(id, advertiserName, name, price, item, account_id) VALUES " +
+                        "('${ad.id}', '${ad.advertiserName}', '${ad.name}', '${ad.price}', '${ad.item}', '${ad.account_id}');"
             )
 
             statement.execute()
@@ -74,8 +74,7 @@ class MysqlAdRepository : IAdRepository {
                         resultSet.getString("advertiserName"),
                         resultSet.getString("name"),
                         resultSet.getDouble("price"),
-                        resultSet.getInt("amount"),
-                        resultSet.getString("material"),
+                        resultSet.getString("item"),
                         resultSet.getInt("account_id")
                     )
                 )

@@ -11,6 +11,8 @@ repositories {
     mavenLocal()
 
     maven { url "https://repo.dmulloy2.net/repository/public/" }
+
+    maven { url 'https://papermc.io/repo/repository/maven-public/' }
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -19,8 +21,9 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     testImplementation 'org.jetbrains.kotlin:kotlin-test'
 
-    compileOnly("papermc.io:paper_patched:1.17")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.6.0")
+    //compileOnly("papermc.io:paper_patched:1.17")
+    compileOnly 'io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT'
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
 }
 
 test {

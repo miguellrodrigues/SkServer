@@ -31,7 +31,7 @@ class PlayerEvents : Listener {
         GameManager.sendTab(
             player,
             "${Strings.PREFIX} \n §7Servidor §fOficial \n\n",
-            "\n§7Discord: §fhttps://discord.gg/J33egdFkNx\n§7Tenha um bom jogo!"
+            "\n                                          \n§7Tenha um bom jogo!"
         )
 
         player.sendTitle(Strings.PREFIX, "Seja bem vindo, §f${player.name}", 20, 100, 20)

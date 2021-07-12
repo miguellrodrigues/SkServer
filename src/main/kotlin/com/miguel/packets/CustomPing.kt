@@ -5,7 +5,9 @@ import com.comphenix.protocol.events.ListenerPriority
 import com.comphenix.protocol.events.PacketAdapter
 import com.comphenix.protocol.events.PacketEvent
 import com.comphenix.protocol.wrappers.WrappedGameProfile
+import com.comphenix.protocol.wrappers.WrappedServerPing
 import com.miguel.Main
+import com.miguel.values.Strings
 import org.bukkit.Bukkit
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
@@ -37,7 +39,7 @@ class CustomPing(plugin: JavaPlugin, lines: Array<String>) {
                         )
 
                         serverPing.versionProtocol = 1
-                        serverPing.versionName = "§f§lQuase uma §eSk"
+                        serverPing.versionName = Strings.PREFIX
 
                         packet?.serverPings?.write(0, serverPing)
                     }

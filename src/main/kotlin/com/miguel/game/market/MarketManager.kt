@@ -7,12 +7,8 @@ import com.miguel.game.manager.GameManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.repository.impl.MysqlAdRepository
 import com.miguel.values.Strings
-import net.minecraft.server.network.PlayerConnection
 import org.bukkit.Bukkit
-import org.bukkit.Material
-import org.bukkit.craftbukkit.v1_17_R1.entity.CraftPlayer
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
 import java.util.*
 
 object MarketManager {
@@ -78,10 +74,7 @@ object MarketManager {
 
     fun purchase(player: Player, ad: SAd) {
         if (BankManager.withDraw(player.uniqueId, ad.price)) {
-            val item = ItemStack(Material.getMaterial(ad.material)!!)
-            item.amount = ad.amount
-
-            player.inventory.addItem(item)
+            player.inventory.addItem(GameManager.deserializeItem(ad.item))
 
             ads[ads.indexOf(ad)].delete = true
 
@@ -112,6 +105,8 @@ object MarketManager {
             ads[ads.indexOf(ad)].delete = true
 
             player.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
+
+            player.inventory.addItem(GameManager.deserializeItem(ad.item))
         }
     }
 
@@ -125,11 +120,10 @@ object MarketManager {
 
             val ad = SAd(
                 id = if (ads.isEmpty()) 1 else ads.last().id + 1,
-                advertiserName = (player as CraftPlayer).name,
+                advertiserName = player.name,
                 name = name,
                 price = price,
-                amount = itemInMainHand.amount,
-                material = itemInMainHand.type.name,
+                item = GameManager.serializeItem(itemInMainHand),
                 account_id = PlayerManager.getAccountId(player)
             )
 

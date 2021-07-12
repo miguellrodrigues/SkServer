@@ -81,8 +81,7 @@ object Mysql {
                     " `advertiserName` varchar(45) NOT NULL ,\n" +
                     " `name`           varchar(45) NOT NULL ,\n" +
                     " `price`          double NOT NULL ,\n" +
-                    " `amount`         int NOT NULL ,\n" +
-                    " `material`       varchar(45) NOT NULL ,\n" +
+                    " `item`           TEXT NOT NULL ,\n" +
                     " `account_id`     int NOT NULL ,\n" +
                     "\n" +
                     "PRIMARY KEY (`id`),\n" +

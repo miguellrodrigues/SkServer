@@ -3,15 +3,24 @@ package com.miguel.game.manager
 import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.WrappedChatComponent
+import com.google.gson.Gson
+import com.google.gson.JsonParser
 import com.miguel.Main
 import net.kyori.adventure.text.Component
+import org.apache.commons.lang.StringEscapeUtils
 import org.bukkit.Bukkit
 import org.bukkit.Material
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.ItemMeta
+import org.bukkit.material.MaterialData
+import java.util.*
 
 object GameManager {
+
+    private val gson = Gson()
 
     fun getPlayers(): List<Player> {
         return Bukkit.getOnlinePlayers().toList()
@@ -54,28 +63,11 @@ object GameManager {
         return stack
     }
 
-    fun createItem(name: String, type: Material, data: Byte): ItemStack {
-        val stack = ItemStack(type)
-
-        if (data >= 0) {
-            stack.data = type.getNewData(data)
-            stack.durability = data.toShort()
-        }
-
-        val itemMeta = stack.itemMeta!!
-        itemMeta.setDisplayName(name)
-        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
-
-        stack.itemMeta = itemMeta
-
-        return stack
-    }
-
     fun createItem(name: String, type: Material): ItemStack {
         val stack = ItemStack(type)
 
         val itemMeta = stack.itemMeta!!
-        itemMeta.setDisplayName(name)
+        itemMeta.displayName(Component.text(name))
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
 
         stack.itemMeta = itemMeta
@@ -83,4 +75,13 @@ object GameManager {
         return stack
     }
 
+    fun serializeItem(item: ItemStack): String {
+        val serializeAsBytes = item.serializeAsBytes()
+
+        return String(Base64.getEncoder().encode(serializeAsBytes))
+    }
+
+    fun deserializeItem(src: String): ItemStack {
+        return ItemStack.deserializeBytes(Base64.getDecoder().decode(src))
+    }
 }

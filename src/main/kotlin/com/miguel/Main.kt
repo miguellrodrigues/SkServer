@@ -76,7 +76,7 @@ class Main : JavaPlugin() {
 
         CommandManager.register(GameCommands::class.java)
 
-        Thread(AutoMessage(120)).start()
+        //Thread(AutoMessage(120)).start()
         Thread(TagManager()).start()
 
         CustomPing(
