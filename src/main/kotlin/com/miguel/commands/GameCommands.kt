@@ -19,7 +19,7 @@ class GameCommands {
         aliases = ["tag", "tg"],
         description = "Selecione uma tag",
         permission = Permission.NONE,
-        usage = "/sk tag [tag]",
+        usage = "/sv tag [tag]",
         min = 0,
         max = 1,
         console = false
@@ -52,7 +52,7 @@ class GameCommands {
                     ).clickEvent(
                         net.kyori.adventure.text.event.ClickEvent.clickEvent(
                             net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND,
-                            "/sk tag " + tagCommon.name.replace("_", "").lowercase(Locale.getDefault())
+                            "/svl tag " + tagCommon.name.replace("_", "").lowercase(Locale.getDefault())
                         )
                     )
 
@@ -66,7 +66,7 @@ class GameCommands {
             }
 
             sender.sendMessage(" ")
-            sender.sendMessage("§fUse §7/sk §ftag §a<§eNome da Tag§e> §fOu clique na §eTag §fDesejada")
+            sender.sendMessage("§fUse §7/svl §ftag §a<§eNome da Tag§e> §fOu clique na §eTag §fDesejada")
         } else if (strings.size == 1) {
             val player = sender as Player
 
@@ -111,7 +111,7 @@ class GameCommands {
         aliases = ["clearchat", "cc"],
         description = "Selecione uma tag",
         permission = Permission.CLEAR_CHAT,
-        usage = "/sk cc",
+        usage = "/svl cc",
         min = 0,
         max = 0,
         console = false
@@ -128,7 +128,7 @@ class GameCommands {
         aliases = ["chat", "ch"],
         description = "Ativa ou desativa o chat",
         permission = Permission.CHAT,
-        usage = "/sk chat",
+        usage = "/svl chat",
         min = 0,
         max = 0,
         console = false
@@ -147,7 +147,7 @@ class GameCommands {
         aliases = ["dano", "dn"],
         description = "Ativa ou desativa o dano",
         permission = Permission.DAMAGE,
-        usage = "/sk damage",
+        usage = "/svl damage",
         min = 0,
         max = 0,
         console = false

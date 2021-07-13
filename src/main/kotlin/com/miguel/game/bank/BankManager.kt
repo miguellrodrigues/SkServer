@@ -64,9 +64,36 @@ object BankManager {
         }
     }
 
+    fun deposit(uuid: UUID, amount: Double) {
+        PlayerManager.changeBalance(uuid, amount)
+    }
+
+    fun withdraw(uuid: UUID, amount: Double) {
+        PlayerManager.changeBalance(uuid, -amount)
+    }
+
+    fun deposit(account: Int, amount: Double) {
+        PlayerManager.changeBalance(account, amount)
+    }
+
+    fun withdraw(account: Int, amount: Double) {
+        PlayerManager.changeBalance(account, -amount)
+    }
+
     private fun isValidCurrencyItem(item: ItemStack): Boolean {
         val name = item.itemMeta?.displayName()?.let { PlainTextComponentSerializer.plainText().serialize(it) }
         return name.equals("Ukranianinho")
+    }
+
+    fun withDraw(uuid: UUID, value: Double): Boolean {
+        val balance = PlayerManager.getBalance(uuid)
+
+        if (balance >= value) {
+            PlayerManager.changeBalance(uuid, -value)
+            return true
+        }
+
+        return false
     }
 
     fun withDraw(player: Player, value: Double) {
@@ -155,17 +182,6 @@ object BankManager {
         if (recharge != .0) {
             player.sendMessage("§e$recharge §aUkranianinho's §fRetidos: Você está sem espaço em seu inventário")
         }
-    }
-
-    fun withDraw(uuid: UUID, value: Double): Boolean {
-        val balance = PlayerManager.getBalance(uuid)
-
-        if (balance >= value) {
-            PlayerManager.changeBalance(uuid, -value)
-            return true
-        }
-
-        return false
     }
 
     fun transfer(credited: Player, debited: Player, value: Double) {

@@ -9,7 +9,7 @@ import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class CommandExecutor : BukkitCommand("sk") {
+class CommandExecutor : BukkitCommand("svl") {
 
     private val cooldownMap = HashMap<UUID, Long>()
 
@@ -62,7 +62,7 @@ class CommandExecutor : BukkitCommand("sk") {
         CommandManager.execute(command, sender, commandArgs)
 
         if (sender is Player) {
-            if (!sender.hasPermission("sk.commandflow")) {
+            if (!sender.hasPermission("svl.commandflow")) {
                 setCooldown(sender, 5)
             }
         }
