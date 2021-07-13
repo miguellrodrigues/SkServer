@@ -106,10 +106,15 @@ class Banco : BukkitCommand("banco") {
                                 }
 
                                 "*" -> {
-                                    val deposit = BankManager.deposit(sender, inventory.contents
+                                    val items = inventory.contents
                                         .filterNotNull()
                                         .filter { BankManager.currencyExist(it.type) }.toTypedArray()
+
+                                    val deposit = BankManager.deposit(
+                                        sender, items
                                     )
+
+                                    items.forEach { inventory.setItem(inventory.indexOf(it), ItemStack(Material.AIR)) }
 
                                     if (deposit != .0) {
                                         sender.sendMessage("${Strings.PREFIX} §fVocê depositou §e$deposit §aUkranianinho's")

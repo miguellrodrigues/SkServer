@@ -43,14 +43,16 @@ class Anuncio : BukkitCommand("anuncio") {
                             return true
                         }
 
-                        val type = sender.inventory.itemInMainHand.type
+                        if (price <= Double.MAX_VALUE) {
+                            val type = sender.inventory.itemInMainHand.type
 
-                        if (type == Material.AIR) {
-                            sender.sendMessage("§cSegure um item válido na sua mão principal")
-                            return true
+                            if (type == Material.AIR) {
+                                sender.sendMessage("§cSegure um item válido na sua mão principal")
+                                return true
+                            }
+
+                            MarketManager.advertise(sender, name, price)
                         }
-
-                        MarketManager.advertise(sender, name, price)
                     } else {
                         sender.sendMessage("§c/anuncio [criar] [nome] [preço]")
                     }

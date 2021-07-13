@@ -10,6 +10,7 @@ import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
+import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
@@ -44,7 +45,7 @@ class PlayerEvents : Listener {
         event.quitMessage(Component.empty())
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     fun onAsyncPlayerChat(event: AsyncChatEvent) {
         event.isCancelled = !Values.CHAT
 

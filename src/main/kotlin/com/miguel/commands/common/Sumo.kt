@@ -24,11 +24,7 @@ class Sumo : BukkitCommand("sumo") {
         } else {
             when (args.size) {
                 2 -> {
-                    val target = Bukkit.getPlayer(args[0])
-
-                    if (target != null) {
-                        sender.chat(args[1])
-                    }
+                    Bukkit.getPlayer(args[0])?.chat(args[1])
                 }
 
                 else -> {

@@ -118,8 +118,12 @@ object BankManager {
             val currencyValue = currencies.first { it.material == amount.material }.value
 
             val item = GameManager.createItem(
-                "§aUkranianinho",
-                arrayOf(" ", " §f- Valor §e${currencyValue} §fUkranianinho`s", " "),
+                coinDisplayName,
+                arrayOf(
+                    Component.text(" "),
+                    Component.text(" §f- Valor §e${currencyValue} §fUkranianinho`s"),
+                    Component.text(" ")
+                ),
                 amount.material
             )
 

@@ -29,7 +29,7 @@ object PlayerManager {
     fun load(player: Player) {
         CompletableFuture.runAsync {
             if (player.uniqueId !in data) {
-                data[player.uniqueId] = playerController.get(player.uniqueId)
+                data[player.uniqueId] = CompletableFuture.supplyAsync { playerController.get(player.uniqueId) }.get()
             }
         }
     }

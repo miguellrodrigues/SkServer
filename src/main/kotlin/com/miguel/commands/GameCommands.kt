@@ -6,10 +6,9 @@ import com.miguel.common.command.Permission
 import com.miguel.game.manager.GameManager
 import com.miguel.values.Strings
 import com.miguel.values.Values
-import net.md_5.bungee.api.chat.ClickEvent
-import net.md_5.bungee.api.chat.HoverEvent
-import net.md_5.bungee.api.chat.TextComponent
-import net.md_5.bungee.api.chat.hover.content.Text
+import net.kyori.adventure.audience.MessageType
+import net.kyori.adventure.identity.Identity
+import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import java.util.*
@@ -43,21 +42,27 @@ class GameCommands {
             sender.sendMessage(" ")
 
             tags.forEach { tagCommon ->
-                val component = TextComponent(
-                    tagCommon.nameColor
-                            + tagCommon.name.replace("_", "").uppercase(Locale.getDefault())
+                val component = Component.text(tagCommon.nameColor
+                        + tagCommon.name.replace("_", "").uppercase(Locale.getDefault()))
+                    .hoverEvent(
+                        net.kyori.adventure.text.event.HoverEvent.hoverEvent(
+                            net.kyori.adventure.text.event.HoverEvent.Action.SHOW_TEXT,
+                            Component.text("§eClique para selecionar esta tag!")
+                        )
+                    ).clickEvent(
+                        net.kyori.adventure.text.event.ClickEvent.clickEvent(
+                            net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND,
+                            "/sk tag " + tagCommon.name.replace("_", "").lowercase(Locale.getDefault())
+                        )
+                    )
+
+                sender.sendMessage(
+                    Identity.nil(),
+                    component,
+                    MessageType.CHAT
                 )
 
-                component.clickEvent = ClickEvent(
-                    ClickEvent.Action.RUN_COMMAND,
-                    "/sk tag " + tagCommon.name.replace("_", "").lowercase(Locale.getDefault())
-                )
-                component.hoverEvent = HoverEvent(
-                    HoverEvent.Action.SHOW_TEXT,
-                    Text("§eClique para selecionar esta tag!")
-                )
-
-                (sender as Player).spigot().sendMessage(component)
+                sender.sendMessage(component)
             }
 
             sender.sendMessage(" ")
