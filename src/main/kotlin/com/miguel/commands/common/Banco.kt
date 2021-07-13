@@ -4,12 +4,14 @@ import com.miguel.common.command.Permission
 import com.miguel.game.bank.BankManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 class Banco : BukkitCommand("banco") {
 
@@ -20,7 +22,9 @@ class Banco : BukkitCommand("banco") {
         }
 
         if (args.isEmpty()) {
-            sender.sendMessage("§c/banco [saldo | sacar | depositar] [valor]")
+            sender.sendMessage("§f/banco §a[§binfo§a]")
+            sender.sendMessage("§f/banco §a[§bsaldo§a] §a[§fvalor§a]")
+            sender.sendMessage("§f/banco §a[§bsaldo§a] §a[§fcreditado/conta§a] §a[§fvalor§a]")
         } else {
             val inventory = sender.inventory
 
@@ -29,7 +33,10 @@ class Banco : BukkitCommand("banco") {
                     val option = args[0]
 
                     when (option.lowercase(Locale.getDefault())) {
-                        "saldo" -> {
+                        "info" -> {
+                            sender.sendMessage(" ")
+                            sender.sendMessage("${Strings.MESSAGE_PREFIX} §fID da sua conta§e: §a${PlayerManager.getAccountId(sender)}")
+
                             sender.sendMessage(
                                 "${Strings.MESSAGE_PREFIX} Seu saldo é de §e${
                                     PlayerManager.getBalance(
@@ -37,6 +44,8 @@ class Banco : BukkitCommand("banco") {
                                     )
                                 } §aUkranianinho`s"
                             )
+
+                            sender.sendMessage(" ")
                         }
 
                         "depositar" -> {
@@ -124,6 +133,58 @@ class Banco : BukkitCommand("banco") {
                         }
 
                         else -> {
+                        }
+                    }
+                }
+
+                3 -> {
+                    val option = args[0]
+
+                    when (option.lowercase(Locale.getDefault())) {
+                        "transferir" -> {
+                            val credited = Bukkit.getPlayer(args[1])
+
+                            if (credited != null) {
+                                if (credited == sender) {
+                                    sender.sendMessage("§cVocê não pode realizar transferências para si mesmo !")
+                                    return true
+                                }
+
+                                val value: Double
+
+                                try {
+                                    value = args[2].toDouble()
+                                } catch (e: NumberFormatException) {
+                                    sender.sendMessage("§cUtilize apenas números no valor de transferência !")
+                                    return true
+                                }
+
+                                BankManager.transfer(credited, sender, value)
+                            } else {
+                                val creditedAccount: Int
+                                val value: Double
+
+                                try {
+                                    creditedAccount = args[1].toInt()
+                                    value = args[2].toDouble()
+                                }catch (e: java.lang.NumberFormatException) {
+                                    sender.sendMessage("§cConta e/ou valor inválido(s) !")
+                                    return true
+                                }
+
+                                if (creditedAccount == PlayerManager.getAccountId(sender)) {
+                                    sender.sendMessage("§cVocê não pode realizar transferências para si mesmo !")
+                                    return true
+                                }
+
+                                CompletableFuture.runAsync {
+                                    if (PlayerManager.isValidAccount(creditedAccount).get()) {
+                                        BankManager.transfer(creditedAccount, sender, value)
+                                    } else {
+                                        sender.sendMessage("§cConta inexistente !")
+                                    }
+                                }
+                            }
                         }
                     }
                 }

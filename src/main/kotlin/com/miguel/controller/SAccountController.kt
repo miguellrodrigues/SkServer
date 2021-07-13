@@ -12,6 +12,10 @@ class SAccountController(
         return accountRepository.create(account)
     }
 
+    fun exist(id: Int): Boolean {
+        return accountRepository.exist(id)
+    }
+
     fun save(account: SAccount) {
         accountRepository.save(account)
     }
@@ -22,9 +26,7 @@ class SAccountController(
 
     fun changeBalance(id: Int, balance: Double) {
         CompletableFuture.runAsync {
-            val b = accountRepository.getBalance(id)
-
-            accountRepository.setBalance(id, b + balance)
+            accountRepository.setBalance(id, accountRepository.getBalance(id) + balance)
         }
     }
 }

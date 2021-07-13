@@ -42,7 +42,7 @@ object PlayerManager {
         return getAccount(uuid)?.balance ?: .0
     }
 
-    fun setBalance(uuid: UUID, balance: Double) {
+    private fun setBalance(uuid: UUID, balance: Double) {
         data[uuid]?.account?.balance = balance
     }
 
@@ -52,6 +52,10 @@ object PlayerManager {
 
     fun changeBalance(account_id: Int, amount: Double) {
         playerController.accountController.changeBalance(account_id, amount)
+    }
+
+    fun isValidAccount(id: Int): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync { playerController.accountController.exist(id) }
     }
 
     fun getHomes(uuid: UUID): List<SHome> {

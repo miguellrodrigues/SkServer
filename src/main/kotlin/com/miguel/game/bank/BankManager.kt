@@ -75,7 +75,7 @@ object BankManager {
         if (balance >= value) {
             val decompose = decompose(value)
 
-            withDraw(player.uniqueId, value)
+            var recharge = .0
 
             decompose.forEach { amount ->
                 val currencyValue = currencies.first { it.material == amount.material }.value
@@ -100,12 +100,18 @@ object BankManager {
                     if (player.enderChest.firstEmpty() != -1) {
                         player.enderChest.addItem(item)
                     } else {
-                        player.world.dropItem(player.location, item)
+                        recharge += currencyValue * item.amount
                     }
                 }
             }
 
             player.sendMessage("§aSaque realizado com sucesso !")
+
+            if (recharge != .0) {
+                player.sendMessage("§e$recharge §aUkranianinho's §fRetidos: Você está sem espaço em seu inventário")
+            }
+
+            withDraw(player.uniqueId, value - recharge)
         } else {
             player.sendMessage("§cSaldo insuficiente !")
         }
@@ -113,6 +119,8 @@ object BankManager {
 
     fun print(player: Player, value: Double) {
         val decompose = decompose(value)
+
+        var recharge = .0
 
         decompose.forEach { amount ->
             val currencyValue = currencies.first { it.material == amount.material }.value
@@ -137,12 +145,16 @@ object BankManager {
                 if (player.enderChest.firstEmpty() != -1) {
                     player.enderChest.addItem(item)
                 } else {
-                    player.world.dropItem(player.location, item)
+                    recharge += currencyValue * item.amount
                 }
             }
         }
 
         player.sendMessage("§aImpressão realizada com sucesso !")
+
+        if (recharge != .0) {
+            player.sendMessage("§e$recharge §aUkranianinho's §fRetidos: Você está sem espaço em seu inventário")
+        }
     }
 
     fun withDraw(uuid: UUID, value: Double): Boolean {
@@ -154,6 +166,33 @@ object BankManager {
         }
 
         return false
+    }
+
+    fun transfer(credited: Player, debited: Player, value: Double) {
+        val balance = PlayerManager.getBalance(debited.uniqueId)
+
+        if (balance >= value) {
+            PlayerManager.changeBalance(debited.uniqueId, -value)
+            PlayerManager.changeBalance(credited.uniqueId, value)
+
+            debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara o jogador §b${credited.name}")
+            credited.sendMessage("${Strings.PREFIX} §fVocê recebeu §e$value §aUkranianinhos §fdo jogador §b${debited.name}")
+        } else {
+            debited.sendMessage("§cSaldo insuficiente !")
+        }
+    }
+
+    fun transfer(credited: Int, debited: Player, value: Double) {
+        val balance = PlayerManager.getBalance(debited.uniqueId)
+
+        if (balance >= value) {
+            PlayerManager.changeBalance(debited.uniqueId, -value)
+            PlayerManager.changeBalance(credited, value)
+
+            debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
+        } else {
+            debited.sendMessage("§cSaldo insuficiente !")
+        }
     }
 
     private fun decompose(value: Double): Array<Amount> {
