@@ -226,7 +226,7 @@ class Banco : BukkitCommand("banco") {
                                     }
 
                                     BankManager.deposit(toInject.uniqueId, value)
-                                    sender.sendMessage("${Strings.PREFIX} §fVocê injetou §e$value §aUkranianinhos §fpara a conta do jogador §b${toInject.name}")
+                                    sender.sendMessage("${Strings.PREFIX} §fVocê injetou §e$value §aUkranianinhos §fna conta do jogador §b${toInject.name}")
                                 } else {
                                     val creditedAccount: Int
                                     val value: Double
