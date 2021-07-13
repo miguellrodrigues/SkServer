@@ -12,8 +12,8 @@ class SAccountController(
         return accountRepository.create(account)
     }
 
-    fun exist(id: Int): Boolean {
-        return accountRepository.exist(id)
+    fun exist(id: Int): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync { accountRepository.exist(id) }
     }
 
     fun save(account: SAccount) {
@@ -24,8 +24,8 @@ class SAccountController(
         return accountRepository.getById(id)
     }
 
-    fun changeBalance(id: Int, balance: Double) {
-        CompletableFuture.runAsync {
+    fun changeBalance(id: Int, balance: Double): CompletableFuture<Boolean> {
+        return CompletableFuture.supplyAsync {
             accountRepository.setBalance(id, accountRepository.getBalance(id) + balance)
         }
     }

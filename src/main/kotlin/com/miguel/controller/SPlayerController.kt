@@ -5,6 +5,7 @@ import com.miguel.entities.SPlayer
 import com.miguel.game.manager.PlayerManager
 import com.miguel.repository.impl.MysqlPlayerRepository
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 class SPlayerController(
     private val playerRepository: MysqlPlayerRepository,
@@ -36,19 +37,21 @@ class SPlayerController(
         }
     }
 
-    fun get(uuid: UUID): SPlayer {
-        return if (playerRepository.exist(uuid)) {
-            SPlayer(
-                uuid = uuid,
-                account = accountController.get(playerRepository.getAccount(uuid))!!,
-                homes = homeController.getPlayerHomes(uuid)
-            )
-        } else {
-            SPlayer(
-                uuid = uuid,
-                account = SAccount(0, .0),
-                homes = arrayListOf()
-            )
+    fun get(uuid: UUID): CompletableFuture<SPlayer> {
+        return CompletableFuture.supplyAsync {
+            if (playerRepository.exist(uuid)) {
+                SPlayer(
+                    uuid = uuid,
+                    account = accountController.get(playerRepository.getAccount(uuid))!!,
+                    homes = homeController.getPlayerHomes(uuid)
+                )
+            } else {
+                SPlayer(
+                    uuid = uuid,
+                    account = SAccount(0, .0),
+                    homes = arrayListOf()
+                )
+            }
         }
     }
 }

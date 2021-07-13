@@ -4,8 +4,10 @@ import com.miguel.game.manager.GameManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextReplacementConfig
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -73,8 +75,18 @@ object BankManager {
         PlayerManager.changeBalance(uuid, -amount)
     }*/
 
-    private fun deposit(account: Int, amount: Double) {
-        PlayerManager.changeBalance(account, amount)
+    private fun deposit(account: Int, amount: Double): CompletableFuture<Boolean> {
+        val player = PlayerManager.isPlayerOnline(account)
+
+        if (player != null) {
+            deposit(player.uuid, amount)
+
+            Bukkit.getPlayer(player.uuid)
+                ?.sendMessage("${Strings.PREFIX} §fVocê recebeu uma transferência no valor de §e$amount §aUkranianinhos")
+            return CompletableFuture.supplyAsync { true }
+        }
+
+        return PlayerManager.changeBalance(account, amount)
     }
 
     /*fun withdraw(account: Int, amount: Double) {
@@ -112,7 +124,7 @@ object BankManager {
                     coinDisplayName,
                     arrayOf(
                         Component.text(" "),
-                        Component.text(" §f- Valor §e${currencyValue} §fUkranianinho`s"),
+                        Component.text(" §f- Valor §e$currencyValue §fUkranianinho`s"),
                         Component.text(" ")
                     ),
                     amount.material
@@ -200,36 +212,34 @@ object BankManager {
     }
 
     fun transfer(credited: Int, debited: Player, value: Double) {
-        CompletableFuture.supplyAsync { PlayerManager.isValidAccount(credited).get() }
-            .thenAcceptAsync { valid ->
-                if (valid) {
-                    val balance = PlayerManager.getBalance(debited.uniqueId)
+        PlayerManager.isValidAccount(credited).thenAcceptAsync { valid ->
+            if (valid) {
+                val balance = PlayerManager.getBalance(debited.uniqueId)
 
-                    if (balance >= value) {
-                        PlayerManager.changeBalance(debited.uniqueId, -value)
-                        PlayerManager.changeBalance(credited, value)
+                if (balance >= value) {
+                    PlayerManager.changeBalance(debited.uniqueId, -value)
+                    PlayerManager.changeBalance(credited, value)
 
-                        debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
-                    } else {
-                        debited.sendMessage("§cSaldo insuficiente !")
-                    }
+                    debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
                 } else {
-                    debited.sendMessage("§cConta inválida !")
+                    debited.sendMessage("§cSaldo insuficiente !")
                 }
+            } else {
+                debited.sendMessage("§cConta inválida !")
             }
+        }
     }
 
     fun inject(creditedAccount: Int, value: Double, bankManager: Player?) {
-        CompletableFuture.supplyAsync { PlayerManager.isValidAccount(creditedAccount).get() }
-            .thenAcceptAsync { valid ->
-                if (valid) {
-                    deposit(creditedAccount, value)
+        PlayerManager.isValidAccount(creditedAccount).thenAcceptAsync { valid ->
+            if (valid) {
+                deposit(creditedAccount, value).get()
 
-                    bankManager?.sendMessage("${Strings.PREFIX} §fVocê injetou §e$value §aUkranianinhos §fna conta §b${creditedAccount}")
-                } else {
-                    bankManager?.sendMessage("§cConta inválida !")
-                }
+                bankManager?.sendMessage("${Strings.PREFIX} §fVocê injetou §e$value §aUkranianinhos §fna conta §b${creditedAccount}")
+            } else {
+                bankManager?.sendMessage("§cConta inválida !")
             }
+        }
     }
 
     private fun decompose(value: Double): Array<Amount> {

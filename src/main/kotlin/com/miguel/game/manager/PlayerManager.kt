@@ -12,6 +12,7 @@ import com.miguel.repository.impl.MysqlAccountRepository
 import com.miguel.repository.impl.MysqlHomeRepository
 import com.miguel.repository.impl.MysqlLocationRepository
 import com.miguel.repository.impl.MysqlPlayerRepository
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -29,7 +30,7 @@ object PlayerManager {
     fun load(player: Player) {
         CompletableFuture.runAsync {
             if (player.uniqueId !in data) {
-                data[player.uniqueId] = CompletableFuture.supplyAsync { playerController.get(player.uniqueId) }.get()
+                data[player.uniqueId] = playerController.get(player.uniqueId).get()
             }
         }
     }
@@ -50,12 +51,12 @@ object PlayerManager {
         setBalance(uuid, getBalance(uuid) + amount)
     }
 
-    fun changeBalance(account_id: Int, amount: Double) {
-        playerController.accountController.changeBalance(account_id, amount)
+    fun changeBalance(account_id: Int, amount: Double): CompletableFuture<Boolean> {
+        return playerController.accountController.changeBalance(account_id, amount)
     }
 
     fun isValidAccount(id: Int): CompletableFuture<Boolean> {
-        return CompletableFuture.supplyAsync { playerController.accountController.exist(id) }
+        return playerController.accountController.exist(id)
     }
 
     fun getHomes(uuid: UUID): List<SHome> {
@@ -93,5 +94,9 @@ object PlayerManager {
 
     fun getAccountId(player: Player): Int {
         return data[player.uniqueId]!!.account.id
+    }
+
+    fun isPlayerOnline(account: Int): SPlayer? {
+        return data.values.firstOrNull { it.account.id == account && Bukkit.getPlayer(it.uuid) != null }
     }
 }
