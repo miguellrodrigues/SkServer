@@ -10,6 +10,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
+import java.util.concurrent.CompletableFuture
 
 object BankManager {
 
@@ -68,17 +69,17 @@ object BankManager {
         PlayerManager.changeBalance(uuid, amount)
     }
 
-    fun withdraw(uuid: UUID, amount: Double) {
+    /*fun withdraw(uuid: UUID, amount: Double) {
         PlayerManager.changeBalance(uuid, -amount)
-    }
+    }*/
 
-    fun deposit(account: Int, amount: Double) {
+    private fun deposit(account: Int, amount: Double) {
         PlayerManager.changeBalance(account, amount)
     }
 
-    fun withdraw(account: Int, amount: Double) {
+    /*fun withdraw(account: Int, amount: Double) {
         PlayerManager.changeBalance(account, -amount)
-    }
+    }*/
 
     private fun isValidCurrencyItem(item: ItemStack): Boolean {
         val name = item.itemMeta?.displayName()?.let { PlainTextComponentSerializer.plainText().serialize(it) }
@@ -199,16 +200,36 @@ object BankManager {
     }
 
     fun transfer(credited: Int, debited: Player, value: Double) {
-        val balance = PlayerManager.getBalance(debited.uniqueId)
+        CompletableFuture.supplyAsync { PlayerManager.isValidAccount(credited).get() }
+            .thenAcceptAsync { valid ->
+                if (valid) {
+                    val balance = PlayerManager.getBalance(debited.uniqueId)
 
-        if (balance >= value) {
-            PlayerManager.changeBalance(debited.uniqueId, -value)
-            PlayerManager.changeBalance(credited, value)
+                    if (balance >= value) {
+                        PlayerManager.changeBalance(debited.uniqueId, -value)
+                        PlayerManager.changeBalance(credited, value)
 
-            debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
-        } else {
-            debited.sendMessage("§cSaldo insuficiente !")
-        }
+                        debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
+                    } else {
+                        debited.sendMessage("§cSaldo insuficiente !")
+                    }
+                } else {
+                    debited.sendMessage("§cConta inválida !")
+                }
+            }
+    }
+
+    fun inject(creditedAccount: Int, value: Double, bankManager: Player?) {
+        CompletableFuture.supplyAsync { PlayerManager.isValidAccount(creditedAccount).get() }
+            .thenAcceptAsync { valid ->
+                if (valid) {
+                    deposit(creditedAccount, value)
+
+                    bankManager?.sendMessage("${Strings.PREFIX} §fVocê injetou §e$value §aUkranianinhos §fna conta §b${creditedAccount}")
+                } else {
+                    bankManager?.sendMessage("§cConta inválida !")
+                }
+            }
     }
 
     private fun decompose(value: Double): Array<Amount> {

@@ -61,8 +61,6 @@ class GameCommands {
                     component,
                     MessageType.CHAT
                 )
-
-                sender.sendMessage(component)
             }
 
             sender.sendMessage(" ")

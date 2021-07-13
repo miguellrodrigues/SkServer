@@ -11,7 +11,6 @@ import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
-import java.util.concurrent.CompletableFuture
 
 class Banco : BukkitCommand("banco") {
 
@@ -35,7 +34,13 @@ class Banco : BukkitCommand("banco") {
                     when (option.lowercase(Locale.getDefault())) {
                         "info" -> {
                             sender.sendMessage(" ")
-                            sender.sendMessage("${Strings.MESSAGE_PREFIX} §fID da sua conta§e: §a${PlayerManager.getAccountId(sender)}")
+                            sender.sendMessage(
+                                "${Strings.MESSAGE_PREFIX} §fID da sua conta§e: §a${
+                                    PlayerManager.getAccountId(
+                                        sender
+                                    )
+                                }"
+                            )
 
                             sender.sendMessage(
                                 "${Strings.MESSAGE_PREFIX} Seu saldo é de §e${
@@ -63,16 +68,21 @@ class Banco : BukkitCommand("banco") {
 
                     when (option.lowercase(Locale.getDefault())) {
                         "sacar" -> {
-                            val withdraw: Double
+                            val value: Double
 
                             try {
-                                withdraw = args[1].toDouble()
+                                value = args[1].toDouble()
                             } catch (e: NumberFormatException) {
                                 sender.sendMessage("§cUtilize apenas números no valor de saque !")
                                 return true
                             }
 
-                            BankManager.withDraw(sender, withdraw)
+                            if (value <= 0 || value > Double.MAX_VALUE) {
+                                sender.sendMessage("§cValor inválido !")
+                                return true
+                            }
+
+                            BankManager.withDraw(sender, value)
                         }
 
                         "imprimir" -> {
@@ -83,6 +93,11 @@ class Banco : BukkitCommand("banco") {
                                     value = args[1].toDouble()
                                 } catch (e: NumberFormatException) {
                                     sender.sendMessage("§cUtilize apenas números no valor de impressão !")
+                                    return true
+                                }
+
+                                if (value <= 0 || value > Double.MAX_VALUE) {
+                                    sender.sendMessage("§cValor inválido !")
                                     return true
                                 }
 
@@ -159,6 +174,11 @@ class Banco : BukkitCommand("banco") {
                                     return true
                                 }
 
+                                if (value <= 0 || value > Double.MAX_VALUE) {
+                                    sender.sendMessage("§cValor inválido !")
+                                    return true
+                                }
+
                                 BankManager.transfer(credited, sender, value)
                             } else {
                                 val creditedAccount: Int
@@ -167,7 +187,7 @@ class Banco : BukkitCommand("banco") {
                                 try {
                                     creditedAccount = args[1].toInt()
                                     value = args[2].toDouble()
-                                }catch (e: java.lang.NumberFormatException) {
+                                } catch (e: java.lang.NumberFormatException) {
                                     sender.sendMessage("§cConta e/ou valor inválido(s) !")
                                     return true
                                 }
@@ -177,13 +197,12 @@ class Banco : BukkitCommand("banco") {
                                     return true
                                 }
 
-                                CompletableFuture.runAsync {
-                                    if (PlayerManager.isValidAccount(creditedAccount).get()) {
-                                        BankManager.transfer(creditedAccount, sender, value)
-                                    } else {
-                                        sender.sendMessage("§cConta inexistente !")
-                                    }
+                                if (value <= 0) {
+                                    sender.sendMessage("§cValor inválido !")
+                                    return true
                                 }
+
+                                BankManager.transfer(creditedAccount, sender, value)
                             }
                         }
 
@@ -201,6 +220,11 @@ class Banco : BukkitCommand("banco") {
                                         return true
                                     }
 
+                                    if (value > Double.MAX_VALUE) {
+                                        sender.sendMessage("§cValor inválido !")
+                                        return true
+                                    }
+
                                     BankManager.deposit(toInject.uniqueId, value)
                                     sender.sendMessage("${Strings.PREFIX} §fVocê injetou §e$value §aUkranianinhos §fpara a conta do jogador §b${toInject.name}")
                                 } else {
@@ -210,17 +234,17 @@ class Banco : BukkitCommand("banco") {
                                     try {
                                         creditedAccount = args[1].toInt()
                                         value = args[2].toDouble()
-                                    }catch (e: java.lang.NumberFormatException) {
+                                    } catch (e: java.lang.NumberFormatException) {
                                         sender.sendMessage("§cConta e/ou valor inválido(s) !")
                                         return true
                                     }
 
-                                    CompletableFuture.runAsync {
-                                        if (PlayerManager.isValidAccount(creditedAccount).get()) {
-                                            BankManager.deposit(creditedAccount, value)
-                                            sender.sendMessage("${Strings.PREFIX} §fVocê injetou §e$value §aUkranianinhos §fna conta §b${creditedAccount}")
-                                        }
+                                    if (value > Double.MAX_VALUE) {
+                                        sender.sendMessage("§cValor inválido !")
+                                        return true
                                     }
+
+                                    BankManager.inject(creditedAccount, value, sender)
                                 }
                             }
                         }
