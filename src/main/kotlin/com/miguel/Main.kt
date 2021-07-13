@@ -71,6 +71,7 @@ class Main : JavaPlugin() {
         commandMap.register("banco", Banco())
         commandMap.register("invsee", Invsee())
         commandMap.register("sumo", Sumo())
+        commandMap.register("ping", Ping())
 
         CommandManager.register(GameCommands::class.java)
 
