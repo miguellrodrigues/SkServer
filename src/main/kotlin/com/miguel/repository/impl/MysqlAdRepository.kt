@@ -15,7 +15,7 @@ class MysqlAdRepository : IAdRepository {
 
     override fun create(ad: SAd) {
         try {
-            val item = b64encoder.encode(ad.item)
+            val item = b64encoder.encodeToString(ad.item)
 
             val statement = Mysql.getMysqlConnection().prepareStatement(
                 "INSERT INTO $database.$table(id, advertiserName, name, price, item, account_id) VALUES " +
