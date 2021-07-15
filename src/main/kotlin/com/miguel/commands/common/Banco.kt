@@ -34,23 +34,21 @@ class Banco : BukkitCommand("banco") {
                     when (option.lowercase(Locale.getDefault())) {
                         "info" -> {
                             sender.sendMessage(" ")
-                            sender.sendMessage(
-                                "${Strings.MESSAGE_PREFIX} §fID da sua conta§e: §a${
-                                    PlayerManager.getAccountId(
-                                        sender.uniqueId
-                                    )
-                                }"
-                            )
 
-                            sender.sendMessage(
-                                "${Strings.MESSAGE_PREFIX} Seu saldo é de §e${
-                                    PlayerManager.getBalance(
-                                        sender.uniqueId
+                            PlayerManager.getAccountId(sender.uniqueId)
+                                .thenCombine(PlayerManager.getBalance(sender.uniqueId)) { s1: String, s2: Double ->
+                                    sender.sendMessage(
+                                        "${Strings.MESSAGE_PREFIX} §fID da sua conta§e: §a${s1}"
                                     )
-                                } §aUkranianinho`s"
-                            )
 
-                            sender.sendMessage(" ")
+                                    sender.sendMessage(
+                                        "${Strings.MESSAGE_PREFIX} Seu saldo é de §e${
+                                            s2
+                                        } §aUkranianinho`s"
+                                    )
+
+                                    sender.sendMessage(" ")
+                                }
                         }
 
                         "depositar" -> {
@@ -191,17 +189,19 @@ class Banco : BukkitCommand("banco") {
                                     return true
                                 }
 
-                                if (creditedAccount == PlayerManager.getAccountId(sender.uniqueId)) {
-                                    sender.sendMessage("§cVocê não pode realizar transferências para si mesmo !")
-                                    return true
-                                }
+                                PlayerManager.getAccountId(sender.uniqueId).thenAcceptAsync {
+                                    if (creditedAccount == it) {
+                                        sender.sendMessage("§cVocê não pode realizar transferências para si mesmo !")
+                                        return@thenAcceptAsync
+                                    }
 
-                                if (value <= 0) {
-                                    sender.sendMessage("§cValor inválido !")
-                                    return true
-                                }
+                                    if (value <= 0) {
+                                        sender.sendMessage("§cValor inválido !")
+                                        return@thenAcceptAsync
+                                    }
 
-                                BankManager.transfer(creditedAccount, sender, value)
+                                    BankManager.transfer(creditedAccount, sender, value)
+                                }
                             }
                         }
 

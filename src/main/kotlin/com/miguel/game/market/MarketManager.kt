@@ -78,27 +78,30 @@ object MarketManager {
     }
 
     fun purchase(player: Player, ad: SAd) {
-        if (BankManager.withDraw(player.uniqueId, ad.price)) {
-            player.inventory.addItem(GameManager.deserializeItem(ad.item))
+        BankManager.withDraw(player.uniqueId, ad.price).thenAcceptAsync { result ->
+            if (result) {
+                player.inventory.addItem(GameManager.deserializeItem(ad.item))
 
-            ads[ads.indexOf(ad)].delete = true
+                ads[ads.indexOf(ad)].delete = true
 
-            player.sendMessage("${Strings.MESSAGE_PREFIX} Compra realizada com sucesso !")
+                player.sendMessage("${Strings.MESSAGE_PREFIX} Compra realizada com sucesso !")
 
-            if (Bukkit.getPlayer(ad.advertiserName) != null) {
-                val advertiser = Bukkit.getPlayer(ad.advertiserName)!!
+                if (Bukkit.getPlayer(ad.advertiserName) != null) {
+                    val advertiser = Bukkit.getPlayer(ad.advertiserName)!!
 
-                PlayerManager.changeBalance(advertiser.uniqueId, ad.price)
+                    PlayerManager.changeBalance(advertiser.uniqueId, ad.price)
 
-                advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
+                    advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
+                } else {
+                    PlayerManager.changeBalance(ad.account_id, ad.price)
+                }
+
+                player.closeInventory()
             } else {
-                PlayerManager.changeBalance(ad.account_id, ad.price)
+                player.sendMessage("§cSaldo insuficiente !")
             }
-
-            player.closeInventory()
-        } else {
-            player.sendMessage("§cSaldo insuficiente !")
         }
+
     }
 
     fun removeAd(player: Player, name: String) {
@@ -123,21 +126,23 @@ object MarketManager {
         if (filter.isEmpty()) {
             val itemInMainHand = player.inventory.itemInMainHand
 
-            val ad = SAd(
-                id = ++lastId,
-                advertiserName = player.name,
-                name = name,
-                price = price,
-                item = GameManager.serializeItem(itemInMainHand),
-                account_id = PlayerManager.getAccountId(player.uniqueId)
-            )
+            PlayerManager.getAccountId(player.uniqueId).thenAcceptAsync { accountID ->
+                val ad = SAd(
+                    id = ++lastId,
+                    advertiserName = player.name,
+                    name = name,
+                    price = price,
+                    item = GameManager.serializeItem(itemInMainHand),
+                    account_id = accountID
+                )
 
-            player.inventory.remove(itemInMainHand)
+                player.inventory.remove(itemInMainHand)
 
-            ads.add(ad)
+                ads.add(ad)
 
-            GameManager.sendMessage("${Strings.MARKET_PREFIX} O jogador §f${player.name} fez um anúncio")
-            GameManager.sendMessage("${Strings.MARKET_PREFIX} Digite /mercado para mais informações")
+                GameManager.sendMessage("${Strings.MARKET_PREFIX} O jogador §f${player.name} fez um anúncio")
+                GameManager.sendMessage("${Strings.MARKET_PREFIX} Digite /mercado para mais informações")
+            }
 
         } else {
             player.sendMessage("§cVocê já possui um anúncio com esse nome !")

@@ -35,21 +35,23 @@ object PlayerManager {
         }
     }
 
-    private fun getAccount(uuid: UUID): SAccount? {
-        return data[uuid]?.account
+    private fun getAccount(uuid: UUID): CompletableFuture<SAccount?> {
+        return CompletableFuture.supplyAsync { data[uuid]?.account }
     }
     
-    fun getBalance(uuid: UUID): Double {
-        return getAccount(uuid)?.balance ?: .0
+    fun getBalance(uuid: UUID): CompletableFuture<Double> {
+        return CompletableFuture.supplyAsync { getAccount(uuid).get()?.balance ?: .0 }
     }
 
-    private fun setBalance(uuid: UUID, balance: Double) {
-        data[uuid]?.account?.balance = balance
+    private fun setBalance(uuid: UUID, balance: Double): CompletableFuture<Void> {
+        return CompletableFuture.runAsync {
+            data[uuid]?.account?.balance = balance
+        }
     }
 
     fun changeBalance(uuid: UUID, amount: Double) {
         CompletableFuture.runAsync {
-            setBalance(uuid, getBalance(uuid) + amount)
+            setBalance(uuid, getBalance(uuid).get() + amount)
         }
     }
 
@@ -63,40 +65,48 @@ object PlayerManager {
         return CompletableFuture.supplyAsync { data.values.filter { it.account.id == id }.size == 1 }
     }
 
-    fun getHomes(uuid: UUID): List<SHome> {
-        return data[uuid]!!.homes.filter { !it.delete }
+    fun getHomes(uuid: UUID): CompletableFuture<List<SHome>> {
+        return CompletableFuture.supplyAsync { data[uuid]!!.homes.filter { !it.delete } }
     }
 
-    private fun addHome(uuid: UUID, home: SHome) {
-        data[uuid]!!.homes.add(home)
-    }
-
-    fun createHome(uuid: UUID, location: SLocation, name: String) {
-        addHome(
-            uuid, SHome(
-                player_id = uuid,
-                name = name,
-                location = location
-            )
-        )
-    }
-
-    fun removeHome(uuid: UUID, home: SHome) {
-        val index = data[uuid]!!.homes.indexOf(home)
-        data[uuid]!!.homes[index].delete = true
-    }
-
-    fun save() {
-        data.forEach { (_, splayer) ->
-            playerController.save(splayer)
+    private fun addHome(uuid: UUID, home: SHome): CompletableFuture<Void> {
+        return CompletableFuture.runAsync {
+            data[uuid]!!.homes.add(home)
         }
     }
 
-    fun getAccountId(uuid: UUID): String {
-        return data[uuid]!!.account.id
+    fun createHome(uuid: UUID, location: SLocation, name: String): CompletableFuture<Void> {
+        return CompletableFuture.runAsync {
+            addHome(
+                uuid, SHome(
+                    player_id = uuid,
+                    name = name,
+                    location = location
+                )
+            )
+        }
     }
 
-    fun isPlayerOnline(account: String): SPlayer? {
-        return data.values.firstOrNull { it.account.id == account && Bukkit.getPlayer(it.uuid) != null }
+    fun removeHome(uuid: UUID, home: SHome): CompletableFuture<Void> {
+        return CompletableFuture.runAsync {
+            val index = data[uuid]!!.homes.indexOf(home)
+            data[uuid]!!.homes[index].delete = true
+        }
+    }
+
+    fun save(): CompletableFuture<Void> {
+        return CompletableFuture.runAsync {
+            data.forEach { (_, splayer) ->
+                playerController.save(splayer)
+            }
+        }
+    }
+
+    fun getAccountId(uuid: UUID): CompletableFuture<String> {
+        return CompletableFuture.supplyAsync { data[uuid]!!.account.id }
+    }
+
+    fun isPlayerOnline(account: String): CompletableFuture<SPlayer?> {
+        return CompletableFuture.supplyAsync { data.values.firstOrNull { it.account.id == account && Bukkit.getPlayer(it.uuid) != null } }
     }
 }

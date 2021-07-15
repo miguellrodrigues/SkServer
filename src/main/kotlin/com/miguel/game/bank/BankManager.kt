@@ -75,15 +75,15 @@ object BankManager {
     }*/
 
     private fun deposit(account: String, amount: Double) {
-        val player = PlayerManager.isPlayerOnline(account)
+        PlayerManager.isPlayerOnline(account).thenAcceptAsync { player ->
+            if (player != null) {
+                deposit(player.uuid, amount)
 
-        if (player != null) {
-            deposit(player.uuid, amount)
-
-            Bukkit.getPlayer(player.uuid)
-                ?.sendMessage("${Strings.PREFIX} §fVocê recebeu uma transferência no valor de §e$amount §aUkranianinhos")
-        } else {
-            PlayerManager.changeBalance(account, amount)
+                Bukkit.getPlayer(player.uuid)
+                    ?.sendMessage("${Strings.PREFIX} §fVocê recebeu uma transferência no valor de §e$amount §aUkranianinhos")
+            } else {
+                PlayerManager.changeBalance(account, amount)
+            }
         }
     }
 
@@ -96,62 +96,61 @@ object BankManager {
         return name.equals("Ukranianinho")
     }
 
-    fun withDraw(uuid: UUID, value: Double): Boolean {
-        val balance = PlayerManager.getBalance(uuid)
+    fun withDraw(uuid: UUID, value: Double): CompletableFuture<Boolean> {
+        return PlayerManager.getBalance(uuid).thenApplyAsync { balance ->
+            if (balance >= value) {
+                PlayerManager.changeBalance(uuid, -value)
+            }
 
-        if (balance >= value) {
-            PlayerManager.changeBalance(uuid, -value)
-            return true
+            balance >= value
         }
-
-        return false
     }
 
     fun withDraw(player: Player, value: Double) {
-        val balance = PlayerManager.getBalance(player.uniqueId)
+        PlayerManager.getBalance(player.uniqueId).thenAcceptAsync { balance ->
+            if (balance >= value) {
+                val decompose = decompose(value)
 
-        if (balance >= value) {
-            val decompose = decompose(value)
+                var recharge = .0
 
-            var recharge = .0
+                decompose.forEach { amount ->
+                    val currencyValue = currencies.first { it.material == amount.material }.value
 
-            decompose.forEach { amount ->
-                val currencyValue = currencies.first { it.material == amount.material }.value
-
-                val item = GameManager.createItem(
-                    coinDisplayName,
-                    arrayOf(
-                        Component.text(" "),
-                        Component.text(" §f- Valor §e$currencyValue §fUkranianinho`s"),
-                        Component.text(" ")
-                    ),
-                    amount.material
-                )
-
-                item.amount = amount.amount
-
-                if (player.inventory.firstEmpty() != -1) {
-                    player.inventory.addItem(
-                        item
+                    val item = GameManager.createItem(
+                        coinDisplayName,
+                        arrayOf(
+                            Component.text(" "),
+                            Component.text(" §f- Valor §e$currencyValue §fUkranianinho`s"),
+                            Component.text(" ")
+                        ),
+                        amount.material
                     )
-                } else {
-                    if (player.enderChest.firstEmpty() != -1) {
-                        player.enderChest.addItem(item)
+
+                    item.amount = amount.amount
+
+                    if (player.inventory.firstEmpty() != -1) {
+                        player.inventory.addItem(
+                            item
+                        )
                     } else {
-                        recharge += currencyValue * item.amount
+                        if (player.enderChest.firstEmpty() != -1) {
+                            player.enderChest.addItem(item)
+                        } else {
+                            recharge += currencyValue * item.amount
+                        }
                     }
                 }
+
+                player.sendMessage("§aSaque realizado com sucesso !")
+
+                if (recharge != .0) {
+                    player.sendMessage("§e$recharge §aUkranianinho's §fRetidos: Você está sem espaço em seu inventário")
+                }
+
+                withDraw(player.uniqueId, value - recharge)
+            } else {
+                player.sendMessage("§cSaldo insuficiente !")
             }
-
-            player.sendMessage("§aSaque realizado com sucesso !")
-
-            if (recharge != .0) {
-                player.sendMessage("§e$recharge §aUkranianinho's §fRetidos: Você está sem espaço em seu inventário")
-            }
-
-            withDraw(player.uniqueId, value - recharge)
-        } else {
-            player.sendMessage("§cSaldo insuficiente !")
         }
     }
 
@@ -196,31 +195,31 @@ object BankManager {
     }
 
     fun transfer(credited: Player, debited: Player, value: Double) {
-        val balance = PlayerManager.getBalance(debited.uniqueId)
+        PlayerManager.getBalance(debited.uniqueId).thenAcceptAsync { balance ->
+            if (balance >= value) {
+                PlayerManager.changeBalance(debited.uniqueId, -value)
+                PlayerManager.changeBalance(credited.uniqueId, value)
 
-        if (balance >= value) {
-            PlayerManager.changeBalance(debited.uniqueId, -value)
-            PlayerManager.changeBalance(credited.uniqueId, value)
-
-            debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara o jogador §b${credited.name}")
-            credited.sendMessage("${Strings.PREFIX} §fVocê recebeu §e$value §aUkranianinhos §fdo jogador §b${debited.name}")
-        } else {
-            debited.sendMessage("§cSaldo insuficiente !")
+                debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara o jogador §b${credited.name}")
+                credited.sendMessage("${Strings.PREFIX} §fVocê recebeu §e$value §aUkranianinhos §fdo jogador §b${debited.name}")
+            } else {
+                debited.sendMessage("§cSaldo insuficiente !")
+            }
         }
     }
 
     fun transfer(credited: String, debited: Player, value: Double) {
         PlayerManager.isValidAccount(credited).thenAcceptAsync { valid ->
             if (valid) {
-                val balance = PlayerManager.getBalance(debited.uniqueId)
+                PlayerManager.getBalance(debited.uniqueId).thenAccept { balance ->
+                    if (balance >= value) {
+                        PlayerManager.changeBalance(debited.uniqueId, -value)
+                        PlayerManager.changeBalance(credited, value)
 
-                if (balance >= value) {
-                    PlayerManager.changeBalance(debited.uniqueId, -value)
-                    PlayerManager.changeBalance(credited, value)
-
-                    debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
-                } else {
-                    debited.sendMessage("§cSaldo insuficiente !")
+                        debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
+                    } else {
+                        debited.sendMessage("§cSaldo insuficiente !")
+                    }
                 }
             } else {
                 debited.sendMessage("§cConta inválida !")
