@@ -74,7 +74,7 @@ object BankManager {
         PlayerManager.changeBalance(uuid, -amount)
     }*/
 
-    private fun deposit(account: String, amount: Double): CompletableFuture<Boolean> {
+    private fun deposit(account: String, amount: Double) {
         val player = PlayerManager.isPlayerOnline(account)
 
         if (player != null) {
@@ -82,10 +82,9 @@ object BankManager {
 
             Bukkit.getPlayer(player.uuid)
                 ?.sendMessage("${Strings.PREFIX} §fVocê recebeu uma transferência no valor de §e$amount §aUkranianinhos")
-            return CompletableFuture.supplyAsync { true }
+        } else {
+            PlayerManager.changeBalance(account, amount)
         }
-
-        return PlayerManager.changeBalance(account, amount)
     }
 
     /*fun withdraw(account: Int, amount: Double) {
@@ -232,7 +231,7 @@ object BankManager {
     fun inject(creditedAccount: String, value: Double, bankManager: Player?) {
         PlayerManager.isValidAccount(creditedAccount).thenAcceptAsync { valid ->
             if (valid) {
-                deposit(creditedAccount, value).get()
+                deposit(creditedAccount, value)
 
                 bankManager?.sendMessage("${Strings.PREFIX} §fVocê injetou §e$value §aUkranianinhos §fna conta §b${creditedAccount}")
             } else {

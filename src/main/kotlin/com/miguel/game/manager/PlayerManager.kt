@@ -48,15 +48,19 @@ object PlayerManager {
     }
 
     fun changeBalance(uuid: UUID, amount: Double) {
-        setBalance(uuid, getBalance(uuid) + amount)
+        CompletableFuture.runAsync {
+            setBalance(uuid, getBalance(uuid) + amount)
+        }
     }
 
-    fun changeBalance(account_id: String, amount: Double): CompletableFuture<Boolean> {
-        return playerController.accountController.changeBalance(account_id, amount)
+    fun changeBalance(account_id: String, amount: Double) {
+        CompletableFuture.runAsync {
+            data.values.first { it.account.id == account_id }.account.balance += amount
+        }
     }
 
     fun isValidAccount(id: String): CompletableFuture<Boolean> {
-        return playerController.accountController.exist(id)
+        return CompletableFuture.supplyAsync { data.values.filter { it.account.id == id }.size == 1 }
     }
 
     fun getHomes(uuid: UUID): List<SHome> {

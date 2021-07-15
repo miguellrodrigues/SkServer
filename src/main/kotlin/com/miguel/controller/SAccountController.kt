@@ -28,10 +28,4 @@ class SAccountController(
     fun get(id: String): SAccount? {
         return accountRepository.getById(id)
     }
-
-    fun changeBalance(id: String, balance: Double): CompletableFuture<Boolean> {
-        return CompletableFuture.supplyAsync {
-            accountRepository.setBalance(id, accountRepository.getBalance(id) + balance)
-        }
-    }
 }
