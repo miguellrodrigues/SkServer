@@ -7,15 +7,15 @@ class SLocationsController(
     private val locationRepository: MysqlLocationRepository
 ) {
 
-    fun create(location: SLocation, home_name: String): Int {
-        return locationRepository.create(location, home_name)
+    fun create(location: SLocation) {
+        locationRepository.create(location)
     }
 
     fun delete(location: SLocation): Boolean {
         return locationRepository.delete(location.id)
     }
 
-    fun get(id: Int): SLocation? {
+    fun get(id: String): SLocation? {
         return locationRepository.getById(id)
     }
 }

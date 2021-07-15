@@ -9,10 +9,10 @@ class SHomeController(
     private val locationController: SLocationsController
 ) {
 
-    fun create(home: SHome): Int {
-        val locationID = locationController.create(home.location, home.name)
+    fun create(home: SHome) {
+        locationController.create(home.location)
 
-        return homeRepository.create(home, locationID)
+        homeRepository.create(home)
     }
 
     fun delete(home: SHome) {
@@ -20,12 +20,10 @@ class SHomeController(
         locationController.delete(home.location)
     }
 
-    fun save(home: SHome): Int {
+    fun save(home: SHome) {
         if (!homeRepository.exist(home.id)) {
-            return create(home)
+            create(home)
         }
-
-        return 1
     }
 
     fun getPlayerHomes(player_id: UUID): ArrayList<SHome> {

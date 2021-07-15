@@ -66,13 +66,15 @@ class Home : BukkitCommand("home") {
         } else if (args.size == 2) {
             when (args[0]) {
                 "set" -> {
-                    if (PlayerManager.getHomes(sender.uniqueId).size < Values.MAX_HOMES_PER_PLAYER && !sender.isOp) {
-                        val message = HomeManager.setHome(sender, args[1])
-
-                        sender.sendMessage(message)
+                    if (PlayerManager.getHomes(sender.uniqueId).size < Values.MAX_HOMES_PER_PLAYER) {
+                        HomeManager.setHome(sender, args[1])
                     } else {
-                        sender.sendMessage("${Strings.MESSAGE_PREFIX}Você atingiu o número máximo de homes §e!")
-                        sender.playSound(sender.location, Sound.BLOCK_NOTE_BLOCK_FLUTE, 1.0F, 1.0F)
+                        if (sender.hasPermission("home.*")) {
+                            HomeManager.setHome(sender, args[1])
+                        } else {
+                            sender.sendMessage("${Strings.MESSAGE_PREFIX}Você atingiu o número máximo de homes §e!")
+                            sender.playSound(sender.location, Sound.BLOCK_NOTE_BLOCK_FLUTE, 1.0F, 1.0F)
+                        }
                     }
                 }
 

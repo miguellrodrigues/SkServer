@@ -52,7 +52,7 @@ object Mysql {
 
             "CREATE TABLE IF NOT EXISTS `sk_location`\n" +
                     "(\n" +
-                    " `id`    int NOT NULL AUTO_INCREMENT ,\n" +
+                    " `id`    varchar(45) NOT NULL ,\n" +
                     " `world` varchar(45) NOT NULL ,\n" +
                     " `x`     double NOT NULL ,\n" +
                     " `y`     double NOT NULL ,\n" +
@@ -65,7 +65,7 @@ object Mysql {
                     "(\n" +
                     " `id`          int NOT NULL AUTO_INCREMENT ,\n" +
                     " `name`        varchar(45) NOT NULL ,\n" +
-                    " `location_id` int NOT NULL ,\n" +
+                    " `location_id` varchar(45) NOT NULL ,\n" +
                     " `player_uuid` varchar(45) NOT NULL ,\n" +
                     "\n" +
                     "PRIMARY KEY (`id`),\n" +
@@ -81,7 +81,6 @@ object Mysql {
                     " `advertiserName` varchar(45) NOT NULL ,\n" +
                     " `name`           varchar(45) NOT NULL ,\n" +
                     " `price`          double NOT NULL ,\n" +
-                    " `amount`         int NOT NULL ,\n" +
                     " `item`           varchar(255) NOT NULL ,\n" +
                     " `account_id`     varchar(45) NOT NULL ,\n" +
                     "\n" +

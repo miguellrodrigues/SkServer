@@ -3,12 +3,17 @@ package com.miguel.game.home
 import com.miguel.entities.SHome
 import com.miguel.entities.SLocation
 import com.miguel.game.manager.PlayerManager
+import org.bukkit.Location
 import org.bukkit.Sound
 import org.bukkit.entity.Player
 import java.util.*
 import kotlin.math.round
 
 object HomeManager {
+
+    private fun generateLocationID(player: UUID, worldLocation: Location): String {
+        return UUID.nameUUIDFromBytes("SLocation:${worldLocation.hashCode()}:$player".toByteArray()).toString().substring(0, 8)
+    }
 
     fun getHome(player: Player, name: String): SHome? {
         val playerHomes = PlayerManager.getHomes(player.uniqueId)
@@ -41,9 +46,7 @@ object HomeManager {
         return ""
     }
 
-    fun setHome(player: Player, name: String): String {
-        val message: String
-
+    fun setHome(player: Player, name: String) {
         val playerHomes = PlayerManager.getHomes(player.uniqueId)
 
         val filter =
@@ -52,6 +55,7 @@ object HomeManager {
         if (filter.isEmpty()) {
             PlayerManager.createHome(
                 player.uniqueId, SLocation(
+                    generateLocationID(player.uniqueId, player.location),
                     world = player.world.name,
                     x = round(player.location.x * 1000.0) / 1000.0,
                     y = round(player.location.y * 1000.0) / 1000.0,
@@ -59,13 +63,11 @@ object HomeManager {
                 ), name
             )
 
-            message = "Home setada com sucesso !"
+            player.sendMessage("Home setada com sucesso !")
 
             player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F)
         } else {
-            message = "Você já possui uma home com este nome !"
+            player.sendMessage("Você já possui uma home com este nome !")
         }
-
-        return message
     }
 }

@@ -4,42 +4,28 @@ import com.miguel.entities.SLocation
 import com.miguel.repository.ILocationRepository
 import java.sql.SQLException
 import java.sql.Statement
-import kotlin.properties.Delegates
 
 class MysqlLocationRepository : ILocationRepository {
 
     private val database = "s18280_data"
     private val table = "sk_location"
 
-    override fun create(location: SLocation, home_name: String): Int {
-        if (exist(location.id)) return location.id
-
-        var id by Delegates.notNull<Int>()
-
+    override fun create(location: SLocation) {
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "INSERT INTO $database.$table(world, x, y, z) VALUES ('${location.world}', ${location.x}, ${location.y}, ${location.z});",
+                "INSERT INTO $database.$table(id, world, x, y, z) VALUES ('${location.id}', '${location.world}', ${location.x}, ${location.y}, ${location.z});",
                 Statement.RETURN_GENERATED_KEYS
             )
 
             statement.execute()
-            val rs = statement.generatedKeys
-
-            if (rs.next()) {
-                id = rs.getInt(1)
-            }
-
-            rs.close()
             statement.close()
 
         } catch (e: SQLException) {
             throw Error(e.message)
         }
-
-        return id
     }
 
-    override fun exist(id: Int): Boolean {
+    override fun exist(id: String): Boolean {
         var success = false
 
         try {
@@ -59,7 +45,7 @@ class MysqlLocationRepository : ILocationRepository {
         return success
     }
 
-    override fun getById(id: Int): SLocation? {
+    override fun getById(id: String): SLocation? {
         if (!exist(id)) return null
 
         lateinit var sLocation: SLocation
@@ -88,7 +74,7 @@ class MysqlLocationRepository : ILocationRepository {
         return sLocation
     }
 
-    override fun delete(id: Int): Boolean {
+    override fun delete(id: String): Boolean {
         if (!exist(id)) return false
 
         try {

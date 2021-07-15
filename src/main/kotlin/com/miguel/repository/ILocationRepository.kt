@@ -4,11 +4,11 @@ import com.miguel.entities.SLocation
 
 interface ILocationRepository {
 
-    fun create(location: SLocation, home_name: String): Int
+    fun create(location: SLocation)
 
-    fun exist(id: Int): Boolean
+    fun exist(id: String): Boolean
 
-    fun getById(id: Int): SLocation?
+    fun getById(id: String): SLocation?
 
-    fun delete(id: Int): Boolean
+    fun delete(id: String): Boolean
 }
