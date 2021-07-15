@@ -38,7 +38,7 @@ object PlayerManager {
     private fun getAccount(uuid: UUID): SAccount? {
         return data[uuid]?.account
     }
-
+    
     fun getBalance(uuid: UUID): Double {
         return getAccount(uuid)?.balance ?: .0
     }
@@ -51,11 +51,11 @@ object PlayerManager {
         setBalance(uuid, getBalance(uuid) + amount)
     }
 
-    fun changeBalance(account_id: Int, amount: Double): CompletableFuture<Boolean> {
+    fun changeBalance(account_id: String, amount: Double): CompletableFuture<Boolean> {
         return playerController.accountController.changeBalance(account_id, amount)
     }
 
-    fun isValidAccount(id: Int): CompletableFuture<Boolean> {
+    fun isValidAccount(id: String): CompletableFuture<Boolean> {
         return playerController.accountController.exist(id)
     }
 
@@ -88,15 +88,11 @@ object PlayerManager {
         }
     }
 
-    fun setAccountID(uuid: UUID, accountID: Int) {
-        data[uuid]!!.account.id = accountID
+    fun getAccountId(uuid: UUID): String {
+        return data[uuid]!!.account.id
     }
 
-    fun getAccountId(player: Player): Int {
-        return data[player.uniqueId]!!.account.id
-    }
-
-    fun isPlayerOnline(account: Int): SPlayer? {
+    fun isPlayerOnline(account: String): SPlayer? {
         return data.values.firstOrNull { it.account.id == account && Bukkit.getPlayer(it.uuid) != null }
     }
 }

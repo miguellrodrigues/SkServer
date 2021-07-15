@@ -4,7 +4,6 @@ import com.miguel.game.manager.GameManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.TextReplacementConfig
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Bukkit
@@ -75,7 +74,7 @@ object BankManager {
         PlayerManager.changeBalance(uuid, -amount)
     }*/
 
-    private fun deposit(account: Int, amount: Double): CompletableFuture<Boolean> {
+    private fun deposit(account: String, amount: Double): CompletableFuture<Boolean> {
         val player = PlayerManager.isPlayerOnline(account)
 
         if (player != null) {
@@ -211,7 +210,7 @@ object BankManager {
         }
     }
 
-    fun transfer(credited: Int, debited: Player, value: Double) {
+    fun transfer(credited: String, debited: Player, value: Double) {
         PlayerManager.isValidAccount(credited).thenAcceptAsync { valid ->
             if (valid) {
                 val balance = PlayerManager.getBalance(debited.uniqueId)
@@ -230,7 +229,7 @@ object BankManager {
         }
     }
 
-    fun inject(creditedAccount: Int, value: Double, bankManager: Player?) {
+    fun inject(creditedAccount: String, value: Double, bankManager: Player?) {
         PlayerManager.isValidAccount(creditedAccount).thenAcceptAsync { valid ->
             if (valid) {
                 deposit(creditedAccount, value).get()

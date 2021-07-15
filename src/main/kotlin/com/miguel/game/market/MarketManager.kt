@@ -129,7 +129,7 @@ object MarketManager {
                 name = name,
                 price = price,
                 item = GameManager.serializeItem(itemInMainHand),
-                account_id = PlayerManager.getAccountId(player)
+                account_id = PlayerManager.getAccountId(player.uniqueId)
             )
 
             player.inventory.remove(itemInMainHand)

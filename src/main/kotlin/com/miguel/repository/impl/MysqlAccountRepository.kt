@@ -3,38 +3,24 @@ package com.miguel.repository.impl
 import com.miguel.entities.SAccount
 import com.miguel.repository.IAccountRepository
 import java.sql.SQLException
-import java.sql.Statement
-import java.util.*
-import kotlin.properties.Delegates
 
 class MysqlAccountRepository : IAccountRepository {
 
     private val database = "s18280_data"
     private val table = "sk_account"
 
-    override fun create(account: SAccount): Int {
-        var id by Delegates.notNull<Int>()
-
+    override fun create(account: SAccount) {
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "INSERT INTO $database.$table(balance) VALUES " +
-                        "('${account.balance}')", Statement.RETURN_GENERATED_KEYS
+                "INSERT INTO $database.$table(id, balance) VALUES " +
+                        "('${account.id}', '${account.balance}')"
             )
 
             statement.execute()
-            val rs = statement.generatedKeys
-
-            if (rs.next()) {
-                id = rs.getInt(1)
-            }
-
-            rs.close()
             statement.close()
         } catch (e: SQLException) {
             throw Error(e.message)
         }
-
-        return id
     }
 
     override fun save(account: SAccount): Boolean {
@@ -46,7 +32,7 @@ class MysqlAccountRepository : IAccountRepository {
         }
     }
 
-    override fun exist(id: Int): Boolean {
+    override fun exist(id: String): Boolean {
         var success = false
 
         try {
@@ -66,13 +52,13 @@ class MysqlAccountRepository : IAccountRepository {
         return success
     }
 
-    override fun getById(id: Int): SAccount? {
+    override fun getById(id: String): SAccount? {
         if (!exist(id)) return null
 
         return SAccount(id, getBalance(id))
     }
 
-    override fun getBalance(id: Int): Double {
+    override fun getBalance(id: String): Double {
         if (!exist(id)) return -1.0
 
         var balance = .0
@@ -94,27 +80,7 @@ class MysqlAccountRepository : IAccountRepository {
         return balance
     }
 
-    override fun getPlayerId(id: Int): UUID {
-        lateinit var uuid: UUID
-
-        try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
-
-            val resultSet = statement.executeQuery()
-
-            if (resultSet.next())
-                uuid = UUID.fromString(resultSet.getString("player_id"))
-
-            resultSet.close()
-            statement.close()
-        } catch (e: SQLException) {
-            throw Error(e.message)
-        }
-
-        return uuid
-    }
-
-    override fun setBalance(id: Int, balance: Double): Boolean {
+    override fun setBalance(id: String, balance: Double): Boolean {
         try {
             val statement =
                 Mysql.getMysqlConnection()

@@ -37,7 +37,7 @@ class Banco : BukkitCommand("banco") {
                             sender.sendMessage(
                                 "${Strings.MESSAGE_PREFIX} §fID da sua conta§e: §a${
                                     PlayerManager.getAccountId(
-                                        sender
+                                        sender.uniqueId
                                     )
                                 }"
                             )
@@ -181,18 +181,17 @@ class Banco : BukkitCommand("banco") {
 
                                 BankManager.transfer(credited, sender, value)
                             } else {
-                                val creditedAccount: Int
+                                val creditedAccount = args[1]
                                 val value: Double
 
                                 try {
-                                    creditedAccount = args[1].toInt()
                                     value = args[2].toDouble()
                                 } catch (e: java.lang.NumberFormatException) {
-                                    sender.sendMessage("§cConta e/ou valor inválido(s) !")
+                                    sender.sendMessage("§cValor inválido(s) !")
                                     return true
                                 }
 
-                                if (creditedAccount == PlayerManager.getAccountId(sender)) {
+                                if (creditedAccount == PlayerManager.getAccountId(sender.uniqueId)) {
                                     sender.sendMessage("§cVocê não pode realizar transferências para si mesmo !")
                                     return true
                                 }
@@ -228,14 +227,13 @@ class Banco : BukkitCommand("banco") {
                                     BankManager.deposit(toInject.uniqueId, value)
                                     sender.sendMessage("${Strings.PREFIX} §fVocê injetou §e$value §aUkranianinhos §fna conta do jogador §b${toInject.name}")
                                 } else {
-                                    val creditedAccount: Int
+                                    val creditedAccount = args[1]
                                     val value: Double
 
                                     try {
-                                        creditedAccount = args[1].toInt()
                                         value = args[2].toDouble()
                                     } catch (e: java.lang.NumberFormatException) {
-                                        sender.sendMessage("§cConta e/ou valor inválido(s) !")
+                                        sender.sendMessage("§cValor inválido(s) !")
                                         return true
                                     }
 

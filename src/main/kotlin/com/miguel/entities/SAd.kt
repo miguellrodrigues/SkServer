@@ -12,7 +12,7 @@ data class SAd(
     val name: String,
     val price: Double,
     val item: ByteArray,
-    val account_id: Int,
+    val account_id: String,
     var delete: Boolean = false
 ) {
 
@@ -75,7 +75,7 @@ data class SAd(
         result = 31 * result + name.hashCode()
         result = 31 * result + price.hashCode()
         result = 31 * result + item.contentHashCode()
-        result = 31 * result + account_id
+        result = 31 * result + account_id.hashCode()
         result = 31 * result + delete.hashCode()
         return result
     }

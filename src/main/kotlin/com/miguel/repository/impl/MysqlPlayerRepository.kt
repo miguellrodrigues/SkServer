@@ -1,6 +1,5 @@
 package com.miguel.repository.impl
 
-import com.miguel.entities.SPlayer
 import com.miguel.repository.IPlayerRepository
 import java.sql.SQLException
 import java.util.*
@@ -10,7 +9,7 @@ class MysqlPlayerRepository : IPlayerRepository {
     private val database = "s18280_data"
     private val table = "sk_player"
 
-    override fun create(uuid: UUID, account_id: Int) {
+    override fun create(uuid: UUID, account_id: String) {
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
                 "INSERT INTO $database.$table(uuid, account_id) VALUES " +
@@ -24,14 +23,10 @@ class MysqlPlayerRepository : IPlayerRepository {
         }
     }
 
-    override fun save(player: SPlayer): Boolean {
-        return setAccount(player.uuid, player.account.id)
-    }
+    override fun getAccount(uuid: UUID): String {
+        if (!exist(uuid)) return ""
 
-    override fun getAccount(uuid: UUID): Int {
-        if (!exist(uuid)) return 0
-
-        var account = 0
+        var account = ""
 
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
@@ -40,7 +35,7 @@ class MysqlPlayerRepository : IPlayerRepository {
 
             val resultSet = statement.executeQuery()
             if (resultSet.next()) {
-                account = resultSet.getInt(1)
+                account = resultSet.getString(1)
             }
 
         } catch (e: Exception) {
@@ -50,7 +45,7 @@ class MysqlPlayerRepository : IPlayerRepository {
         return account
     }
 
-    override fun setAccount(uuid: UUID, account: Int): Boolean {
+    override fun setAccount(uuid: UUID, account: String): Boolean {
         if (!exist(uuid)) return false
 
         try {

@@ -2,7 +2,6 @@ package com.miguel.controller
 
 import com.miguel.entities.SAccount
 import com.miguel.entities.SPlayer
-import com.miguel.game.manager.PlayerManager
 import com.miguel.repository.impl.MysqlPlayerRepository
 import java.util.*
 import java.util.concurrent.CompletableFuture
@@ -14,17 +13,14 @@ class SPlayerController(
 ) {
 
     fun create(player: SPlayer) {
-        val accountID = accountController.create(player.account)
-
-        PlayerManager.setAccountID(player.uuid, accountID)
-
-        playerRepository.create(player.uuid, accountID)
+        playerRepository.create(player.uuid, player.account.id)
     }
 
     fun save(player: SPlayer) {
         if (playerRepository.exist(player.uuid)) {
             accountController.save(player.account)
         } else {
+            accountController.create(player.account)
             create(player)
         }
 
@@ -48,7 +44,10 @@ class SPlayerController(
             } else {
                 SPlayer(
                     uuid = uuid,
-                    account = SAccount(0, .0),
+                    account = SAccount(
+                        accountController.generateID(uuid),
+                        .0
+                    ),
                     homes = arrayListOf()
                 )
             }

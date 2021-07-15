@@ -34,7 +34,7 @@ object Mysql {
         val queryList = listOf(
             "CREATE TABLE IF NOT EXISTS `sk_account`\n" +
                     "(\n" +
-                    " `id`      int NOT NULL AUTO_INCREMENT ,\n" +
+                    " `id`      varchar(45) NOT NULL ,\n" +
                     " `balance` double NOT NULL ,\n" +
                     "\n" +
                     "PRIMARY KEY (`id`)\n" +
@@ -43,7 +43,7 @@ object Mysql {
             "CREATE TABLE IF NOT EXISTS `sk_player`\n" +
                     "(\n" +
                     " `uuid`       varchar(45) NOT NULL ,\n" +
-                    " `account_id` int NOT NULL ,\n" +
+                    " `account_id` varchar(45) NOT NULL ,\n" +
                     "\n" +
                     "PRIMARY KEY (`uuid`),\n" +
                     "KEY `fkIdx_14` (`account_id`),\n" +
@@ -81,8 +81,9 @@ object Mysql {
                     " `advertiserName` varchar(45) NOT NULL ,\n" +
                     " `name`           varchar(45) NOT NULL ,\n" +
                     " `price`          double NOT NULL ,\n" +
-                    " `item`           TEXT NOT NULL ,\n" +
-                    " `account_id`     int NOT NULL ,\n" +
+                    " `amount`         int NOT NULL ,\n" +
+                    " `item`           varchar(255) NOT NULL ,\n" +
+                    " `account_id`     varchar(45) NOT NULL ,\n" +
                     "\n" +
                     "PRIMARY KEY (`id`),\n" +
                     "KEY `fkIdx_49` (`account_id`),\n" +

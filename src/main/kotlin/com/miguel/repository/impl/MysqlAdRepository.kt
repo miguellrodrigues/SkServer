@@ -80,7 +80,7 @@ class MysqlAdRepository : IAdRepository {
                         resultSet.getString("name"),
                         resultSet.getDouble("price"),
                         b64decoder.decode(resultSet.getString("item")),
-                        resultSet.getInt("account_id")
+                        resultSet.getString("account_id")
                     )
                 )
             }

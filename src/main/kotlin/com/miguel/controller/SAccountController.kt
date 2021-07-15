@@ -2,17 +2,22 @@ package com.miguel.controller
 
 import com.miguel.entities.SAccount
 import com.miguel.repository.impl.MysqlAccountRepository
+import java.util.*
 import java.util.concurrent.CompletableFuture
 
 class SAccountController(
     private val accountRepository: MysqlAccountRepository
 ) {
 
-    fun create(account: SAccount): Int {
+    fun create(account: SAccount) {
         return accountRepository.create(account)
     }
 
-    fun exist(id: Int): CompletableFuture<Boolean> {
+    fun generateID(owner: UUID): String {
+        return UUID.nameUUIDFromBytes("SAccount:$owner".toByteArray()).toString().substring(0, 8)
+    }
+
+    fun exist(id: String): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync { accountRepository.exist(id) }
     }
 
@@ -20,11 +25,11 @@ class SAccountController(
         accountRepository.save(account)
     }
 
-    fun get(id: Int): SAccount? {
+    fun get(id: String): SAccount? {
         return accountRepository.getById(id)
     }
 
-    fun changeBalance(id: Int, balance: Double): CompletableFuture<Boolean> {
+    fun changeBalance(id: String, balance: Double): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync {
             accountRepository.setBalance(id, accountRepository.getBalance(id) + balance)
         }
