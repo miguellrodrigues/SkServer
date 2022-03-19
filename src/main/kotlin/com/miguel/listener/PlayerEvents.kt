@@ -8,13 +8,17 @@ import com.miguel.values.Values
 import io.papermc.paper.chat.ChatRenderer
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.title.Title
+import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.player.PlayerAdvancementDoneEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.event.player.PlayerQuitEvent
+import java.time.Duration
 
 class PlayerEvents : Listener {
 
@@ -37,7 +41,11 @@ class PlayerEvents : Listener {
             "\n                                          \n§7Tenha um bom jogo!"
         )
 
-        player.sendTitle(Strings.PREFIX, "Seja bem vindo, §f${player.name}", 20, 80, 20)
+        player.showTitle(Title.title(
+            Component.text(Strings.PREFIX),
+            Component.text("Seja bem vindo, §f${player.name}"),
+            Title.Times.times(Duration.ofMillis(20, ), Duration.ofMillis(80), Duration.ofMillis(20))
+        ))
     }
 
     @EventHandler

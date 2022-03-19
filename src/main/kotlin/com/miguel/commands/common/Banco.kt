@@ -21,9 +21,10 @@ class Banco : BukkitCommand("banco") {
         }
 
         if (args.isEmpty()) {
-            sender.sendMessage("§f/banco §a[§finfo§a]")
-            sender.sendMessage("§f/banco §a[§fsaldo§a] §a[§fvalor§a]")
-            sender.sendMessage("§f/banco §a[§ftransferir§a] §a[§fcreditado/conta§a] §a[§fvalor§a]")
+            sender.sendMessage("§f/banco §ainfo")
+            sender.sendMessage("§f/banco §asacar §evalor")
+            sender.sendMessage("§f/banco §adepositar")
+            sender.sendMessage("§f/banco §atransferir §enome§f/§econta §fvalor")
         } else {
             val inventory = sender.inventory
 
@@ -111,11 +112,12 @@ class Banco : BukkitCommand("banco") {
                             when (args[1]) {
                                 "." -> {
                                     if (BankManager.currencyExist(itemInMainHand.type)) {
-                                        val filtered = inventory.contents
-                                            .filterNotNull()
-                                            .filter { it.type == itemInMainHand.type }
+                                        val contents = inventory.contents?.filterNotNull()
 
-                                        if (filtered.isNotEmpty()) {
+                                        val filtered = contents
+                                            ?.filter { it.type == itemInMainHand.type }
+
+                                        if (filtered != null && filtered.isNotEmpty()) {
                                             filtered.forEach {
                                                 inventory.setItem(inventory.indexOf(it), ItemStack(Material.AIR))
                                             }
@@ -130,18 +132,21 @@ class Banco : BukkitCommand("banco") {
                                 }
 
                                 "*" -> {
-                                    val items = inventory.contents
-                                        .filterNotNull()
-                                        .filter { BankManager.currencyExist(it.type) }.toTypedArray()
+                                    val contents = inventory.contents?.filterNotNull()
 
-                                    val deposit = BankManager.deposit(
-                                        sender, items
-                                    )
+                                    val items = contents
+                                        ?.filter { BankManager.currencyExist(it.type) }?.toTypedArray()
 
-                                    items.forEach { inventory.setItem(inventory.indexOf(it), ItemStack(Material.AIR)) }
+                                    if (items != null) {
+                                        val deposit = BankManager.deposit(
+                                            sender, items
+                                        )
 
-                                    if (deposit != .0) {
-                                        sender.sendMessage("${Strings.PREFIX} §fVocê depositou §e$deposit §aUkranianinho's")
+                                        items.forEach { inventory.setItem(inventory.indexOf(it), ItemStack(Material.AIR)) }
+
+                                        if (deposit != .0) {
+                                            sender.sendMessage("${Strings.PREFIX} §fVocê depositou §e$deposit §aUkranianinho's")
+                                        }
                                     }
                                 }
                             }

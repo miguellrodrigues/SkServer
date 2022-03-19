@@ -2,17 +2,17 @@ package com.miguel.repository.impl
 
 import com.miguel.entities.SAccount
 import com.miguel.repository.IAccountRepository
+import com.miguel.values.Values
 import java.sql.SQLException
 
 class MysqlAccountRepository : IAccountRepository {
 
-    private val database = "s18280_data"
     private val table = "sk_account"
 
     override fun create(account: SAccount) {
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "INSERT INTO $database.$table(id, balance) VALUES " +
+                "INSERT INTO ${Values.DATABASE}.$table(id, balance) VALUES " +
                         "('${account.id}', '${account.balance}')"
             )
 
@@ -36,7 +36,7 @@ class MysqlAccountRepository : IAccountRepository {
         var success = false
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM ${Values.DATABASE}.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -64,7 +64,7 @@ class MysqlAccountRepository : IAccountRepository {
         var balance = .0
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM ${Values.DATABASE}.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -84,7 +84,7 @@ class MysqlAccountRepository : IAccountRepository {
         try {
             val statement =
                 Mysql.getMysqlConnection()
-                    .prepareStatement("UPDATE $database.$table SET balance = '$balance' WHERE id='$id'")
+                    .prepareStatement("UPDATE ${Values.DATABASE}.$table SET balance = '$balance' WHERE id='$id'")
 
             statement.executeUpdate()
             statement.close()

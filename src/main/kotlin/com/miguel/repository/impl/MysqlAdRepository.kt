@@ -2,12 +2,12 @@ package com.miguel.repository.impl
 
 import com.miguel.entities.SAd
 import com.miguel.repository.IAdRepository
+import com.miguel.values.Values
 import java.sql.SQLException
 import java.util.*
 
 class MysqlAdRepository : IAdRepository {
 
-    private val database = "s18280_data"
     private val table = "sk_advertisement"
 
     private val b64encoder = Base64.getEncoder()
@@ -18,7 +18,7 @@ class MysqlAdRepository : IAdRepository {
             val item = b64encoder.encodeToString(ad.item)
 
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "INSERT INTO $database.$table(id, advertiserName, name, price, item, account_id) VALUES " +
+                "INSERT INTO ${Values.DATABASE}.$table(id, advertiserName, name, price, item, account_id) VALUES " +
                         "('${ad.id}', '${ad.advertiserName}', '${ad.name}', '${ad.price}', '$item', '${ad.account_id}');"
             )
 
@@ -33,7 +33,7 @@ class MysqlAdRepository : IAdRepository {
         if (!exist(id)) return false
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("DELETE FROM ${Values.DATABASE}.$table WHERE id='$id'")
 
             statement.execute()
             statement.close()
@@ -48,7 +48,7 @@ class MysqlAdRepository : IAdRepository {
         var success = false
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM ${Values.DATABASE}.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -68,7 +68,7 @@ class MysqlAdRepository : IAdRepository {
         val ads = ArrayList<SAd>()
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM ${Values.DATABASE}.$table")
 
             val resultSet = statement.executeQuery()
 

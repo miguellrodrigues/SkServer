@@ -146,7 +146,7 @@ object BankManager {
             player.sendMessage("§aSaque realizado com sucesso !")
 
             if (recharge != .0) {
-                player.sendMessage("§e$recharge §aUkranianinho's §fRetidos: Você está sem espaço em seu inventário")
+                player.sendMessage("§e$recharge §aUkranianinho's §fRetidos: Você está sem espaço em seu inventário/ender chest")
             }
 
             withDraw(player.uniqueId, value - recharge)

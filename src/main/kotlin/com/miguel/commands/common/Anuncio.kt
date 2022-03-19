@@ -19,6 +19,7 @@ class Anuncio : BukkitCommand("anuncio") {
         if (args.isEmpty()) {
             sender.sendMessage("§c/anuncio [criar | remover] [nome] [preço]")
         } else {
+            println(args[1])
             when (args.size) {
                 2 -> {
                     if (args[0].lowercase(Locale.getDefault()) == "remover") {
@@ -51,7 +52,9 @@ class Anuncio : BukkitCommand("anuncio") {
                                 return true
                             }
 
-                            MarketManager.advertise(sender, name, price)
+                            var n = name.replace("-", " ")
+
+                            MarketManager.advertise(sender, n, price)
                         }
                     } else {
                         sender.sendMessage("§c/anuncio [criar] [nome] [preço]")

@@ -18,6 +18,7 @@ import com.miguel.listener.ServerEvents
 import com.miguel.packets.CustomPing
 import com.miguel.repository.impl.Mysql
 import org.bukkit.Bukkit
+import org.bukkit.GameRule
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -63,7 +64,7 @@ class Main : JavaPlugin() {
 
         val commandMap = Bukkit.getServer().commandMap
 
-        commandMap.register("sk", CommandExecutor())
+        commandMap.register("", CommandExecutor())
 
         commandMap.register("home", Home())
         commandMap.register("mercado", Mercado())
@@ -72,6 +73,7 @@ class Main : JavaPlugin() {
         commandMap.register("invsee", Invsee())
         commandMap.register("sumo", Sumo())
         commandMap.register("ping", Ping())
+        commandMap.register("info", Info())
 
         CommandManager.register(GameCommands::class.java)
 
@@ -87,6 +89,12 @@ class Main : JavaPlugin() {
                 "§fBy §bAccess_Token",
                 ""
             )
+        )
+
+
+        server.worlds[0].setGameRule(
+            GameRule.ANNOUNCE_ADVANCEMENTS,
+            false
         )
     }
 

@@ -3,6 +3,7 @@ package com.miguel.repository.impl
 import com.miguel.entities.SHome
 import com.miguel.entities.data.SHomeData
 import com.miguel.repository.IHomeRepository
+import com.miguel.values.Values
 import java.sql.SQLException
 import java.sql.Statement
 import java.util.*
@@ -10,13 +11,12 @@ import kotlin.properties.Delegates
 
 class MysqlHomeRepository : IHomeRepository {
 
-    private val database = "s18280_data"
     private val table = "sk_home"
 
     override fun create(home: SHome) {
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "INSERT INTO $database.$table(name, location_id, player_uuid) VALUES " +
+                "INSERT INTO ${Values.DATABASE}.$table(name, location_id, player_uuid) VALUES " +
                         "('${home.name}', '${home.location.id}', '${home.player_id}');",
                 Statement.RETURN_GENERATED_KEYS
             )
@@ -32,7 +32,7 @@ class MysqlHomeRepository : IHomeRepository {
         var success = false
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM ${Values.DATABASE}.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -53,7 +53,7 @@ class MysqlHomeRepository : IHomeRepository {
 
         try {
             val statement = Mysql.getMysqlConnection()
-                .prepareStatement("SELECT * FROM $database.$table WHERE player_uuid='$player_id'")
+                .prepareStatement("SELECT * FROM ${Values.DATABASE}.$table WHERE player_uuid='$player_id'")
 
             val resultSet = statement.executeQuery()
 
@@ -81,7 +81,7 @@ class MysqlHomeRepository : IHomeRepository {
         if (!exist(id)) return false
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("DELETE FROM ${Values.DATABASE}.$table WHERE id='$id'")
 
             statement.execute()
             statement.close()

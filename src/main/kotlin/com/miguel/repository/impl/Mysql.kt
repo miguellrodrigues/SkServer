@@ -1,13 +1,14 @@
 package com.miguel.repository.impl
 
+import com.miguel.Main
 import java.sql.Connection
 import java.sql.DriverManager
 import java.util.*
+import kotlin.properties.Delegates
 
 object Mysql {
 
     private lateinit var connection: Connection
-
     private lateinit var prop: Properties
 
     fun remoteConnection(url: String, user: String, password: String) {

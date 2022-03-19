@@ -1,18 +1,18 @@
 package com.miguel.repository.impl
 
 import com.miguel.repository.IPlayerRepository
+import com.miguel.values.Values
 import java.sql.SQLException
 import java.util.*
 
 class MysqlPlayerRepository : IPlayerRepository {
 
-    private val database = "s18280_data"
     private val table = "sk_player"
 
     override fun create(uuid: UUID, account_id: String) {
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "INSERT INTO $database.$table(uuid, account_id) VALUES " +
+                "INSERT INTO ${Values.DATABASE}.$table(uuid, account_id) VALUES " +
                         "('${uuid}', '${account_id}')"
             )
 
@@ -30,7 +30,7 @@ class MysqlPlayerRepository : IPlayerRepository {
 
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "SELECT account_id FROM $database.$table WHERE uuid='$uuid'"
+                "SELECT account_id FROM ${Values.DATABASE}.$table WHERE uuid='$uuid'"
             )
 
             val resultSet = statement.executeQuery()
@@ -51,7 +51,7 @@ class MysqlPlayerRepository : IPlayerRepository {
         try {
             val statement =
                 Mysql.getMysqlConnection()
-                    .prepareStatement("UPDATE $database.$table SET account_id = '$account' WHERE uuid='$uuid'")
+                    .prepareStatement("UPDATE ${Values.DATABASE}.$table SET account_id = '$account' WHERE uuid='$uuid'")
 
             statement.executeUpdate()
             statement.close()
@@ -67,7 +67,7 @@ class MysqlPlayerRepository : IPlayerRepository {
 
         try {
             val statement =
-                Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE uuid='$uuid'")
+                Mysql.getMysqlConnection().prepareStatement("SELECT * FROM ${Values.DATABASE}.$table WHERE uuid='$uuid'")
 
             val resultSet = statement.executeQuery()
 
@@ -88,7 +88,7 @@ class MysqlPlayerRepository : IPlayerRepository {
 
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "SELECT uuid FROM $database.$table"
+                "SELECT uuid FROM ${Values.DATABASE}.$table"
             )
 
             val resultSet = statement.executeQuery()

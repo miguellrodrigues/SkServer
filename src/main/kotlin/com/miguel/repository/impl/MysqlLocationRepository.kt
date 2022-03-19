@@ -2,18 +2,18 @@ package com.miguel.repository.impl
 
 import com.miguel.entities.SLocation
 import com.miguel.repository.ILocationRepository
+import com.miguel.values.Values
 import java.sql.SQLException
 import java.sql.Statement
 
 class MysqlLocationRepository : ILocationRepository {
 
-    private val database = "s18280_data"
     private val table = "sk_location"
 
     override fun create(location: SLocation) {
         try {
             val statement = Mysql.getMysqlConnection().prepareStatement(
-                "INSERT INTO $database.$table(id, world, x, y, z) VALUES ('${location.id}', '${location.world}', ${location.x}, ${location.y}, ${location.z});",
+                "INSERT INTO ${Values.DATABASE}.$table(id, world, x, y, z) VALUES ('${location.id}', '${location.world}', ${location.x}, ${location.y}, ${location.z});",
                 Statement.RETURN_GENERATED_KEYS
             )
 
@@ -29,7 +29,7 @@ class MysqlLocationRepository : ILocationRepository {
         var success = false
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM ${Values.DATABASE}.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -51,7 +51,7 @@ class MysqlLocationRepository : ILocationRepository {
         lateinit var sLocation: SLocation
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("SELECT * FROM ${Values.DATABASE}.$table WHERE id='$id'")
 
             val resultSet = statement.executeQuery()
 
@@ -78,7 +78,7 @@ class MysqlLocationRepository : ILocationRepository {
         if (!exist(id)) return false
 
         try {
-            val statement = Mysql.getMysqlConnection().prepareStatement("DELETE FROM $database.$table WHERE id='$id'")
+            val statement = Mysql.getMysqlConnection().prepareStatement("DELETE FROM ${Values.DATABASE}.$table WHERE id='$id'")
 
             statement.execute()
             statement.close()
