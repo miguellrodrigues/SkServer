@@ -5,7 +5,7 @@ import java.util.*
 
 data class SPlayer(
     val uuid: UUID,
-    val account: SAccount,
+    val account: String,
     var homes: ArrayList<SHome>
 ) {
     override fun toString(): String {

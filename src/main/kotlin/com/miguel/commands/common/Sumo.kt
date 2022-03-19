@@ -23,12 +23,16 @@ class Sumo : BukkitCommand("sumo") {
             sender.sendMessage("§c/sumo [player] [args]")
         } else {
             when (args.size) {
-                2 -> {
-                    Bukkit.getPlayer(args[0])?.chat(args[1])
+                1 -> {
+                    sender.sendMessage("§c/sumo [player] [args]")
                 }
 
                 else -> {
-                    sender.sendMessage("§c/sumo [player] [args]")
+                    // concatenar os argumentos
+                    val player = Bukkit.getPlayer(args[0])
+                    val message = args.drop(1).joinToString(" ")
+
+                    player?.chat(message)
                 }
             }
         }

@@ -3,10 +3,12 @@ package com.miguel.game.market
 import com.miguel.controller.SAdController
 import com.miguel.entities.SAd
 import com.miguel.game.bank.BankManager
+import com.miguel.game.manager.AccountManager
 import com.miguel.game.manager.GameManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.repository.impl.MysqlAdRepository
 import com.miguel.values.Strings
+import com.miguel.values.Values
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import java.util.*
@@ -19,6 +21,8 @@ object MarketManager {
     private val sadController = SAdController(MysqlAdRepository())
 
     private var lastId by Delegates.notNull<Int>()
+
+    private const val taxPercentage = .05
 
     fun init() {
         ads.addAll(sadController.getAll())
@@ -78,6 +82,12 @@ object MarketManager {
     }
 
     fun purchase(player: Player, ad: SAd) {
+        if (ads[ads.indexOf(ad)].delete) {
+            player.closeInventory()
+            player.sendMessage("${Strings.MARKET_PREFIX} Este anuncio não está disponivel")
+            return
+        }
+
         if (BankManager.withDraw(player.uniqueId, ad.price)) {
             player.inventory.addItem(GameManager.deserializeItem(ad.item))
 
@@ -87,9 +97,11 @@ object MarketManager {
 
             if (Bukkit.getPlayer(ad.advertiserName) != null) {
                 val advertiser = Bukkit.getPlayer(ad.advertiserName)!!
+                val tax = (ad.price * taxPercentage)
 
-                PlayerManager.changeBalance(advertiser.uniqueId, ad.price)
+                AccountManager.setBalance(Values.governmentID, tax)
 
+                PlayerManager.changeBalance(advertiser.uniqueId, ad.price - tax)
                 advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
             } else {
                 PlayerManager.changeBalance(ad.account_id, ad.price)
@@ -139,6 +151,15 @@ object MarketManager {
             GameManager.sendMessage("${Strings.MARKET_PREFIX} O jogador §f${player.name} fez um anúncio")
             GameManager.sendMessage("${Strings.MARKET_PREFIX} Digite /mercado para mais informações")
 
+            player.sendMessage(" ")
+            player.sendMessage("${Strings.MARKET_PREFIX} Anúncio feito com sucesso !")
+            player.sendMessage(" ")
+
+            val tax = (price * taxPercentage)
+
+            player.sendMessage(" ")
+            player.sendMessage("${Strings.MARKET_PREFIX} Você irá receber ${price - tax} Ukranianinho's devido ao imposto de 2%")
+            player.sendMessage(" ")
         } else {
             player.sendMessage("§cVocê já possui um anúncio com esse nome !")
         }

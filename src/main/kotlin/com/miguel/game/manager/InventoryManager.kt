@@ -104,7 +104,6 @@ object InventoryManager {
                 }
 
                 addInventory(marketInventory)
-
                 player.openInventory(marketInventory)
             }
 

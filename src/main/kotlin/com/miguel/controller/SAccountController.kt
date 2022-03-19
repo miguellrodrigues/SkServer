@@ -9,6 +9,8 @@ class SAccountController(
     private val accountRepository: MysqlAccountRepository
 ) {
 
+    private val accounts = mutableMapOf<UUID, SAccount>()
+
     fun create(account: SAccount) {
         return accountRepository.create(account)
     }

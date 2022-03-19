@@ -15,7 +15,11 @@ enum class TagCommon(private var tagPrefix: String, var nameColor: String) {
     CORNO("§c§lCORNO", "§c§l"),
     LOLI("§5§lLOLI", "§5§l"),
     OTAKU("§b§lOTAKU", "§b§l"),
-    PREFEITO("§6§lPREFEITO", "§6§l");
+    PREFEITO("§6§lPREFEITO", "§6§l"),
+    DEPUTADO("§d§lDEPUTADO", "§d§l"),
+    SENADOR("§b§lSENADOR", "§b§l"),
+    GOVERNADOR("§6§lGOVERNADOR", "§6§l"),
+    AGIOTA("§c§lAGIOTA", "§c§l");
 
     val formattedName: String
         get() = tagPrefix + if (tagPrefix != nameColor) "§r $nameColor" else ""

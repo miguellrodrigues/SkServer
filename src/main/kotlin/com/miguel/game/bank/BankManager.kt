@@ -1,8 +1,12 @@
 package com.miguel.game.bank
 
+import com.miguel.Main
+import com.miguel.entities.SAccount
+import com.miguel.game.manager.AccountManager
 import com.miguel.game.manager.GameManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
+import com.miguel.values.Values
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.format.TextColor
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
@@ -18,6 +22,19 @@ object BankManager {
     private val currencies = ArrayList<Currency>()
 
     private val coinDisplayName = Component.text("Ukranianinho").color(TextColor.color(0, 255, 0))
+
+    fun init() {
+        CompletableFuture.runAsync {
+            if (!AccountManager.exist(Values.governmentID).get()) {
+                AccountManager.create(SAccount(
+                    Values.governmentID,
+                    10e3
+                ))
+            }
+        }
+
+        AccountManager.load(Values.governmentID)
+    }
 
     fun loadCurrencies() {
         currencies.add(Currency(Material.NETHERITE_INGOT, 100.0))
@@ -109,6 +126,54 @@ object BankManager {
 
     fun withDraw(player: Player, value: Double) {
         val balance = PlayerManager.getBalance(player.uniqueId)
+
+        if (balance >= value) {
+            val decompose = decompose(value)
+
+            var recharge = .0
+
+            decompose.forEach { amount ->
+                val currencyValue = currencies.first { it.material == amount.material }.value
+
+                val item = GameManager.createItem(
+                    coinDisplayName,
+                    arrayOf(
+                        Component.text(" "),
+                        Component.text(" §f- Valor §e$currencyValue §fUkranianinho`s"),
+                        Component.text(" ")
+                    ),
+                    amount.material
+                )
+
+                item.amount = amount.amount
+
+                if (player.inventory.firstEmpty() != -1) {
+                    player.inventory.addItem(
+                        item
+                    )
+                } else {
+                    if (player.enderChest.firstEmpty() != -1) {
+                        player.enderChest.addItem(item)
+                    } else {
+                        recharge += currencyValue * item.amount
+                    }
+                }
+            }
+
+            player.sendMessage("§aSaque realizado com sucesso !")
+
+            if (recharge != .0) {
+                player.sendMessage("§e$recharge §aUkranianinho's §fRetidos: Você está sem espaço em seu inventário/ender chest")
+            }
+
+            withDraw(player.uniqueId, value - recharge)
+        } else {
+            player.sendMessage("§cSaldo insuficiente !")
+        }
+    }
+
+    fun withDraw(player: Player, account: String, value: Double) {
+            val balance = AccountManager.getBalance(account)
 
         if (balance >= value) {
             val decompose = decompose(value)

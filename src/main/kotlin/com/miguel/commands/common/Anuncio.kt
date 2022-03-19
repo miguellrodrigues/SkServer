@@ -17,9 +17,8 @@ class Anuncio : BukkitCommand("anuncio") {
         }
 
         if (args.isEmpty()) {
-            sender.sendMessage("§c/anuncio [criar | remover] [nome] [preço]")
+            sender.sendMessage("§c/anuncio [criar | remover] [preço] [nome]")
         } else {
-            println(args[1])
             when (args.size) {
                 2 -> {
                     if (args[0].lowercase(Locale.getDefault()) == "remover") {
@@ -27,22 +26,23 @@ class Anuncio : BukkitCommand("anuncio") {
 
                         MarketManager.removeAd(sender, name)
                     } else {
-                        sender.sendMessage("§c/anuncio [remover] [nome] [preço]")
+                        sender.sendMessage("§c/anuncio [remover] [nome]")
+                        sender.sendMessage("§c/anuncio [criar] [preço] [nome]")
                     }
                 }
 
-                3 -> {
+                else -> {
                     if (args[0].lowercase(Locale.getDefault()) == "criar") {
-                        val name = args[1]
-
                         val price: Double
 
                         try {
-                            price = args[2].toDouble()
+                            price = args[1].toDouble()
                         } catch (e: NumberFormatException) {
                             sender.sendMessage("§cUtilize apenas números no preço !")
                             return true
                         }
+
+                        val name = args.drop(2).joinToString(" ")
 
                         if (price <= Double.MAX_VALUE) {
                             val type = sender.inventory.itemInMainHand.type
@@ -52,17 +52,12 @@ class Anuncio : BukkitCommand("anuncio") {
                                 return true
                             }
 
-                            var n = name.replace("-", " ")
-
-                            MarketManager.advertise(sender, n, price)
+                            MarketManager.advertise(sender, name, price)
                         }
                     } else {
-                        sender.sendMessage("§c/anuncio [criar] [nome] [preço]")
+                        sender.sendMessage("§c/anuncio [remover] [nome]")
+                        sender.sendMessage("§c/anuncio [criar] [preço] [nome]")
                     }
-                }
-
-                else -> {
-                    sender.sendMessage("§c/anuncio [criar | remover] [nome] [preço]")
                 }
             }
         }

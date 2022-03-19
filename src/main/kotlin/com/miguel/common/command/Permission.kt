@@ -12,7 +12,8 @@ enum class Permission(val node: String) {
     BANK_OWN("bank.own"),
     INVSEE("invsee"),
     SUMO("sumo"),
-    INFO("info");
+    INFO("info"),
+    GOVERNO("governo");
 
     companion object {
         private fun getPermission(permission: Permission): String {

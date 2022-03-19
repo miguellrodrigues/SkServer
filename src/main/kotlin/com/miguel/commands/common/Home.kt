@@ -2,6 +2,7 @@ package com.miguel.commands.common
 
 import com.miguel.game.bank.BankManager
 import com.miguel.game.home.HomeManager
+import com.miguel.game.manager.AccountManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import com.miguel.values.Values
@@ -80,6 +81,8 @@ class Home : BukkitCommand("home") {
 
                 "go" -> {
                     if (BankManager.withDraw(sender.uniqueId, 10.0)) {
+                        AccountManager.changeBalance(Values.governmentID, 10.0)
+
                         val home = HomeManager.getHome(sender, args[1])
 
                         if (home == null) {

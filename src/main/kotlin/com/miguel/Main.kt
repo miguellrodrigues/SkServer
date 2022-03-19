@@ -6,6 +6,7 @@ import com.miguel.commands.GameCommands
 import com.miguel.commands.common.*
 import com.miguel.common.command.CommandExecutor
 import com.miguel.common.command.CommandManager
+import com.miguel.controller.SAccountController
 import com.miguel.game.bank.BankManager
 import com.miguel.game.manager.InventoryManager
 import com.miguel.game.manager.PlayerManager
@@ -17,6 +18,7 @@ import com.miguel.listener.PlayerEvents
 import com.miguel.listener.ServerEvents
 import com.miguel.packets.CustomPing
 import com.miguel.repository.impl.Mysql
+import com.miguel.repository.impl.MysqlAccountRepository
 import org.bukkit.Bukkit
 import org.bukkit.GameRule
 import org.bukkit.event.HandlerList
@@ -56,6 +58,7 @@ class Main : JavaPlugin() {
 
         BankManager.loadCurrencies()
         MarketManager.init()
+        BankManager.init()
 
         server.pluginManager.registerEvents(PlayerEvents(), this)
         server.pluginManager.registerEvents(EntityEvents(), this)
@@ -74,6 +77,8 @@ class Main : JavaPlugin() {
         commandMap.register("sumo", Sumo())
         commandMap.register("ping", Ping())
         commandMap.register("info", Info())
+        commandMap.register("chest", Chest())
+        commandMap.register("governo", Governo())
 
         CommandManager.register(GameCommands::class.java)
 
@@ -90,7 +95,6 @@ class Main : JavaPlugin() {
                 ""
             )
         )
-
 
         server.worlds[0].setGameRule(
             GameRule.ANNOUNCE_ADVANCEMENTS,

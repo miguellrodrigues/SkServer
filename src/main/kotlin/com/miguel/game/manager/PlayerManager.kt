@@ -1,6 +1,5 @@
 package com.miguel.game.manager
 
-import com.miguel.controller.SAccountController
 import com.miguel.controller.SHomeController
 import com.miguel.controller.SLocationsController
 import com.miguel.controller.SPlayerController
@@ -8,7 +7,6 @@ import com.miguel.entities.SAccount
 import com.miguel.entities.SHome
 import com.miguel.entities.SLocation
 import com.miguel.entities.SPlayer
-import com.miguel.repository.impl.MysqlAccountRepository
 import com.miguel.repository.impl.MysqlHomeRepository
 import com.miguel.repository.impl.MysqlLocationRepository
 import com.miguel.repository.impl.MysqlPlayerRepository
@@ -21,7 +19,6 @@ object PlayerManager {
 
     private val playerController = SPlayerController(
         MysqlPlayerRepository(),
-        SAccountController(MysqlAccountRepository()),
         SHomeController(MysqlHomeRepository(), SLocationsController(MysqlLocationRepository()))
     )
 
@@ -31,12 +28,13 @@ object PlayerManager {
         CompletableFuture.runAsync {
             if (player.uniqueId !in data) {
                 data[player.uniqueId] = playerController.get(player.uniqueId).get()
+                AccountManager.load(data[player.uniqueId]!!.account)
             }
         }
     }
 
     private fun getAccount(uuid: UUID): SAccount? {
-        return data[uuid]?.account
+        return data[uuid]!!.account.let { AccountManager.get(it) }
     }
     
     fun getBalance(uuid: UUID): Double {
@@ -44,7 +42,7 @@ object PlayerManager {
     }
 
     private fun setBalance(uuid: UUID, balance: Double) {
-        data[uuid]?.account?.balance = balance
+        getAccount(uuid)?.balance = balance
     }
 
     fun changeBalance(uuid: UUID, amount: Double) {
@@ -55,12 +53,14 @@ object PlayerManager {
 
     fun changeBalance(account_id: String, amount: Double) {
         CompletableFuture.runAsync {
-            data.values.first { it.account.id == account_id }.account.balance += amount
+            AccountManager.setBalance(account_id, AccountManager.getBalance(account_id) + amount)
         }
     }
 
     fun isValidAccount(id: String): CompletableFuture<Boolean> {
-        return CompletableFuture.supplyAsync { data.values.filter { it.account.id == id }.size == 1 }
+        return CompletableFuture.supplyAsync {
+            AccountManager.isValidAccount(id)
+        }
     }
 
     fun getHomes(uuid: UUID): List<SHome> {
@@ -93,10 +93,10 @@ object PlayerManager {
     }
 
     fun getAccountId(uuid: UUID): String {
-        return data[uuid]!!.account.id
+        return data[uuid]!!.account
     }
 
     fun isPlayerOnline(account: String): SPlayer? {
-        return data.values.firstOrNull { it.account.id == account && Bukkit.getPlayer(it.uuid) != null }
+        return data.values.firstOrNull { it.account == account && Bukkit.getPlayer(it.uuid) != null }
     }
 }

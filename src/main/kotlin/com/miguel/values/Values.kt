@@ -7,4 +7,6 @@ object Values {
     var CHAT = true
 
     const val DATABASE = "s27085_data"
+    const val governmentID = "0000"
+
 }
