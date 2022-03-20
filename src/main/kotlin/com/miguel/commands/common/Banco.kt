@@ -184,7 +184,12 @@ class Banco : BukkitCommand("banco") {
                                     return true
                                 }
 
-                                BankManager.transfer(credited, sender, value)
+                                if (BankManager.transfer(credited, sender, value)) {
+                                    sender.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
+                                    credited.sendMessage("${Strings.PREFIX} §fVocê recebeu §e$value §aUkranianinhos §fdo jogador §b${sender.name}")
+                                } else {
+                                    sender.sendMessage("§cSaldo insuficiente !")
+                                }
                             } else {
                                 val creditedAccount = args[1]
                                 val value: Double
@@ -192,7 +197,7 @@ class Banco : BukkitCommand("banco") {
                                 try {
                                     value = args[2].toDouble()
                                 } catch (e: java.lang.NumberFormatException) {
-                                    sender.sendMessage("§cValor inválido(s) !")
+                                    sender.sendMessage("§cValor inválido !")
                                     return true
                                 }
 
@@ -206,7 +211,9 @@ class Banco : BukkitCommand("banco") {
                                     return true
                                 }
 
-                                BankManager.transfer(creditedAccount, sender, value)
+                                if (BankManager.transfer(creditedAccount, sender, value)) {
+                                    sender.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${creditedAccount}")
+                                }
                             }
                         }
 

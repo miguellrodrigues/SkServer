@@ -36,7 +36,6 @@ class Main : JavaPlugin() {
         dataFolder.mkdir()
 
         config.options().copyDefaults(true)
-        config.options().copyHeader(true)
 
         saveDefaultConfig()
 

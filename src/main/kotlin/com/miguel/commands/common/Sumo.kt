@@ -28,7 +28,6 @@ class Sumo : BukkitCommand("sumo") {
                 }
 
                 else -> {
-                    // concatenar os argumentos
                     val player = Bukkit.getPlayer(args[0])
                     val message = args.drop(1).joinToString(" ")
 

@@ -1,6 +1,5 @@
 package com.miguel.game.bank
 
-import com.miguel.Main
 import com.miguel.entities.SAccount
 import com.miguel.game.manager.AccountManager
 import com.miguel.game.manager.GameManager
@@ -260,37 +259,40 @@ object BankManager {
         }
     }
 
-    fun transfer(credited: Player, debited: Player, value: Double) {
-        val balance = PlayerManager.getBalance(debited.uniqueId)
+    fun transfer(credited: String, debited: String, value: Double): Boolean {
+        if (!AccountManager.isValidAccount(credited)) return false
+        if (!AccountManager.isValidAccount(debited)) return false
+
+        val balance = AccountManager.getBalance(debited)
 
         if (balance >= value) {
-            PlayerManager.changeBalance(debited.uniqueId, -value)
-            PlayerManager.changeBalance(credited.uniqueId, value)
+            AccountManager.changeBalance(credited, value)
+            AccountManager.changeBalance(debited, -value)
 
-            debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara o jogador §b${credited.name}")
-            credited.sendMessage("${Strings.PREFIX} §fVocê recebeu §e$value §aUkranianinhos §fdo jogador §b${debited.name}")
-        } else {
-            debited.sendMessage("§cSaldo insuficiente !")
+            return true
         }
+
+        return false
     }
 
-    fun transfer(credited: String, debited: Player, value: Double) {
-        PlayerManager.isValidAccount(credited).thenAcceptAsync { valid ->
-            if (valid) {
-                val balance = PlayerManager.getBalance(debited.uniqueId)
+    fun transfer(credited: Player, debited: String, value: Double): Boolean {
+        return transfer(PlayerManager.getAccountId(credited.uniqueId), debited, value)
+    }
 
-                if (balance >= value) {
-                    PlayerManager.changeBalance(debited.uniqueId, -value)
-                    PlayerManager.changeBalance(credited, value)
+    fun transfer(credited: Player, debited: Player, value: Double): Boolean {
+        return transfer(
+            PlayerManager.getAccountId(credited.uniqueId),
+            PlayerManager.getAccountId(debited.uniqueId),
+            value
+        )
+    }
 
-                    debited.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
-                } else {
-                    debited.sendMessage("§cSaldo insuficiente !")
-                }
-            } else {
-                debited.sendMessage("§cConta inválida !")
-            }
-        }
+    fun transfer(credited: String, debited: Player, value: Double): Boolean {
+        return transfer(
+            credited,
+            PlayerManager.getAccountId(debited.uniqueId),
+            value
+        )
     }
 
     fun inject(creditedAccount: String, value: Double, bankManager: Player?) {

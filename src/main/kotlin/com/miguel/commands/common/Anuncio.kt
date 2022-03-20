@@ -27,8 +27,11 @@ class Anuncio : BukkitCommand("anuncio") {
                     if (args[0].lowercase(Locale.getDefault()) == "remover") {
                         val name = args[1]
 
-                        if (MarketManager.removeAd(sender.name, name) != null) {
+                        val item = MarketManager.removeAd(sender.name, name)
+
+                        if (item != null) {
                             sender.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
+                            sender.inventory.addItem(item)
                         } else {
                             sender.sendMessage("§cAnúncio não encontrado !")
                         }

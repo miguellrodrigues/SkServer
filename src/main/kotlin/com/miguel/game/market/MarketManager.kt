@@ -12,7 +12,6 @@ import com.miguel.values.Values
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.*
 import kotlin.properties.Delegates
 
 object MarketManager {
@@ -84,7 +83,7 @@ object MarketManager {
                 AccountManager.changeBalance(Values.governmentID, tax)
 
                 PlayerManager.changeBalance(advertiser.uniqueId, (ad.price - tax))
-                advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
+                advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price - tax} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
             } else {
                 if (ad.account_id == Values.governmentID) tax = .0
 

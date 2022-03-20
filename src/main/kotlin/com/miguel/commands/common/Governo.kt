@@ -110,10 +110,17 @@ class Governo : BukkitCommand("governo") {
 
                                 if (value <= 0 || value > Double.MAX_VALUE) {
                                     sender.sendMessage("§cValor inválido !")
+
                                     return true
                                 }
 
-                                BankManager.transfer(credited, sender, value)
+                                if (BankManager.transfer(credited, Values.governmentID, value)) {
+                                    credited.sendMessage("${Strings.PREFIX} §fVocê recebeu §e$value §aUkranianinhos §fdo §aGoverno")
+                                    sender.sendMessage("${Strings.PREFIX} §fTransferência realizada com sucesso!")
+                                } else {
+                                    sender.sendMessage("${Strings.PREFIX} §cSaldo insuficiente!")
+                                }
+
                             } else {
                                 val creditedAccount = args[1]
                                 val value: Double
@@ -125,8 +132,8 @@ class Governo : BukkitCommand("governo") {
                                     return true
                                 }
 
-                                if (creditedAccount == PlayerManager.getAccountId(sender.uniqueId)) {
-                                    sender.sendMessage("§cVocê não pode realizar transferências para si mesmo !")
+                                if (creditedAccount == Values.governmentID) {
+                                    sender.sendMessage("§cVocê não pode realizar transferências do Governo para o Governo !")
                                     return true
                                 }
 
@@ -135,7 +142,9 @@ class Governo : BukkitCommand("governo") {
                                     return true
                                 }
 
-                                BankManager.transfer(creditedAccount, sender, value)
+                                if (BankManager.transfer(creditedAccount, Values.governmentID, value)) {
+                                    sender.sendMessage("${Strings.PREFIX} §fTransferência realizada com sucesso!")
+                                }
                             }
                         }
 
@@ -143,8 +152,11 @@ class Governo : BukkitCommand("governo") {
                             if (args[1].lowercase(Locale.getDefault()) == "remover") {
                                 val name = args[2]
 
-                                if (MarketManager.removeAd("Governo", name) != null) {
+                                val item = MarketManager.removeAd("Governo", name)
+
+                                if (item != null) {
                                     sender.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
+                                    sender.inventory.addItem(item)
                                 } else {
                                     sender.sendMessage("§cAnúncio não encontrado !")
                                 }
