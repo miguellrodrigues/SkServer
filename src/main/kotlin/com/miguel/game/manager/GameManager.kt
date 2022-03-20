@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType
 import com.comphenix.protocol.events.PacketContainer
 import com.comphenix.protocol.wrappers.WrappedChatComponent
 import com.miguel.Main
+import com.miguel.util.UUIDFetcher
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -86,7 +87,7 @@ object GameManager {
         val itemMeta = stack.itemMeta!! as SkullMeta
         itemMeta.displayName(Component.text("§e${playerName}"))
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
-        itemMeta.owningPlayer = Bukkit.getOfflinePlayer(playerName)
+        itemMeta.owningPlayer = Bukkit.getOfflinePlayer(UUIDFetcher.getUUID(playerName))
 
         stack.itemMeta = itemMeta
 
