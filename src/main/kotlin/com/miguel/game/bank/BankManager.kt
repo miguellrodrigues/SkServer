@@ -57,7 +57,7 @@ object BankManager {
     fun deposit(player: Player, items: Array<ItemStack>): Double {
         var amount = .0
 
-        items.filter { isValidCurrencyItem(it) }.forEach { item ->
+        items.forEach { item ->
             val value = currencies.first { it.material == item.type }.value * item.amount
 
             amount += value
@@ -76,7 +76,7 @@ object BankManager {
 
             player.sendMessage("${Strings.MESSAGE_PREFIX} Você depositou §e${value} §aUkranianinhos")
 
-            player.inventory.setItem(player.inventory.indexOf(item), ItemStack(Material.AIR))
+            player.inventory.setItemInMainHand(ItemStack(Material.AIR))
         } else {
             player.sendMessage("§cMoeda inválida !")
         }
@@ -107,7 +107,7 @@ object BankManager {
         PlayerManager.changeBalance(account, -amount)
     }*/
 
-    private fun isValidCurrencyItem(item: ItemStack): Boolean {
+    fun isValidCurrencyItem(item: ItemStack): Boolean {
         val name = item.itemMeta?.displayName()?.let { PlainTextComponentSerializer.plainText().serialize(it) }
         return name.equals("Ukranianinho")
     }

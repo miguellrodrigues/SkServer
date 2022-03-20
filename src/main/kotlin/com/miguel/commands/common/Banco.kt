@@ -115,16 +115,16 @@ class Banco : BukkitCommand("banco") {
                                         val contents = inventory.contents?.filterNotNull()
 
                                         val filtered = contents
-                                            ?.filter { it.type == itemInMainHand.type }
+                                            ?.filter { it.type == itemInMainHand.type && BankManager.isValidCurrencyItem(it) }
 
-                                        if (filtered != null && filtered.isNotEmpty()) {
-                                            filtered.forEach {
-                                                inventory.setItem(inventory.indexOf(it), ItemStack(Material.AIR))
-                                            }
-
+                                        if (filtered != null) {
                                             val deposit = BankManager.deposit(sender, filtered.toTypedArray())
 
                                             sender.sendMessage("${Strings.PREFIX} §fVocê depositou §e$deposit §aUkranianinho's")
+
+                                            filtered.forEach {
+                                                inventory.setItem(inventory.indexOf(it), ItemStack(Material.AIR))
+                                            }
                                         }
                                     } else {
                                         sender.sendMessage("§cMoeda inválida !")
@@ -135,7 +135,7 @@ class Banco : BukkitCommand("banco") {
                                     val contents = inventory.contents?.filterNotNull()
 
                                     val items = contents
-                                        ?.filter { BankManager.currencyExist(it.type) }?.toTypedArray()
+                                        ?.filter { BankManager.currencyExist(it.type) && BankManager.isValidCurrencyItem(it) }?.toTypedArray()
 
                                     if (items != null) {
                                         val deposit = BankManager.deposit(
