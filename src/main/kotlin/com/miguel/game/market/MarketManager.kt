@@ -23,7 +23,7 @@ object MarketManager {
 
     private var lastId by Delegates.notNull<Int>()
 
-    const val taxPercentage = .05
+    const val taxPercentage = 5.0 / 100.0
 
     fun init() {
         ads.addAll(sadController.getAll())
@@ -65,6 +65,11 @@ object MarketManager {
         }
 
         if (BankManager.withDraw(player.uniqueId, ad.price)) {
+            if (player.inventory.firstEmpty() == -1) {
+                player.sendMessage("${Strings.MARKET_PREFIX} Você não tem espaço no inventario")
+                return
+            }
+
             player.inventory.addItem(GameManager.deserializeItem(ad.item))
 
             ads[ads.indexOf(ad)].delete = true
@@ -78,12 +83,12 @@ object MarketManager {
 
                 AccountManager.changeBalance(Values.governmentID, tax)
 
-                PlayerManager.changeBalance(advertiser.uniqueId, ad.price - tax)
+                PlayerManager.changeBalance(advertiser.uniqueId, (ad.price - tax))
                 advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
             } else {
                 if (ad.account_id == Values.governmentID) tax = .0
 
-                PlayerManager.changeBalance(ad.account_id, ad.price - tax)
+                PlayerManager.changeBalance(ad.account_id, (ad.price - tax))
             }
 
             player.closeInventory()
@@ -109,7 +114,7 @@ object MarketManager {
     fun advertise(ownerName: String, ownerAccount: String, name: String, price: Double, item: ItemStack): Boolean {
         val playerAds = getByOwner(ownerName)
 
-        val filter = playerAds.filter { it.name.lowercase(Locale.getDefault()) == name.lowercase(Locale.getDefault()) }
+        val filter = playerAds.filter { it.name.lowercase() == name.lowercase() }
 
         if (filter.isEmpty()) {
             val ad = SAd(
@@ -123,7 +128,12 @@ object MarketManager {
 
             ads.add(ad)
 
-            GameManager.sendMessage("${Strings.MARKET_PREFIX} O jogador §f$ownerName fez um anúncio")
+            if (ownerName == "Governo") {
+                GameManager.sendMessage("${Strings.MARKET_PREFIX} O Governo fez um anúncio")
+            } else {
+                GameManager.sendMessage("${Strings.MARKET_PREFIX} O jogador §f$ownerName fez um anúncio")
+            }
+
             GameManager.sendMessage("${Strings.MARKET_PREFIX} Digite /mercado para mais informações")
 
             return true

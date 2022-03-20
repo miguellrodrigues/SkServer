@@ -131,15 +131,7 @@ object InventoryManager {
         inventory.setItem(45, GameManager.createItem("§e.", Material.RED_STAINED_GLASS_PANE))
 
         val owners = MarketManager.getOwners()
-        val skulls = mutableListOf<ItemStack>()
-
-        skulls.addAll(
-            owners.map { GameManager.skull(it) }
-        )
-
-        skulls.add(
-            GameManager.skull("Governo")
-        )
+        val skulls = owners.map { GameManager.skull(it) }
 
         val playersPerPage = 28
 
@@ -189,7 +181,6 @@ object InventoryManager {
         )
 
         inventory.contents = adBaseInventory.contents
-
 
         val ads = MarketManager.getByOwner(owner)
 

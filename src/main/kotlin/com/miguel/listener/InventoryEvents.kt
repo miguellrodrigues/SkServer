@@ -4,6 +4,7 @@ import com.miguel.game.manager.InventoryManager
 import com.miguel.game.market.MarketManager
 import com.miguel.values.Strings
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
+import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -95,11 +96,14 @@ class InventoryEvents : Listener {
 
                     else -> {
                         if (!currentItem.type.name.lowercase(Locale.getDefault()).contains("glass")) {
-                            val itemMeta = currentItem.itemMeta as SkullMeta
+                            val itemMeta = currentItem.itemMeta
 
-                            val owner = itemMeta.owningPlayer!!.name!!
+                            val owner = itemMeta.displayName()
+                                ?.let { PlainTextComponentSerializer.plainText().serialize(it) }
 
-                            InventoryManager.openAdInventory(player, owner, 1)
+                            if (owner != null) {
+                                InventoryManager.openAdInventory(player, ChatColor.stripColor(owner)!!, 1)
+                            }
                         }
                     }
                 }

@@ -87,7 +87,7 @@ object GameManager {
         val itemMeta = stack.itemMeta!! as SkullMeta
         itemMeta.displayName(Component.text("§e${playerName}"))
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
-        itemMeta.owningPlayer = Bukkit.getOfflinePlayer(UUIDFetcher.getUUID(playerName))
+        itemMeta.owningPlayer = Bukkit.getOfflinePlayer(playerName)
 
         stack.itemMeta = itemMeta
 
