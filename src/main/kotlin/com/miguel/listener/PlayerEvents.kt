@@ -44,7 +44,7 @@ class PlayerEvents : Listener {
         player.showTitle(Title.title(
             Component.text(Strings.PREFIX),
             Component.text("Seja bem vindo, §f${player.name}"),
-            Title.Times.times(Duration.ofMillis(20, ), Duration.ofMillis(80), Duration.ofMillis(20))
+            Title.Times.times(Duration.ofMillis(2000, ), Duration.ofMillis(1500), Duration.ofMillis(1000))
         ))
     }
 

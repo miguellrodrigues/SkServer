@@ -10,6 +10,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.meta.SkullMeta
 
 object GameManager {
 
@@ -73,6 +74,19 @@ object GameManager {
         val itemMeta = stack.itemMeta!!
         itemMeta.displayName(Component.text(name))
         itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+
+        stack.itemMeta = itemMeta
+
+        return stack
+    }
+
+    fun skull(playerName: String): ItemStack {
+        val stack = ItemStack(Material.PLAYER_HEAD)
+
+        val itemMeta = stack.itemMeta!! as SkullMeta
+        itemMeta.displayName(Component.text("§e${playerName}"))
+        itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+        itemMeta.owningPlayer = Bukkit.getOfflinePlayer(playerName)
 
         stack.itemMeta = itemMeta
 

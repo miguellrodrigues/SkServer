@@ -29,7 +29,9 @@ object AccountManager {
     }
 
     fun create(account: SAccount) {
-        accountController.create(account)
+        CompletableFuture.runAsync {
+            accountController.create(account)
+        }
     }
 
     private fun generateID(owner: UUID): String {

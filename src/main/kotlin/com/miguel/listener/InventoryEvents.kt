@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.inventory.meta.SkullMeta
 import java.util.*
 
 class InventoryEvents : Listener {
@@ -33,21 +34,30 @@ class InventoryEvents : Listener {
 
             event.isCancelled = true
 
+            if (player.inventory.contains(currentItem)) return
+
             val title = PlainTextComponentSerializer.plainText().serialize(view.title()).lowercase(Locale.getDefault())
 
-            if (title.startsWith("anúncios página ")) {
-                var page = title.replace("anúncios página ", "").toInt()
+            if (title.startsWith("página ")) {
+                val split =  title.split(" - ")
+
+                val owner = split[1]
+                var page = split[0].split(" ")[1].toInt()
 
                 when (currentItem.type) {
                     Material.LIME_DYE -> {
-                        InventoryManager.openAdInventory(player, ++page)
+                        InventoryManager.openAdInventory(player, owner, ++page)
                     }
 
                     Material.LIGHT_BLUE_DYE -> {
-                        InventoryManager.openAdInventory(player, --page)
+                        InventoryManager.openAdInventory(player, owner, --page)
                     }
 
                     Material.RED_DYE -> {
+                    }
+
+                    Material.BLUE_DYE -> {
+                        InventoryManager.openPlayersHeadsInventory(player, 1)
                     }
 
                     else -> {
@@ -68,6 +78,31 @@ class InventoryEvents : Listener {
                         }
                     }
                 }
+            } else if (title.startsWith("anunciantes página ")) {
+                var page = title.replace("anunciantes página ", "").toInt()
+
+                when (currentItem.type) {
+                    Material.LIME_DYE -> {
+                        InventoryManager.openPlayersHeadsInventory(player, ++page)
+                    }
+
+                    Material.LIGHT_BLUE_DYE -> {
+                        InventoryManager.openPlayersHeadsInventory(player, --page)
+                    }
+
+                    Material.RED_DYE -> {
+                    }
+
+                    else -> {
+                        if (!currentItem.type.name.lowercase(Locale.getDefault()).contains("glass")) {
+                            val itemMeta = currentItem.itemMeta as SkullMeta
+
+                            val owner = itemMeta.owningPlayer!!.name!!
+
+                            InventoryManager.openAdInventory(player, owner, 1)
+                        }
+                    }
+                }
             }
 
             when (title) {
@@ -83,7 +118,7 @@ class InventoryEvents : Listener {
                         }
 
                         Material.PAPER -> {
-                            player.sendMessage("${Strings.MARKET_PREFIX} digite /anunio para anunciar")
+                            player.sendMessage("${Strings.MARKET_PREFIX} digite /anuncio para anunciar")
                             player.closeInventory()
                         }
 

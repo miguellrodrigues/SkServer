@@ -4,6 +4,7 @@ import com.miguel.common.command.Permission
 import com.miguel.game.bank.BankManager
 import com.miguel.game.manager.AccountManager
 import com.miguel.game.manager.PlayerManager
+import com.miguel.game.market.MarketManager
 import com.miguel.values.Strings
 import com.miguel.values.Values
 import org.bukkit.Bukkit
@@ -30,9 +31,9 @@ class Governo : BukkitCommand("governo") {
             sender.sendMessage("§f/governo §ainfo")
             sender.sendMessage("§f/governo §asacar §evalor")
             sender.sendMessage("§f/banco §atransferir §enome§f/§econta §fvalor")
+            sender.sendMessage("§f/banco §aanuncio §ecriar §fvalor §bnome")
+            sender.sendMessage("§f/banco §aanuncio §eremover §bnome")
         } else {
-            val inventory = sender.inventory
-
             when (args.size) {
                 1 -> {
                     val option = args[0]
@@ -137,11 +138,69 @@ class Governo : BukkitCommand("governo") {
                                 BankManager.transfer(creditedAccount, sender, value)
                             }
                         }
+
+                        "anuncio" -> {
+                            if (args[1].lowercase(Locale.getDefault()) == "remover") {
+                                val name = args[2]
+
+                                if (MarketManager.removeAd("Governo", name) != null) {
+                                    sender.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
+                                } else {
+                                    sender.sendMessage("§cAnúncio não encontrado !")
+                                }
+                            }
+                        }
                     }
                 }
 
                 else -> {
+                    if (args[0].lowercase(Locale.getDefault()) == "anuncio") {
+                        if (args[1].lowercase(Locale.getDefault()) == "criar") {
+                            val price: Double
 
+                            try {
+                                price = args[2].toDouble()
+                            } catch (e: NumberFormatException) {
+                                sender.sendMessage("§cUtilize apenas números no preço !")
+                                return true
+                            }
+
+                            val name = args.drop(3).joinToString(" ")
+
+                            if (MarketManager.getByOwner("Governo").firstOrNull { it.name == name } != null) {
+                                sender.sendMessage("§cJá existe um anúncio com esse nome !")
+                                return true
+                            }
+
+                            if (price <= Double.MAX_VALUE) {
+                                val type = sender.inventory.itemInMainHand.type
+
+                                if (type == Material.AIR) {
+                                    sender.sendMessage("§cSegure um item válido na sua mão principal")
+                                    return true
+                                }
+
+                                val item = sender.inventory.itemInMainHand.clone()
+
+                                MarketManager.advertise(
+                                    "Governo",
+                                    Values.governmentID,
+                                    name,
+                                    price,
+                                    item
+                                )
+
+                                sender.inventory.setItemInMainHand(ItemStack(Material.AIR))
+
+                                sender.sendMessage(" ")
+                                sender.sendMessage("${Strings.MARKET_PREFIX} Anúncio criado com sucesso !")
+                                sender.sendMessage(" ")
+                            }
+                        }
+                    } else {
+                        sender.sendMessage("§c/governo anuncio [remover] [nome]")
+                        sender.sendMessage("§c/governo anuncio [criar] [preço] [nome]")
+                    }
                 }
             }
         }

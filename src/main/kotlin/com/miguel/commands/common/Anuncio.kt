@@ -1,10 +1,13 @@
 package com.miguel.commands.common
 
+import com.miguel.game.manager.PlayerManager
 import com.miguel.game.market.MarketManager
+import com.miguel.values.Strings
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import java.util.*
 
 class Anuncio : BukkitCommand("anuncio") {
@@ -24,7 +27,11 @@ class Anuncio : BukkitCommand("anuncio") {
                     if (args[0].lowercase(Locale.getDefault()) == "remover") {
                         val name = args[1]
 
-                        MarketManager.removeAd(sender, name)
+                        if (MarketManager.removeAd(sender.name, name) != null) {
+                            sender.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
+                        } else {
+                            sender.sendMessage("§cAnúncio não encontrado !")
+                        }
                     } else {
                         sender.sendMessage("§c/anuncio [remover] [nome]")
                         sender.sendMessage("§c/anuncio [criar] [preço] [nome]")
@@ -44,6 +51,11 @@ class Anuncio : BukkitCommand("anuncio") {
 
                         val name = args.drop(2).joinToString(" ")
 
+                        if (MarketManager.getByOwner(sender.name).firstOrNull { it.name == name } != null) {
+                            sender.sendMessage("§cJá existe um anúncio com esse nome !")
+                            return true
+                        }
+
                         if (price <= Double.MAX_VALUE) {
                             val type = sender.inventory.itemInMainHand.type
 
@@ -52,7 +64,25 @@ class Anuncio : BukkitCommand("anuncio") {
                                 return true
                             }
 
-                            MarketManager.advertise(sender, name, price)
+                            val item = sender.inventory.itemInMainHand
+
+                            MarketManager.advertise(
+                                sender.name,
+                                PlayerManager.getAccountId(sender.uniqueId),
+                                name,
+                                price,
+                                item
+                            )
+
+                            sender.inventory.setItemInMainHand(ItemStack(Material.AIR))
+
+                            sender.sendMessage(" ")
+                            sender.sendMessage("${Strings.MARKET_PREFIX} Anúncio criado com sucesso !")
+                            sender.sendMessage(" ")
+
+                            sender.sendMessage(" ")
+                            sender.sendMessage("${Strings.MARKET_PREFIX} Você irá receber ${price - MarketManager.taxPercentage * price} Ukranianinho's devido ao imposto de 5%")
+                            sender.sendMessage(" ")
                         }
                     } else {
                         sender.sendMessage("§c/anuncio [remover] [nome]")
