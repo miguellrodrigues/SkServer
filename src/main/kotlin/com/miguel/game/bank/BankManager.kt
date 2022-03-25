@@ -41,9 +41,10 @@ object BankManager {
         currencies.add(Currency(Material.DIAMOND, 5.0))
         currencies.add(Currency(Material.GOLD_INGOT, 1.0))
         currencies.add(Currency(Material.GOLD_NUGGET, .5))
+        currencies.add(Currency(Material.IRON_INGOT, .25))
         currencies.add(Currency(Material.IRON_NUGGET, .1))
-        currencies.add(Currency(Material.AMETHYST_SHARD, .05))
-        currencies.add(Currency(Material.COPPER_INGOT, .01))
+        currencies.add(Currency(Material.COPPER_INGOT, .05))
+        currencies.add(Currency(Material.AMETHYST_SHARD, .01))
 
         currencies.sortBy { it.value }
         currencies.reverse()

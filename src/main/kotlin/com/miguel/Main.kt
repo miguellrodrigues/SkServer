@@ -11,13 +11,9 @@ import com.miguel.game.manager.InventoryManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.game.manager.TagManager
 import com.miguel.game.market.MarketManager
-import com.miguel.listener.EntityEvents
-import com.miguel.listener.InventoryEvents
-import com.miguel.listener.PlayerEvents
-import com.miguel.listener.ServerEvents
+import com.miguel.listener.*
 import com.miguel.packets.CustomPing
 import com.miguel.repository.impl.Mysql
-import com.miguel.repository.impl.MysqlAccountRepository
 import org.bukkit.Bukkit
 import org.bukkit.GameRule
 import org.bukkit.event.HandlerList
@@ -33,6 +29,9 @@ class Main : JavaPlugin() {
 
     override fun onLoad() {
         dataFolder.mkdir()
+
+        val structuresDir = dataFolder.resolve("structures")
+        structuresDir.mkdir()
 
         config.options().copyDefaults(true)
 
@@ -62,6 +61,7 @@ class Main : JavaPlugin() {
         server.pluginManager.registerEvents(EntityEvents(), this)
         server.pluginManager.registerEvents(InventoryEvents(), this)
         server.pluginManager.registerEvents(ServerEvents(), this)
+        server.pluginManager.registerEvents(BlockEvents(), this)
 
         val commandMap = Bukkit.getServer().commandMap
 
@@ -79,6 +79,7 @@ class Main : JavaPlugin() {
         commandMap.register("governo", Governo())
         commandMap.register("blocar", Blocar())
         commandMap.register("craft", Craft())
+        commandMap.register("structure", Structure())
 
         CommandManager.register(GameCommands::class.java)
 
