@@ -1,6 +1,7 @@
 package com.miguel.commands.common
 
 import com.miguel.common.command.Permission
+import com.miguel.game.manager.PlayerManager
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
@@ -28,6 +29,7 @@ class Info : BukkitCommand("info") {
                         sender.sendMessage("§7- §eGamemode: §7${player.gameMode.name}")
                         sender.sendMessage("§7- §eWorld: §7${player.world.name}")
                         sender.sendMessage("§7- §eLocation: §7${player.location.x.toInt()}, ${player.location.y.toInt()}, ${player.location.z.toInt()}")
+                        sender.sendMessage("§7- §eBalance: §7${PlayerManager.getBalance(player.uniqueId)}")
                         sender.sendMessage(" ")
                     }
                 }

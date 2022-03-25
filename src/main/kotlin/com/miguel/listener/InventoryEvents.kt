@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
-import org.bukkit.inventory.meta.SkullMeta
 import java.util.*
 
 class InventoryEvents : Listener {
@@ -71,7 +70,7 @@ class InventoryEvents : Listener {
                                         .toInt()
                                 }
 
-                            val ad = MarketManager.getById(id!!)
+                            val ad = MarketManager.getById(id!!)!!
 
                             if (ad.advertiserName.lowercase() == player.name.lowercase()) return
 

@@ -6,7 +6,6 @@ import com.miguel.commands.GameCommands
 import com.miguel.commands.common.*
 import com.miguel.common.command.CommandExecutor
 import com.miguel.common.command.CommandManager
-import com.miguel.controller.SAccountController
 import com.miguel.game.bank.BankManager
 import com.miguel.game.manager.InventoryManager
 import com.miguel.game.manager.PlayerManager
@@ -78,6 +77,8 @@ class Main : JavaPlugin() {
         commandMap.register("info", Info())
         commandMap.register("chest", Chest())
         commandMap.register("governo", Governo())
+        commandMap.register("blocar", Blocar())
+        commandMap.register("craft", Craft())
 
         CommandManager.register(GameCommands::class.java)
 

@@ -86,6 +86,28 @@ class Governo : BukkitCommand("governo") {
                             BankManager.withDraw(sender, Values.governmentID, value)
                         }
 
+                        "comprar" -> {
+                            val id: Int
+
+                            try {
+                                id = args[1].toInt()
+                            } catch (e: NumberFormatException) {
+                                sender.sendMessage("§cUtilize apenas números no ID do anúncio !")
+                                return true
+                            }
+
+                            if (id <= 0) {
+                                sender.sendMessage("§cID inválido !")
+                                return true
+                            }
+
+                            sender.sendMessage(MarketManager.purchase(
+                                Values.governmentID,
+                                id,
+                                sender.inventory
+                            ))
+                        }
+
                         else -> {
                         }
                     }
@@ -207,6 +229,17 @@ class Governo : BukkitCommand("governo") {
                                 sender.sendMessage(" ")
                                 sender.sendMessage("${Strings.MARKET_PREFIX} Anúncio criado com sucesso !")
                                 sender.sendMessage(" ")
+                            }
+                        } else if (args[1].lowercase(Locale.getDefault()) == "remover") {
+                            val name = args.drop(2).joinToString(" ")
+
+                            val item = MarketManager.removeAd("Governo", name)
+
+                            if (item != null) {
+                                sender.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
+                                sender.inventory.addItem(item)
+                            } else {
+                                sender.sendMessage("§cAnúncio não encontrado !")
                             }
                         }
                     } else {

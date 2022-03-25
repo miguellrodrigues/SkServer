@@ -11,6 +11,7 @@ import com.miguel.values.Strings
 import com.miguel.values.Values
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
+import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import kotlin.properties.Delegates
 
@@ -48,16 +49,50 @@ object MarketManager {
         return ads.filter { !it.delete }.map { it.advertiserName }.distinct()
     }
 
-    fun getById(id: Int): SAd {
-        return ads.first { it.id == id }
+    fun getById(id: Int): SAd? {
+        return ads.firstOrNull { it.id == id }
     }
 
     fun getByOwner(owner: String): List<SAd> {
         return ads.filter { it.advertiserName.lowercase() == owner.lowercase() && !it.delete }
     }
 
+    fun purchase(accountID: String, id: Int, inventory: Inventory): String {
+        val ad = getById(id) ?: return "${Strings.MARKET_PREFIX} Este anuncio não está disponivel"
+        val account = AccountManager.get(accountID)
+
+        if (ad.delete) return "${Strings.MARKET_PREFIX} Este anuncio não está disponivel"
+
+        if (account.balance < ad.price) return "§cSaldo insuficiente!"
+
+        if (ad.account_id == accountID) return "§cVocê não pode comprar seu próprio anúncio!"
+
+        if (inventory.firstEmpty() == -1) return "${Strings.MARKET_PREFIX} Você não tem espaço no inventario"
+
+        inventory.addItem(GameManager.deserializeItem(ad.item))
+
+        ad.delete = true
+
+        var tax = (ad.price * taxPercentage)
+
+        if (Bukkit.getPlayer(ad.advertiserName) != null) {
+            val advertiser = Bukkit.getPlayer(ad.advertiserName)!!
+
+            AccountManager.changeBalance(Values.governmentID, tax)
+
+            PlayerManager.changeBalance(advertiser.uniqueId, (ad.price - tax))
+            advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price - tax} §aUkranianinho`s §freferente ao anúncio de ID §a${ad.id} §f- \"§e${ad.name}\"")
+        } else {
+            if (ad.account_id == Values.governmentID) tax = .0
+
+            PlayerManager.changeBalance(ad.account_id, (ad.price - tax))
+        }
+
+        return "${Strings.MESSAGE_PREFIX} Compra realizada com sucesso !"
+    }
+
     fun purchase(player: Player, ad: SAd) {
-        if (ads[ads.indexOf(ad)].delete) {
+        if (ad.delete) {
             player.closeInventory()
             player.sendMessage("${Strings.MARKET_PREFIX} Este anuncio não está disponivel")
             return
@@ -71,7 +106,7 @@ object MarketManager {
 
             player.inventory.addItem(GameManager.deserializeItem(ad.item))
 
-            ads[ads.indexOf(ad)].delete = true
+            ad.delete = true
 
             player.sendMessage("${Strings.MESSAGE_PREFIX} Compra realizada com sucesso !")
 
@@ -83,7 +118,7 @@ object MarketManager {
                 AccountManager.changeBalance(Values.governmentID, tax)
 
                 PlayerManager.changeBalance(advertiser.uniqueId, (ad.price - tax))
-                advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price - tax} §aUkranianinho`s referente ao anúncio de ID §a${ad.id}")
+                advertiser.sendMessage("${Strings.MARKET_PREFIX} Você recebeu §e${ad.price - tax} §aUkranianinho`s §freferente ao anúncio de ID §a${ad.id}  §e\"§f${ad.name}§e\"")
             } else {
                 if (ad.account_id == Values.governmentID) tax = .0
 
@@ -92,7 +127,7 @@ object MarketManager {
 
             player.closeInventory()
         } else {
-            player.sendMessage("§cSaldo insuficiente !")
+            player.sendMessage("§cSaldo insuficiente!")
         }
     }
 

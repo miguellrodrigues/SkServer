@@ -14,6 +14,15 @@ object NMSUtil {
         }
     }
 
+    fun getField(obj: Any, name: String): Field? {
+        try {
+            val field: Field = obj.javaClass.getDeclaredField(name)
+            return field
+        } catch (e: Exception) {
+            throw Error(e.message)
+        }
+    }
+
     fun setValue(instance: Any, field: String, value: Any) {
         try {
             val f = instance.javaClass.getDeclaredField(field)

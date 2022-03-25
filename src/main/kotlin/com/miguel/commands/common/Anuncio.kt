@@ -23,24 +23,6 @@ class Anuncio : BukkitCommand("anuncio") {
             sender.sendMessage("§c/anuncio [criar | remover] [preço] [nome]")
         } else {
             when (args.size) {
-                2 -> {
-                    if (args[0].lowercase(Locale.getDefault()) == "remover") {
-                        val name = args[1]
-
-                        val item = MarketManager.removeAd(sender.name, name)
-
-                        if (item != null) {
-                            sender.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
-                            sender.inventory.addItem(item)
-                        } else {
-                            sender.sendMessage("§cAnúncio não encontrado !")
-                        }
-                    } else {
-                        sender.sendMessage("§c/anuncio [remover] [nome]")
-                        sender.sendMessage("§c/anuncio [criar] [preço] [nome]")
-                    }
-                }
-
                 else -> {
                     if (args[0].lowercase(Locale.getDefault()) == "criar") {
                         val price: Double
@@ -86,6 +68,17 @@ class Anuncio : BukkitCommand("anuncio") {
                             sender.sendMessage(" ")
                             sender.sendMessage("${Strings.MARKET_PREFIX} Você irá receber ${price - MarketManager.taxPercentage * price} Ukranianinho's devido ao imposto de 5%")
                             sender.sendMessage(" ")
+                        }
+                    } else if (args[0].lowercase(Locale.getDefault()) == "remover") {
+                        val name = args.drop(1).joinToString(" ")
+
+                        val item = MarketManager.removeAd(sender.name, name)
+
+                        if (item != null) {
+                            sender.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
+                            sender.inventory.addItem(item)
+                        } else {
+                            sender.sendMessage("§cAnúncio não encontrado !")
                         }
                     } else {
                         sender.sendMessage("§c/anuncio [remover] [nome]")
