@@ -1,32 +1,48 @@
 package com.miguel.structure
 
-import com.google.gson.Gson
 import com.miguel.Main
-import org.apache.commons.io.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
 import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
 
 object BinaryStructure {
 
     fun load(fileName: String): Structure? {
         val file = File(
-            Main.INSTANCE.dataFolder, "structures/$fileName.structure"
+            Main.INSTANCE.dataFolder, "structures/$fileName.bin"
         )
 
         if (!file.exists()) {
             return null
         }
 
-        val blocks = Gson().fromJson(
-            FileUtils.readFileToString(file, "UTF-8"),
-            Array<FutureBlock>::class.java
-        )
+        try {
+            val fis = FileInputStream(file)
+            val ois = ObjectInputStream(fis)
 
-        val futureBlocks = blocks.toMutableList()
-        return Structure(futureBlocks)
+            val blocks = mutableListOf<FutureBlock>()
+
+            while (ois.available() > 0) {
+                val x = ois.readDouble()
+                val y = ois.readDouble()
+                val z = ois.readDouble()
+
+                val data = ois.readUTF()
+
+                blocks.add(FutureBlock(FutureLocation(x, y, z), data))
+            }
+
+            return Structure(blocks)
+        }catch (e: Exception) {
+            println("${e.message}")
+            return null
+        }
     }
 
     fun save(blocks: List<Block>, fileName: String,
@@ -35,12 +51,10 @@ object BinaryStructure {
              centerZ: Int
     ) {
         val file = File(
-            Main.INSTANCE.dataFolder, "structures/$fileName.structure"
+            Main.INSTANCE.dataFolder, "structures/$fileName.bin"
         )
 
         val futureBlocks = blocks.filter { it.type != Material.AIR }.map {
-            // center the coordinates of the block with respect to the center of the structure
-
             val x = it.location.x - centerX
             val y = it.location.y - centerY
             val z = it.location.z - centerZ
@@ -53,14 +67,23 @@ object BinaryStructure {
                 ),
                 it.blockData.asString
             )
-        }.toMutableList()
+        }
 
-        // write the structure to a binary file
-        FileUtils.writeStringToFile(
-            file,
-            Gson().toJson(futureBlocks),
-            "UTF-8"
-        )
+        try {
+            val fos = FileOutputStream(file)
+            val oos = ObjectOutputStream(fos)
+
+            futureBlocks.forEach {
+                oos.writeDouble(it.location.x)
+                oos.writeDouble(it.location.y)
+                oos.writeDouble(it.location.z)
+                oos.writeUTF(it.data)
+            }
+
+            oos.close()
+        }catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     data class FutureLocation(
