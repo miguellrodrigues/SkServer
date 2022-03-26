@@ -1,76 +1,72 @@
 package com.miguel.structure
 
 import com.google.gson.Gson
-import com.google.gson.JsonParser
 import com.miguel.Main
+import org.apache.commons.io.FileUtils
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.block.Block
 import java.io.File
-import java.nio.file.Files
 
 object BinaryStructure {
 
     fun load(fileName: String): Structure? {
         val file = File(
-            Main.INSTANCE.dataFolder, "structures/$fileName.dat"
+            Main.INSTANCE.dataFolder, "structures/$fileName.structure"
         )
 
         if (!file.exists()) {
             return null
         }
 
-        val bytes = Files.readAllBytes(file.toPath())
-        val blocks = JsonParser.parseString(String(bytes)).asJsonArray
+        val blocks = Gson().fromJson(
+            FileUtils.readFileToString(file, "UTF-8"),
+            Array<FutureBlock>::class.java
+        )
 
-        val futureBlocks = blocks.map {
-            val obj = it.asJsonObject
-            val loc = obj["location"].asJsonObject
-
-            FutureBlock(
-                FutureLocation(
-                    loc["x"].asDouble,
-                    loc["y"].asDouble,
-                    loc["z"].asDouble,
-                    loc["yaw"].asFloat,
-                    loc["pitch"].asFloat
-                ),
-                obj["data"].asString
-            )
-        }
-
-        return Structure(futureBlocks.toMutableList())
+        val futureBlocks = blocks.toMutableList()
+        return Structure(futureBlocks)
     }
 
-    fun save(blocks: List<Block>, fileName: String) {
+    fun save(blocks: List<Block>, fileName: String,
+             centerX: Int,
+             centerY: Int,
+             centerZ: Int
+    ) {
         val file = File(
-            Main.INSTANCE.dataFolder, "structures/$fileName.dat"
+            Main.INSTANCE.dataFolder, "structures/$fileName.structure"
         )
 
         val futureBlocks = blocks.filter { it.type != Material.AIR }.map {
+            // center the coordinates of the block with respect to the center of the structure
+
+            val x = it.location.x - centerX
+            val y = it.location.y - centerY
+            val z = it.location.z - centerZ
+
             FutureBlock(
                 FutureLocation(
-                    it.location.x,
-                    it.location.y,
-                    it.location.z,
-                    it.location.yaw,
-                    it.location.pitch
+                    x,
+                    y,
+                    z,
                 ),
                 it.blockData.asString
             )
         }.toMutableList()
 
         // write the structure to a binary file
-        Files.write(file.toPath(), Gson().toJson(futureBlocks).toByteArray())
+        FileUtils.writeStringToFile(
+            file,
+            Gson().toJson(futureBlocks),
+            "UTF-8"
+        )
     }
 
     data class FutureLocation(
         val x: Double,
         val y: Double,
         val z: Double,
-        val yaw: Float,
-        val pitch: Float
     )
 
     class FutureBlock(
@@ -78,23 +74,33 @@ object BinaryStructure {
         val data: String
     ) {
         fun place(loc: Location) {
+            val blockData = Bukkit.createBlockData(data)
             val location = loc.clone().add(location.x, location.y, location.z)
-            location.block.blockData = Bukkit.createBlockData(data)
+
+            location.block.blockData = blockData
+        }
+
+        fun remove(loc: Location) {
+            val location = loc.clone().add(location.x, location.y, location.z)
+            location.block.type = Material.AIR
         }
     }
 
     class Structure(
         private val blocks: MutableList<FutureBlock> = ArrayList()
     ) {
-        fun place(location: Location) {
-            if (blocks.isEmpty()) return
+        private lateinit var placed: Location
 
+        fun place(location: Location) {
             blocks.forEach {
                 it.place(location)
             }
+
+            placed = location
         }
 
         fun destroy() {
+            blocks.forEach { it.remove(placed) }
             blocks.clear()
         }
     }

@@ -28,24 +28,26 @@ class Structure : BukkitCommand("structure") {
         val name = args[0]
 
         if (name.lowercase() == "load") {
-            CompletableFuture.runAsync {
-                val structure = StructureManager.getStructure(args[1]).get()
-
-                if (structure == null) {
-                    sender.sendMessage("§cNão foi possível carregar a estrutura")
-                } else {
-
-                    object : BukkitRunnable() {
-                        override fun run() {
-                            structure.place(sender.location)
-                        }
-                    }.runTask(Main.INSTANCE)
-
+            CompletableFuture.runAsync() {
+                if (StructureManager.placeStructure(args[1], sender.location).get()) {
                     sender.sendMessage("§aEstrutura carregada com sucesso")
+                } else {
+                    sender.sendMessage("§cNão foi possível carregar a estrutura")
                 }
             }
 
             return true
+        } else if (name.lowercase() == "unload") {
+            if (StructureManager.isStructureLoaded(args[1])) {
+                object : BukkitRunnable() {
+                    override fun run() {
+                        StructureManager.unloadStructure(args[1])
+                    }
+                }.runTask(Main.INSTANCE)
+                sender.sendMessage("§aEstrutura descarregada com sucesso")
+            } else {
+                sender.sendMessage("§cNão foi possível descarregar a estrutura")
+            }
         }
 
         if (args.size != 7) {
@@ -68,16 +70,33 @@ class Structure : BukkitCommand("structure") {
 
         val blocks = mutableListOf<Block>()
 
-        for (x in x1..x2) {
-            for (y in y1..y2) {
-                for (z in z1..z2) {
+        val topBlockX = if (x1 < x2) x2 else x1
+        val bottomBlockX = if (x1 < x2) x1 else x2
+
+        val topBlockY = if (y1 < y2) y2 else y1
+        val bottomBlockY = if (y1 < y2) y1 else y2
+
+        val topBlockZ = if (z1 < z2) z2 else z1
+        val bottomBlockZ = if (z1 < z2) z1 else z2
+
+        val width = topBlockX - bottomBlockX + 1
+        val height = topBlockY - bottomBlockY + 1
+        val length = topBlockZ - bottomBlockZ + 1
+
+        val centerX = (topBlockX + bottomBlockX) / 2
+        val centerY = (topBlockY + bottomBlockY) / 2
+        val centerZ = (topBlockZ + bottomBlockZ) / 2
+
+        for (x in bottomBlockX .. topBlockX) {
+            for (z in bottomBlockZ .. topBlockZ) {
+                for (y in bottomBlockY .. topBlockY) {
                     val block = sender.world.getBlockAt(x, y, z)
                     blocks.add(block)
                 }
             }
         }
 
-        BinaryStructure.save(blocks, name)
+        BinaryStructure.save(blocks, name, centerX, centerY, centerZ)
 
         sender.sendMessage("§aStructure §e$name §fsalva com sucesso!")
 

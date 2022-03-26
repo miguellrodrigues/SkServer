@@ -20,6 +20,8 @@ apply plugin: 'com.github.johnrengelman.shadow'
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib"
 
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+
     compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
 }

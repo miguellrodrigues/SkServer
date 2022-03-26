@@ -5,7 +5,7 @@ package com.miguel.common.command
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER
 )
-@kotlin.annotation.Retention(AnnotationRetention.RUNTIME)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class Command(
     val aliases: Array<String>,
     val usage: String = "",

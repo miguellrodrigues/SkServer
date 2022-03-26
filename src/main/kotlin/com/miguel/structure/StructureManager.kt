@@ -1,5 +1,8 @@
 package com.miguel.structure
 
+import com.miguel.Main
+import org.bukkit.Location
+import org.bukkit.scheduler.BukkitRunnable
 import java.util.concurrent.CompletableFuture
 
 object StructureManager {
@@ -11,13 +14,24 @@ object StructureManager {
         loadedStructures[name] = structure
     }
 
-    fun getStructure(name: String): CompletableFuture<BinaryStructure.Structure?> {
+    private fun getStructure(name: String): BinaryStructure.Structure? {
+        loadStructure(name)
+        return loadedStructures[name]
+    }
+
+    fun placeStructure(name: String, location: Location): CompletableFuture<Boolean> {
         return CompletableFuture.supplyAsync {
-            if (!isStructureLoaded(name)) {
-                loadStructure(name)
+            val structure = getStructure(name)
+
+            if (structure != null) {
+                object : BukkitRunnable() {
+                    override fun run() {
+                        structure.place(location)
+                    }
+                }.runTask(Main.INSTANCE)
             }
 
-            loadedStructures[name]
+            structure != null
         }
     }
 
@@ -30,9 +44,7 @@ object StructureManager {
     }
 
     fun unloadStructure(name: String) {
-        CompletableFuture.runAsync {
-            getStructure(name).get()?.destroy()
-        }
+        getStructure(name)?.destroy()
         loadedStructures.remove(name)
     }
 
