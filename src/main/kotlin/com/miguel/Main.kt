@@ -34,6 +34,7 @@ class Main : JavaPlugin() {
         structuresDir.mkdir()
 
         config.options().copyDefaults(true)
+        config.options().parseComments(true)
 
         saveDefaultConfig()
 

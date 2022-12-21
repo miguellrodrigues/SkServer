@@ -3,6 +3,7 @@ package com.miguel.listener
 import com.miguel.game.manager.InventoryManager
 import com.miguel.game.market.MarketManager
 import com.miguel.values.Strings
+import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -36,7 +37,7 @@ class InventoryEvents : Listener {
 
             if (player.inventory.contains(currentItem)) return
 
-            val title = PlainTextComponentSerializer.plainText().serialize(view.title()).lowercase(Locale.getDefault())
+            val title = PlainTextComponentSerializer.plainText().serialize(view.title()).lowercase()
 
             if (title.startsWith("página ")) {
                 val split =  title.split(" - ")
@@ -65,12 +66,12 @@ class InventoryEvents : Listener {
                             val itemMeta = currentItem.itemMeta
 
                             val id =
-                                itemMeta.lore()?.get(7)?.let {
-                                    PlainTextComponentSerializer.plainText().serialize(it).replace(" §fID §e", "")
+                                itemMeta.lore()?.let {
+                                    PlainTextComponentSerializer.plainText().serialize(it[7]).replace(" §fID §e", "")
                                         .toInt()
                                 }
 
-                            val ad = MarketManager.getById(id!!)!!
+                            val ad = id?.let { MarketManager.getById(it) }!!
 
                             if (ad.advertiserName.lowercase() == player.name.lowercase()) return
 

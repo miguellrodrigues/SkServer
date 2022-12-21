@@ -1,10 +1,8 @@
 package com.miguel.repository.impl
 
-import com.miguel.Main
 import java.sql.Connection
 import java.sql.DriverManager
 import java.util.*
-import kotlin.properties.Delegates
 
 object Mysql {
 
@@ -15,7 +13,7 @@ object Mysql {
         println("Trying remote mysql connection...")
 
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver")
+            Class.forName("com.mysql.jdbc.Driver")
 
             connection = DriverManager.getConnection(url, user, password)
 

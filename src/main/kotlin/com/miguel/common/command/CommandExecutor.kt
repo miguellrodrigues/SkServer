@@ -1,11 +1,11 @@
 package com.miguel.common.command
 
 import com.miguel.common.command.Permission.Companion.has
-import org.apache.commons.lang.ArrayUtils
 import org.bukkit.command.CommandSender
 import org.bukkit.command.ConsoleCommandSender
 import org.bukkit.command.defaults.BukkitCommand
 import org.bukkit.entity.Player
+import org.yaml.snakeyaml.util.ArrayUtils
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -25,7 +25,9 @@ class CommandExecutor : BukkitCommand("svl") {
         }
 
         val command = CommandManager.getCommand(args[0])!!
-        val commandArgs = ArrayUtils.remove(args, 0)
+
+        // remove the first element from args array
+        val commandArgs = args.copyOfRange(1, args.size)
 
         if (sender is Player && !command.player) {
             sender.sendMessage(CommandManager.error.toString() + "Este comando não pode ser executado por um player!")

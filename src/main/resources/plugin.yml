@@ -1,7 +1,7 @@
 name: SK-Server
 version: 1.0.0
 author: Miguellkr16
-api-version: 1.17
+api-version: 1.19
 main: com.miguel.Main
 depend:
   - ProtocolLib

@@ -7,8 +7,8 @@ import com.miguel.game.manager.PlayerManager
 import com.miguel.values.Strings
 import com.miguel.values.Values
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -25,10 +25,12 @@ object BankManager {
     fun init() {
         CompletableFuture.runAsync {
             if (!AccountManager.exist(Values.governmentID).get()) {
-                AccountManager.create(SAccount(
-                    Values.governmentID,
-                    10e3
-                ))
+                AccountManager.create(
+                    SAccount(
+                        Values.governmentID,
+                        10e3
+                    )
+                )
             }
         }
 
@@ -43,8 +45,6 @@ object BankManager {
         currencies.add(Currency(Material.GOLD_NUGGET, .5))
         currencies.add(Currency(Material.IRON_INGOT, .25))
         currencies.add(Currency(Material.IRON_NUGGET, .1))
-        currencies.add(Currency(Material.COPPER_INGOT, .05))
-        currencies.add(Currency(Material.AMETHYST_SHARD, .01))
 
         currencies.sortBy { it.value }
         currencies.reverse()
@@ -109,7 +109,7 @@ object BankManager {
     }*/
 
     fun isValidCurrencyItem(item: ItemStack): Boolean {
-        val name = item.itemMeta?.displayName()?.let { PlainTextComponentSerializer.plainText().serialize(it) }
+        val name = item.itemMeta?.displayName()?.examinableName()
         return name.equals("Ukranianinho")
     }
 
@@ -173,7 +173,7 @@ object BankManager {
     }
 
     fun withDraw(player: Player, account: String, value: Double) {
-            val balance = AccountManager.getBalance(account)
+        val balance = AccountManager.getBalance(account)
 
         if (balance >= value) {
             val decompose = decompose(value)

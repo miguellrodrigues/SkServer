@@ -1,5 +1,5 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
+    id 'org.jetbrains.kotlin.jvm' version '1.7.21'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
@@ -11,8 +11,7 @@ repositories {
     mavenLocal()
 
     maven { url "https://repo.dmulloy2.net/repository/public/" }
-
-    maven { url 'https://papermc.io/repo/repository/maven-public/' }
+    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -23,12 +22,9 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
 
-    compileOnly 'io.papermc.paper:paper-api:1.18.2-R0.1-SNAPSHOT'
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
-}
-
-test {
-    useJUnitPlatform()
+    // compileOnly("papermc.io:paper_patched:1.19.3")
+    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
 }
 
 sourceSets.main.java.srcDirs = ['src/main/kotlin']
@@ -39,4 +35,8 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
