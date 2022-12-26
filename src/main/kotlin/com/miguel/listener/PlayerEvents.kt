@@ -30,7 +30,7 @@ class PlayerEvents : Listener {
     fun onPlayerJoin(event: PlayerJoinEvent) {
         val player = event.player
 
-        player.location.chunk
+        player.location.chunk.load()
 
         event.joinMessage(Component.empty())
 

@@ -25,6 +25,10 @@ class Structure : BukkitCommand("structure") {
 
         if (!sender.hasPermission("command.structure")) return true
 
+        if (args.isEmpty()) {
+            return true
+        }
+
         val name = args[0]
 
         if (name.lowercase() == "load") {
@@ -79,9 +83,9 @@ class Structure : BukkitCommand("structure") {
         val topBlockZ = if (z1 < z2) z2 else z1
         val bottomBlockZ = if (z1 < z2) z1 else z2
 
-        val width = topBlockX - bottomBlockX + 1
+        /*val width = topBlockX - bottomBlockX + 1
         val height = topBlockY - bottomBlockY + 1
-        val length = topBlockZ - bottomBlockZ + 1
+        val length = topBlockZ - bottomBlockZ + 1*/
 
         val centerX = (topBlockX + bottomBlockX) / 2
         val centerY = (topBlockY + bottomBlockY) / 2

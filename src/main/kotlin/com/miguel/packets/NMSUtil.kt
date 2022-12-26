@@ -16,8 +16,7 @@ object NMSUtil {
 
     fun getField(obj: Any, name: String): Field? {
         try {
-            val field: Field = obj.javaClass.getDeclaredField(name)
-            return field
+            return obj.javaClass.getDeclaredField(name)
         } catch (e: Exception) {
             throw Error(e.message)
         }
@@ -27,7 +26,8 @@ object NMSUtil {
         try {
             val f = instance.javaClass.getDeclaredField(field)
             f.isAccessible = true
-            f[instance] = value
+            f.set(instance, value)
+            f.isAccessible = false
         } catch (e: Exception) {
             throw Error(e.message)
         }

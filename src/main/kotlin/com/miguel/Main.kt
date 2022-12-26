@@ -6,6 +6,8 @@ import com.miguel.commands.GameCommands
 import com.miguel.commands.common.*
 import com.miguel.common.command.CommandExecutor
 import com.miguel.common.command.CommandManager
+import com.miguel.enchantments.OreChunkBreaker
+import com.miguel.enchantments.listener.OreChunkBreakerEvents
 import com.miguel.game.bank.BankManager
 import com.miguel.game.manager.InventoryManager
 import com.miguel.game.manager.PlayerManager
@@ -13,9 +15,12 @@ import com.miguel.game.manager.TagManager
 import com.miguel.game.market.MarketManager
 import com.miguel.listener.*
 import com.miguel.packets.CustomPing
+import com.miguel.packets.EnchantmentAccept
 import com.miguel.repository.impl.Mysql
 import org.bukkit.Bukkit
 import org.bukkit.GameRule
+import org.bukkit.NamespacedKey
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.event.HandlerList
 import org.bukkit.plugin.java.JavaPlugin
 
@@ -25,6 +30,7 @@ class Main : JavaPlugin() {
         lateinit var INSTANCE: JavaPlugin
 
         lateinit var PROTOCOL_MANAGER: ProtocolManager
+        lateinit var ORE_CHUNK_BREAKER: Enchantment
     }
 
     override fun onLoad() {
@@ -63,6 +69,7 @@ class Main : JavaPlugin() {
         server.pluginManager.registerEvents(InventoryEvents(), this)
         server.pluginManager.registerEvents(ServerEvents(), this)
         server.pluginManager.registerEvents(BlockEvents(), this)
+        server.pluginManager.registerEvents(OreChunkBreakerEvents(), this)
 
         val commandMap = Bukkit.getServer().commandMap
 
@@ -84,7 +91,14 @@ class Main : JavaPlugin() {
 
         CommandManager.register(GameCommands::class.java)
 
-        //Thread(AutoMessage(120)).start()
+        // Register custom enchantments
+        EnchantmentAccept.accept()
+
+        ORE_CHUNK_BREAKER = OreChunkBreaker(NamespacedKey(this, "ore_breaker"))
+        Enchantment.registerEnchantment(ORE_CHUNK_BREAKER)
+
+        Enchantment.stopAcceptingRegistrations()
+
         Thread(TagManager()).start()
 
         CustomPing(

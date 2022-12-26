@@ -66,7 +66,7 @@ object AccountManager {
     fun newAccount(owner: UUID): String {
         val id = generateID(owner)
 
-        val account = SAccount(id, 0.0)
+        val account = SAccount(id, .0)
         create(account)
 
         accounts[id] = account

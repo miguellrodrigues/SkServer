@@ -11,6 +11,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.command.CommandSender
 import org.bukkit.command.defaults.BukkitCommand
+import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.util.*
@@ -30,9 +31,10 @@ class Governo : BukkitCommand("governo") {
         if (args.isEmpty()) {
             sender.sendMessage("§f/governo §ainfo")
             sender.sendMessage("§f/governo §asacar §evalor")
-            sender.sendMessage("§f/banco §atransferir §enome§f/§econta §fvalor")
-            sender.sendMessage("§f/banco §aanuncio §ecriar §fvalor §bnome")
-            sender.sendMessage("§f/banco §aanuncio §eremover §bnome")
+            sender.sendMessage("§f/governo §atransferir §enome§f/§econta §fvalor")
+            sender.sendMessage("§f/governo §aanuncio §ecriar §fvalor §bnome")
+            sender.sendMessage("§f/governo §aanuncio §eremover §bnome")
+            sender.sendMessage("§f/governo §aenchant §eencantamento §bnivel")
         } else {
             when (args.size) {
                 1 -> {
@@ -183,6 +185,41 @@ class Governo : BukkitCommand("governo") {
                                     sender.sendMessage("§cAnúncio não encontrado !")
                                 }
                             }
+                        }
+
+                        "enchant" -> {
+                            val enchantmentName = args[1]
+                            val enchantment = Enchantment.getByName(enchantmentName.uppercase(Locale.getDefault()))
+
+                            if (enchantment == null) {
+                                sender.sendMessage("§cEncantamento inválido !")
+                                return true
+                            }
+
+                            val level: Int
+
+                            try {
+                                level = args[2].toInt()
+                            } catch (e: NumberFormatException) {
+                                sender.sendMessage("§cUtilize apenas números no nível do encantamento !")
+                                return true
+                            }
+
+                            if (level <= 0) {
+                                sender.sendMessage("§cNível inválido !")
+                                return true
+                            }
+
+                            val item = sender.inventory.itemInMainHand
+
+                            if (item.type == Material.AIR) {
+                                sender.sendMessage("§cVocê precisa estar segurando um item !")
+                                return true
+                            }
+
+                            item.addUnsafeEnchantment(enchantment, level)
+                            sender.inventory.setItemInMainHand(item)
+                            sender.sendMessage("§fEncantamento §e${enchantmentName} §fadicionado com sucesso !")
                         }
                     }
                 }

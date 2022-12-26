@@ -185,7 +185,7 @@ class Banco : BukkitCommand("banco") {
                                 }
 
                                 if (BankManager.transfer(credited, sender, value)) {
-                                    sender.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited}")
+                                    sender.sendMessage("${Strings.PREFIX} §fVocê transferiu §e$value §aUkranianinhos §fpara a conta §b${credited.name}")
                                     credited.sendMessage("${Strings.PREFIX} §fVocê recebeu §e$value §aUkranianinhos §fdo jogador §b${sender.name}")
                                 } else {
                                     sender.sendMessage("§cSaldo insuficiente !")

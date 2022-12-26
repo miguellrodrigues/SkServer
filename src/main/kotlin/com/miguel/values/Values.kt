@@ -6,7 +6,7 @@ object Values {
     var DAMAGE = true
     var CHAT = true
 
-    const val DATABASE = "server"
+    const val DATABASE = "s36547_Database"
     const val governmentID = "0000"
 
 }
