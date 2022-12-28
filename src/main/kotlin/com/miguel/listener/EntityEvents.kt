@@ -1,9 +1,11 @@
 package com.miguel.listener
 
 import com.miguel.values.Values
+import io.papermc.paper.event.entity.WardenAngerChangeEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageByEntityEvent
 import org.bukkit.event.entity.EntityDamageEvent
 
 class EntityEvents : Listener {
@@ -16,4 +18,5 @@ class EntityEvents : Listener {
             event.isCancelled = !Values.DAMAGE
         }
     }
+
 }

@@ -9,6 +9,7 @@ import com.miguel.common.command.CommandManager
 import com.miguel.enchantments.OreChunkBreaker
 import com.miguel.enchantments.listener.OreChunkBreakerEvents
 import com.miguel.game.bank.BankManager
+import com.miguel.game.chunk.ChunkLoaderManager
 import com.miguel.game.manager.InventoryManager
 import com.miguel.game.manager.PlayerManager
 import com.miguel.game.manager.TagManager
@@ -88,6 +89,7 @@ class Main : JavaPlugin() {
         commandMap.register("blocar", Blocar())
         commandMap.register("craft", Craft())
         commandMap.register("structure", Structure())
+        commandMap.register("chunk_loader", ChunkLoader())
 
         CommandManager.register(GameCommands::class.java)
 
@@ -100,6 +102,7 @@ class Main : JavaPlugin() {
         Enchantment.stopAcceptingRegistrations()
 
         Thread(TagManager()).start()
+        ChunkLoaderManager.loadAll()
 
         CustomPing(
             this,
@@ -123,6 +126,8 @@ class Main : JavaPlugin() {
 
         PlayerManager.save()
         MarketManager.save()
+
+        ChunkLoaderManager.saveAll()
 
         saveConfig()
     }
