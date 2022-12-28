@@ -74,8 +74,11 @@ class PlayerEvents : Listener {
         val deathLocation = entity.location
         var valueLocation = deathLocation.clone()
 
-        while (valueLocation.block.type.name.contains("VOID")) {
+        var type = valueLocation.block.type
+
+        while (type.name.contains("VOID") || type != Material.AIR) {
             valueLocation = valueLocation.add(0.0, 1.0, 0.0)
+            type = valueLocation.block.type
         }
 
         valueLocation.block.type = Material.CHEST
