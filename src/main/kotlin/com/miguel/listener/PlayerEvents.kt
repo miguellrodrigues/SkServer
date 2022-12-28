@@ -9,10 +9,13 @@ import io.papermc.paper.chat.ChatRenderer
 import io.papermc.paper.event.player.AsyncChatEvent
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.title.Title
+import org.bukkit.Material
+import org.bukkit.block.Chest
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
+import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
@@ -66,6 +69,34 @@ class PlayerEvents : Listener {
 
     @EventHandler
     fun onPlayerDeath(event: PlayerDeathEvent) {
+        val entity = event.player
+
+        val deathLocation = entity.location
+        var valueLocation = deathLocation.clone()
+
+        while (valueLocation.block.type.name.contains("VOID")) {
+            valueLocation = valueLocation.add(0.0, 1.0, 0.0)
+        }
+
+        valueLocation.block.type = Material.CHEST
+
+        val chest = valueLocation.block.state as Chest
+
+        var contents = entity.inventory.contents.filterNotNull()
+        event.drops.removeAll(contents)
+
+        while (chest.inventory.firstEmpty() != -1 && contents.isNotEmpty()) {
+            chest.inventory.addItem(contents.first())
+            contents = contents.drop(1)
+        }
+
+        // teleport to respawn location
+        entity.sendMessage("§cVocê morreu e seus itens foram colocados em um baú no chão.")
+
+        entity.sendMessage(
+            "§c${valueLocation.x.toInt()} ${valueLocation.y.toInt()} ${valueLocation.z.toInt()}"
+        )
+
         event.deathMessage(Component.empty())
     }
 }

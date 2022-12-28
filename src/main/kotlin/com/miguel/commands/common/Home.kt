@@ -26,6 +26,11 @@ class Home : BukkitCommand("home") {
             return true
         }
 
+        if (! sender.hasPermission("cmd.home")) {
+            sender.sendMessage("§cVocê não tem permissão para executar este comando.")
+            return true
+        }
+
         if (args.isEmpty()) {
             sender.sendMessage("${Strings.MESSAGE_PREFIX}Use §c/home [list] [set | go | delete] [nome]")
         } else if (args.size == 1) {
@@ -54,7 +59,7 @@ class Home : BukkitCommand("home") {
                             )
 
                         sender.sendMessage(
-                            Identity.nil(),
+                            Identity.identity(UUID.randomUUID()),
                             component,
                             MessageType.CHAT
                         )

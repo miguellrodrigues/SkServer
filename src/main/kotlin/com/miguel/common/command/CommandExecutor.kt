@@ -9,7 +9,7 @@ import org.yaml.snakeyaml.util.ArrayUtils
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class CommandExecutor : BukkitCommand("svl") {
+class CommandExecutor : BukkitCommand("sv") {
 
     private val cooldownMap = HashMap<UUID, Long>()
 

@@ -67,7 +67,7 @@ class BlockEvents : Listener {
                 else -> Vector(0.0, 0.0, 0.0)
             }
 
-            val add = addVector.multiply(direction.toDouble())
+            val add = addVector.multiply(direction)
 
             object : BukkitRunnable() {
                 val location = blockLocation.clone()
@@ -76,7 +76,7 @@ class BlockEvents : Listener {
                 override fun run() {
                     location.add(add)
 
-                    if (location.block.type != Material.AIR || --counter == 0) {
+                    if (location.block.type != Material.AIR || counter == 0) {
                         cancel()
                         return
                     }
@@ -87,6 +87,8 @@ class BlockEvents : Listener {
                         Effect.STEP_SOUND,
                         type
                     )
+
+                    counter--
                 }
             }.runTaskTimer(Main.INSTANCE, 0, 10)
         }

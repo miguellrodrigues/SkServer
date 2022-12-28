@@ -24,6 +24,11 @@ class Blocar : BukkitCommand("blocar") {
             return true
         }
 
+        if (! sender.hasPermission("cmd.blocar")) {
+            sender.sendMessage("§cVocê não tem permissão para executar este comando.")
+            return true
+        }
+
         if (args.size != 2) {
             sender.sendMessage("§cUse: /blocar <quantidade> <direção>")
             return true
@@ -49,10 +54,10 @@ class Blocar : BukkitCommand("blocar") {
             return true
         }
 
-        val contents = sender.inventory.contents?.filterNotNull()
+        val contents = sender.inventory.contents.filterNotNull()
 
         val items = contents
-            ?.filter { it.type == item.type }!!
+            .filter { it.type == item.type }
 
         val amountInInventory = items.sumOf { it.amount }
 
