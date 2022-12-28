@@ -15,7 +15,7 @@ class ChunkLoader : BukkitCommand("chunk_loader") {
             return true
         }
 
-        if (!sender.hasPermission(Permission.INFO.node)) {
+        if (!sender.hasPermission("cmd.chunk_loader")) {
             return true
         }
 
@@ -26,35 +26,29 @@ class ChunkLoader : BukkitCommand("chunk_loader") {
 
         val action = args[0]
         val chunk = sender.location.chunk
-        val id = UUID.fromString(
-            sender.location.toString()
-        )
 
         when (action) {
             "add" -> {
-                if (ChunkLoaderManager.exists(id)) {
-                    sender.sendMessage("§cVocê já possui um chunk loader!")
-                    return true
-                }
+                val id = UUID.nameUUIDFromBytes(
+                    "${chunk.world.name}:${chunk.x}:${chunk.z}".toByteArray()
+                )
 
-                if (ChunkLoaderManager.exists(sender.location)) {
-                    sender.sendMessage("§cJá existe um chunk loader nesse chunk!")
+                if (ChunkLoaderManager.exists(id)) {
+                    sender.sendMessage("§cEsse chunk ja possui um ChunkLoader!")
                     return true
                 }
 
                 ChunkLoaderManager.add(id, ChunkLoader(chunk, ChunkLoaderManager.globalDelayTime))
-
-                sender.sendMessage("§aChunk loader adicionado com sucesso!")
+                sender.sendMessage("§aChunkLoader adicionado com sucesso!")
             }
             "remove" -> {
-                if (!ChunkLoaderManager.exists(id)) {
-                    sender.sendMessage("§cVocê não possui um chunk loader!")
+                if (! ChunkLoaderManager.exists(sender.location)) {
+                    sender.sendMessage("§cEste chunk nao possui um ChunkLoader!")
                     return true
                 }
 
-                ChunkLoaderManager.remove(id)
-
-                sender.sendMessage("§aChunk loader removido com sucesso!")
+                ChunkLoaderManager.remove(sender.location)
+                sender.sendMessage("§aChunkLoader removido com sucesso!")
             }
             else -> {
                 sender.sendMessage("§c/chunk_loader [add | remove]")

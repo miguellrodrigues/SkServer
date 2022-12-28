@@ -17,8 +17,16 @@ object ChunkLoaderManager {
         chunkLoader.run()
     }
 
-    fun remove(id: UUID) {
+    private fun remove(id: UUID) {
         chunkLoaders.remove(id)?.stop()
+    }
+
+    fun remove(location: Location) {
+        val id = UUID.nameUUIDFromBytes(
+            "${location.world.name}:${location.chunk.x}:${location.chunk.z}".toByteArray()
+        )
+
+        remove(id)
     }
 
     fun exists(id: UUID) = chunkLoaders.containsKey(id)
@@ -28,6 +36,10 @@ object ChunkLoaderManager {
     }
 
     fun get(id: UUID) = chunkLoaders[id]
+
+    fun get(loc: Location): ChunkLoader? {
+        return chunkLoaders.values.firstOrNull { it.chunk == loc.chunk }
+    }
 
     fun saveAll() {
         val gson = Gson()
@@ -58,7 +70,7 @@ object ChunkLoaderManager {
         val gson = Gson()
         val file = Main.INSTANCE.dataFolder.resolve("chunk_loaders.json")
 
-        if (!file.exists()) return
+        if (! file.exists()) return
 
         val chunkLoadersArray = file.readText()
 
