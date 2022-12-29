@@ -1,5 +1,7 @@
 package com.miguel.values
 
+import org.bukkit.enchantments.Enchantment
+
 object Values {
 
     const val MAX_HOMES_PER_PLAYER = 10
@@ -8,5 +10,4 @@ object Values {
 
     const val DATABASE = "s36547_Database"
     const val governmentID = "0000"
-
 }

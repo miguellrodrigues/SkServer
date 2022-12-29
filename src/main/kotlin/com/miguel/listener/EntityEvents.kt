@@ -5,8 +5,10 @@ import io.papermc.paper.event.entity.WardenAngerChangeEvent
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.EntityDamageByEntityEvent
+import org.bukkit.event.block.BlockReceiveGameEvent
 import org.bukkit.event.entity.EntityDamageEvent
+import org.bukkit.event.entity.EntityPotionEffectEvent
+import org.bukkit.event.entity.EntitySpawnEvent
 
 class EntityEvents : Listener {
 
@@ -18,5 +20,4 @@ class EntityEvents : Listener {
             event.isCancelled = !Values.DAMAGE
         }
     }
-
 }

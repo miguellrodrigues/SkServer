@@ -3,7 +3,6 @@ package com.miguel.listener
 import com.miguel.game.manager.InventoryManager
 import com.miguel.game.market.MarketManager
 import com.miguel.values.Strings
-import net.kyori.adventure.text.serializer.plain.PlainComponentSerializer
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.ChatColor
 import org.bukkit.Material
@@ -12,6 +11,8 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryType
+import org.bukkit.inventory.ItemStack
 import java.util.*
 
 class InventoryEvents : Listener {
@@ -28,6 +29,48 @@ class InventoryEvents : Listener {
         val currentItem = event.currentItem
 
         val view = event.view
+
+        if (view.type == InventoryType.GRINDSTONE) {
+            val itemZero = view.getItem(0)
+            val itemOne = view.getItem(1)
+
+            if (itemZero == null) return
+            if (itemOne == null) return
+
+            val firstItem = if (itemZero.type == Material.AIR) {
+                itemOne
+            } else {
+                itemZero
+            }
+
+            val resultItem = view.getItem(2)
+
+            if (firstItem.type == Material.ENCHANTED_BOOK) return
+            if (resultItem == null) return
+
+            if (event.slot == 2) {
+                val enchantments = firstItem.enchantments
+
+                if (enchantments.isEmpty()) return
+
+                val book = ItemStack(Material.BOOK, 1)
+
+                if (player.inventory.containsAtLeast(book, enchantments.size)) {
+                    enchantments.forEach { enchantment ->
+                        player.inventory.removeItem(book)
+
+                        val enchantedBook = ItemStack(Material.ENCHANTED_BOOK)
+                        enchantedBook.addUnsafeEnchantment(enchantment.key, enchantment.value)
+
+                        if (player.inventory.firstEmpty() == -1) {
+                            player.world.dropItem(player.location, enchantedBook)
+                        } else {
+                            player.inventory.addItem(enchantedBook)
+                        }
+                    }
+                }
+            }
+        }
 
         if (InventoryManager.has(inventory)) {
             if (currentItem == null || currentItem.type == Material.AIR)
