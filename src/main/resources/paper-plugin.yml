@@ -1,0 +1,21 @@
+name: SKServer
+version: 1.0.0
+author: Miguellkr16
+api-version: 1.19
+main: com.miguel.Main
+bootstrapper: com.miguel.BootStrapper
+dependencies:
+  server:
+    ProtocolLib:
+      load: BEFORE
+      required: true
+      join-classpath: true
+
+#  bootstrap:
+#    # Let's say that RegistryPlugin registers some data that your plugin needs to use
+#    # We don't need this during runtime, so it's not required in the server section.
+#    # However, can be added to both if needed
+#    RegistryPlugin:
+#      load: BEFORE
+#      required: true
+#      join-classpath: true # Defaults to true

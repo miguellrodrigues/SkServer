@@ -9,7 +9,7 @@ object Mysql {
     private lateinit var connection: Connection
     private lateinit var prop: Properties
 
-    fun remoteConnection(url: String, user: String, password: String) {
+    fun remoteConnection(url: String, user: String, password: String): Boolean {
         println("Trying remote mysql connection...")
 
         try {
@@ -26,7 +26,10 @@ object Mysql {
             println("Remote Mysql Connected!")
         } catch (e: Exception) {
             println("Error connecting to remote Mysql... ${e.message}")
+            return false
         }
+
+        return true
     }
 
     fun createTables() {

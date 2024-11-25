@@ -217,7 +217,7 @@ class Banco : BukkitCommand("banco") {
                             }
                         }
 
-                        "injetar" -> {
+                            "injetar" -> {
                             if (Permission.has(Permission.BANK_OWN, sender)) {
                                 val toInject = Bukkit.getPlayer(args[1])
 

@@ -9,7 +9,9 @@ import com.miguel.values.Values
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer
 import org.bukkit.Bukkit
+import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
@@ -45,6 +47,7 @@ object BankManager {
         currencies.add(Currency(Material.GOLD_NUGGET, .5))
         currencies.add(Currency(Material.IRON_INGOT, .25))
         currencies.add(Currency(Material.IRON_NUGGET, .1))
+        currencies.add(Currency(Material.STICK, .01))
 
         currencies.sortBy { it.value }
         currencies.reverse()
@@ -109,7 +112,14 @@ object BankManager {
     }*/
 
     fun isValidCurrencyItem(item: ItemStack): Boolean {
-        val name = item.itemMeta?.displayName()?.examinableName()
+        if (!item.hasItemMeta()) return false
+
+        val name = ChatColor.stripColor(
+            PlainTextComponentSerializer.plainText().serialize(
+                item.itemMeta.displayName() as TextComponent
+            )
+        )
+
         return name.equals("Ukranianinho")
     }
 

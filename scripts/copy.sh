@@ -1,2 +1,2 @@
 #!/bin/bash
-cp /home/miguel/IdeaProjects/SkServer/build/libs/SK-Server-1.0-SNAPSHOT-all.jar /home/miguel/Documentos/server/plugins
+cp /home/miguel/Documentos/others/SkServer/build/libs/SK-Server-1.0-SNAPSHOT-all.jar /home/miguel/Documentos/others/SkServer/server/plugins

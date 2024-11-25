@@ -15,7 +15,6 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
@@ -57,7 +56,11 @@ class PlayerEvents : Listener {
 
     @EventHandler(priority = EventPriority.LOWEST)
     fun onAsyncPlayerChat(event: AsyncChatEvent) {
+        val player = event.player
+
         event.isCancelled = !Values.CHAT
+
+        event.viewers().removeIf { it is Player && player.location.distance(it.location) > Values.SPEAK_RADIUS }
 
         event.renderer(ChatRenderer.viewerUnaware { player: Player, _: Component, message: Component ->
             Component.text(

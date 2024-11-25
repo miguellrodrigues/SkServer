@@ -19,74 +19,93 @@ class Anuncio : BukkitCommand("anuncio") {
             return true
         }
 
+
         if (args.isEmpty()) {
             sender.sendMessage("§c/anuncio [criar | remover] [preço] [nome]")
         } else {
-            when (args.size) {
-                else -> {
-                    if (args[0].lowercase(Locale.getDefault()) == "criar") {
-                        val price: Double
-
-                        try {
-                            price = args[1].toDouble()
-                        } catch (e: NumberFormatException) {
-                            sender.sendMessage("§cUtilize apenas números no preço !")
-                            return true
-                        }
-
-                        val name = args.drop(2).joinToString(" ")
-
-                        if (MarketManager.getByOwner(sender.name).firstOrNull { it.name == name } != null) {
-                            sender.sendMessage("§cJá existe um anúncio com esse nome !")
-                            return true
-                        }
-
-                        if (price <= Double.MAX_VALUE) {
-                            val type = sender.inventory.itemInMainHand.type
-
-                            if (type == Material.AIR) {
-                                sender.sendMessage("§cSegure um item válido na sua mão principal")
-                                return true
-                            }
-
-                            val item = sender.inventory.itemInMainHand
-
-                            MarketManager.advertise(
-                                sender.name,
-                                PlayerManager.getAccountId(sender.uniqueId),
-                                name,
-                                price,
-                                item
-                            )
-
-                            sender.inventory.setItemInMainHand(ItemStack(Material.AIR))
-
-                            sender.sendMessage(" ")
-                            sender.sendMessage("${Strings.MARKET_PREFIX} Anúncio criado com sucesso !")
-                            sender.sendMessage(" ")
-
-                            sender.sendMessage(" ")
-                            sender.sendMessage("${Strings.MARKET_PREFIX} Você irá receber ${price - MarketManager.taxPercentage * price} Ukranianinho's devido ao imposto de 5%")
-                            sender.sendMessage(" ")
-                        }
-                    } else if (args[0].lowercase(Locale.getDefault()) == "remover") {
-                        val name = args.drop(1).joinToString(" ")
-
-                        val item = MarketManager.removeAd(sender.name, name)
-
-                        if (item != null) {
-                            sender.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
-                            sender.inventory.addItem(item)
-                        } else {
-                            sender.sendMessage("§cAnúncio não encontrado !")
-                        }
-                    } else {
-                        sender.sendMessage("§c/anuncio [remover] [nome]")
-                        sender.sendMessage("§c/anuncio [criar] [preço] [nome]")
+            when (args[0].lowercase(Locale.getDefault())) {
+                "criar" -> {
+                    if (args.size < 3) {
+                        sender.sendMessage("§cUso correto: /anuncio criar [preço] [nome]")
+                        return true
                     }
+
+                    val price: Double
+
+                    try {
+                        price = args[1].toDouble()
+                    } catch (e: NumberFormatException) {
+                        sender.sendMessage("§cUtilize apenas números no preço !")
+                        return true
+                    }
+
+                    if (price <= 0) {
+                        sender.sendMessage("§cO preço deve ser maior que 0 !")
+                        return true
+                    }
+
+                    val name = args.drop(2).joinToString(" ")
+
+                    if (MarketManager.getByOwner(sender.name).firstOrNull { it.name == name } != null) {
+                        sender.sendMessage("§cJá existe um anúncio com esse nome !")
+                        return true
+                    }
+
+                    if (price <= Double.MAX_VALUE) {
+                        val type = sender.inventory.itemInMainHand.type
+
+                        if (type == Material.AIR) {
+                            sender.sendMessage("§cSegure um item válido na sua mão principal")
+                            return true
+                        }
+
+                        val item = sender.inventory.itemInMainHand
+
+                        MarketManager.advertise(
+                            sender.name,
+                            PlayerManager.getAccountId(sender.uniqueId),
+                            name,
+                            price,
+                            item
+                        )
+
+                        sender.inventory.setItemInMainHand(ItemStack(Material.AIR))
+
+                        sender.sendMessage(" ")
+                        sender.sendMessage("${Strings.MARKET_PREFIX} Anúncio criado com sucesso !")
+                        sender.sendMessage(" ")
+
+                        sender.sendMessage(" ")
+                        sender.sendMessage("${Strings.MARKET_PREFIX} Você irá receber ${price - MarketManager.taxPercentage * price} Ukranianinho's devido ao imposto de 5%")
+                        sender.sendMessage(" ")
+                    }
+                }
+
+                "remover" -> {
+                    if (args.size < 2) {
+                        sender.sendMessage("§cUso correto: /anuncio remover [nome]")
+                        return true
+                    }
+
+                    val name = args.drop(1).joinToString(" ")
+
+                    val item = MarketManager.removeAd(sender.name, name)
+
+                    if (item != null) {
+                        sender.sendMessage("§fAnúncio §e${name} §fremovido com sucesso")
+                        sender.inventory.addItem(item)
+                    } else {
+                        sender.sendMessage("§cAnúncio não encontrado !")
+                    }
+                }
+
+                else -> {
+                    sender.sendMessage("§c/anuncio [remover] [nome]")
+                    sender.sendMessage("§c/anuncio [criar] [preço] [nome]")
                 }
             }
         }
+
 
         return false
     }

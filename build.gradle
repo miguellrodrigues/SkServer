@@ -1,6 +1,6 @@
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.7.21'
-    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'org.jetbrains.kotlin.jvm' version '2.0.21'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group 'com.miguel'
@@ -8,10 +8,12 @@ version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
-    mavenLocal()
 
     maven { url "https://repo.dmulloy2.net/repository/public/" }
-    maven { url = uri("https://repo.papermc.io/repository/maven-public/") }
+
+    maven {
+        url = uri("https://repo.papermc.io/repository/maven-public/")
+    }
 }
 
 apply plugin: 'com.github.johnrengelman.shadow'
@@ -23,20 +25,23 @@ dependencies {
     implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
 
     // compileOnly("papermc.io:paper_patched:1.19.3")
-    compileOnly("io.papermc.paper:paper-api:1.19.3-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
 }
 
 sourceSets.main.java.srcDirs = ['src/main/kotlin']
 build.finalizedBy shadowJar
 
-compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
-}
-compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(22) // Adjust to the desired JVM version (e.g., 22 or 23)
+    }
+}
+
+kotlin {
+    jvmToolchain(22) // Same version as the Java toolchain
 }

@@ -2,4 +2,9 @@
 /.gradle/
 /.idea/
 /build/
+build/
 libraries/
+server/
+.kotlin/
+*.iml
+*.ipr

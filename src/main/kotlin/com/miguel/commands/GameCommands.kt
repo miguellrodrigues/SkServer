@@ -6,8 +6,6 @@ import com.miguel.common.command.Permission
 import com.miguel.game.manager.GameManager
 import com.miguel.values.Strings
 import com.miguel.values.Values
-import net.kyori.adventure.audience.MessageType
-import net.kyori.adventure.identity.Identity
 import net.kyori.adventure.text.Component
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -52,19 +50,15 @@ class GameCommands {
                     ).clickEvent(
                         net.kyori.adventure.text.event.ClickEvent.clickEvent(
                             net.kyori.adventure.text.event.ClickEvent.Action.RUN_COMMAND,
-                            "/svl tag " + tagCommon.name.replace("_", "").lowercase(Locale.getDefault())
+                            "/sv tag " + tagCommon.name.replace("_", "").lowercase(Locale.getDefault())
                         )
                     )
 
-                sender.sendMessage(
-                    Identity.nil(),
-                    component,
-                    MessageType.CHAT
-                )
+                sender.sendMessage(component)
             }
 
             sender.sendMessage(" ")
-            sender.sendMessage("§fUse §7/svl §ftag §a<§eNome da Tag§e> §fOu clique na §eTag §fDesejada")
+            sender.sendMessage("§fUse §7/sv §ftag §a<§eNome da Tag§e> §fOu clique na §eTag §fDesejada")
         } else if (strings.size == 1) {
             val player = sender as Player
 
@@ -109,7 +103,7 @@ class GameCommands {
         aliases = ["clearchat", "cc"],
         description = "Selecione uma tag",
         permission = Permission.CLEAR_CHAT,
-        usage = "/svl cc",
+        usage = "/sv cc",
         min = 0,
         max = 0,
         console = false
@@ -126,7 +120,7 @@ class GameCommands {
         aliases = ["chat", "ch"],
         description = "Ativa ou desativa o chat",
         permission = Permission.CHAT,
-        usage = "/svl chat",
+        usage = "/sv chat",
         min = 0,
         max = 0,
         console = false
@@ -145,7 +139,7 @@ class GameCommands {
         aliases = ["dano", "dn"],
         description = "Ativa ou desativa o dano",
         permission = Permission.DAMAGE,
-        usage = "/svl damage",
+        usage = "/sv damage",
         min = 0,
         max = 0,
         console = false
